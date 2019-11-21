@@ -1,12 +1,10 @@
 package entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@Table(name = "RANKS")
 public class Rank implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

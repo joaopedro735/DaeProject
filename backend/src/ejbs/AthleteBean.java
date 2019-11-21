@@ -1,11 +1,12 @@
 package ejbs;
 
 import entities.Athlete;
-import entities.Partner;
+import entities.Sport;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
 import exceptions.Utils;
 
+import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -17,6 +18,10 @@ import java.util.List;
 public class AthleteBean {
     @PersistenceContext
     private EntityManager em;
+
+    @EJB
+    private SportsBean sportsBean;
+
 
     public AthleteBean() {
     }
@@ -39,7 +44,7 @@ public class AthleteBean {
         try {
             return (List<Athlete>) em.createNamedQuery("getAllAthletes").getResultList();
         } catch (Exception e) {
-            throw new EJBException("ERROR_RETRIEVING_ADMINISTRATORS", e);
+            throw new EJBException("ERROR_RETRIEVING_ATHLETES", e);
         }
     }
 
@@ -47,7 +52,19 @@ public class AthleteBean {
         try {
             return em.find(Athlete.class, username);
         } catch (Exception e) {
-            throw new EJBException("ERROR_FINDING_ADMINISTRATOR", e);
+            throw new EJBException("ERROR_FINDING_ATHLETE", e);
+        }
+    }
+
+    public void enroll(String username, int sportsCode) {
+        try {
+            Athlete athlete = find(username);
+            Sport sport = sportsBean.find(sportsCode);
+
+            sport.addPartner(athlete);
+            athlete.addSport(sport);
+        } catch (Exception e) {
+            throw new EJBException("ERROR_ENROLL_ATHLETE", e);
         }
     }
 }

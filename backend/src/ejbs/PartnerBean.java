@@ -1,10 +1,12 @@
 package ejbs;
 
 import entities.Partner;
+import entities.Sport;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
 import exceptions.Utils;
 
+import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -16,6 +18,9 @@ import java.util.List;
 public class PartnerBean {
     @PersistenceContext
     private EntityManager em;
+
+    @EJB
+    private SportsBean sportsBean;
 
     public PartnerBean() {
     }
@@ -47,6 +52,18 @@ public class PartnerBean {
             return em.find(Partner.class, username);
         } catch (Exception e) {
             throw new EJBException("ERROR_FINDING_PARTNER", e);
+        }
+    }
+
+    public void enroll(String username, int sportsCode) {
+        try {
+            Partner partner = find(username);
+            Sport sport = sportsBean.find(sportsCode);
+
+            sport.addPartner(partner);
+            partner.addSport(sport);
+        } catch (Exception e) {
+            throw new EJBException("ERROR_ENROLL_STUDENT", e);
         }
     }
 }

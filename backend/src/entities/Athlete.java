@@ -1,9 +1,8 @@
 package entities;
 
-import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import java.io.Serializable;
+import javax.persistence.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @NamedQueries({
@@ -13,10 +12,15 @@ import java.io.Serializable;
         )
 })
 public class Athlete extends Partner {
+    @ManyToMany(mappedBy = "trainers", fetch = FetchType.EAGER)
+    private Set<Sport> sports;
+
     public Athlete() {
+        this.sports = new LinkedHashSet<>();
     }
 
     public Athlete(String username, String password, String name, String email) {
         super(username, password, name, email);
+        this.sports = new LinkedHashSet<>();
     }
 }
