@@ -7,7 +7,8 @@
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$USER_HOME$/.ideaLibSources/argon2-jvm-2.6-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/argon2-jvm-2.6-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jna-5.4.0-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

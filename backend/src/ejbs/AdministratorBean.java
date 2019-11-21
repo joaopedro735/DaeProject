@@ -9,6 +9,7 @@ import exceptions.Utils;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
@@ -33,6 +34,40 @@ public class AdministratorBean {
             return admin;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+        }
+    }
+
+    public void remove(String username){
+        try {
+            Administrator administrator = em.find(Administrator.class, username);
+            if (administrator == null) {
+                throw new MyEntityNotFoundException("Administrator with username '" + username + "' not found.");
+            }
+            if(administrator!=null) {
+                em.remove(administrator);
+            }
+        } catch(Exception e){
+            throw new EJBException("ERROR_REMOVING_ADMINISTRATOR", e);
+        }
+    }
+
+    public Administrator update(String username, String password, String name, String email) throws MyEntityNotFoundException {
+        try {
+            Administrator administrator = em.find(Administrator.class, username);
+
+            if (administrator == null) {
+                throw new MyEntityNotFoundException("Administrator with username '" + username + "' not found.");
+            }
+            em.lock(administrator, LockModeType.OPTIMISTIC);
+            administrator.setPassword(password);
+            administrator.setName(name);
+            administrator.setEmail(email);
+            em.merge(administrator);
+            return administrator;
+        } catch (MyEntityNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EJBException("ERROR_UPDATING_ADMINISTRATOR", e);
         }
     }
 

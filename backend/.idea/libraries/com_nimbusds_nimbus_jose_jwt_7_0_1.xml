@@ -10,7 +10,11 @@
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$USER_HOME$/.ideaLibSources/nimbus-jose-jwt-7.0.1-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/nimbus-jose-jwt-7.0.1-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jcip-annotations-1.0-1-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/json-smart-2.3-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/accessors-smart-1.2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/asm-5.0.4-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
