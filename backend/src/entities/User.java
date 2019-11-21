@@ -1,18 +1,12 @@
 package entities;
 
-import de.mkammerer.argon2.Argon2;
-import de.mkammerer.argon2.Argon2Factory;
-import org.hibernate.validator.constraints.Email;
+import util.PasswordManager;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Entity
 @Table(name = "USERS")
@@ -23,7 +17,6 @@ public abstract class User implements Serializable {
     protected String username;
 
     @NotNull
-    @Size(min = 8)
     protected String password;
 
     @NotNull
@@ -44,20 +37,22 @@ public abstract class User implements Serializable {
     }
 
     public static String hashPassword(String password) {
-        String encoded = null;
-
-        try {
-            ByteBuffer passwdBuffer =
-                    Charset.defaultCharset().encode(CharBuffer.wrap(password));
-            byte[] passwdBytes = passwdBuffer.array();
-            Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
-            encoded = argon2.hash(12, 65536, 1, passwdBytes);
-            boolean success1 = argon2.verify(encoded, passwdBytes);
-            System.out.println(success1 ? "Success" : "Failure");
-        } catch (Exception ex) {
-            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return encoded;
+//        String encoded = null;
+//
+//        try {
+//            ByteBuffer passwdBuffer =
+//                    Charset.defaultCharset().encode(CharBuffer.wrap(password));
+//            byte[] passwdBytes = passwdBuffer.array();
+//            Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+//            encoded = argon2.hash(12, 65536, 1, passwdBytes);
+//            boolean success1 = argon2.verify(encoded, passwdBytes);
+//            System.out.println(success1 ? "Success" : "Failure");
+//        } catch (Exception ex) {
+//            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return encoded;
+        //return PasswordManager.hashPassword(password.toCharArray());
+        return PasswordManager.hashPassword(password);
     }
 
     public String getUsername() {
@@ -73,7 +68,7 @@ public abstract class User implements Serializable {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = hashPassword(password);
     }
 
     public String getName() {
