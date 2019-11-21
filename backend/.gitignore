@@ -55,7 +55,7 @@ Desktop.ini
 
 # Gradle
 .idea/**/gradle.xml
-.idea/**/libraries
+#.idea/**/libraries
 
 # CMake
 cmake-build-*/
