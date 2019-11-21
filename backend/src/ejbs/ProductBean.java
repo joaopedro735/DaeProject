@@ -42,9 +42,7 @@ public class ProductBean {
             if (product == null) {
                 throw new MyEntityNotFoundException("Product with type'" + type+ "' not found.");
             }
-            if(product!=null) {
-                em.remove(product);
-            }
+            em.remove(product);
         } catch(Exception e){
             throw new EJBException("ERROR_REMOVING_PRODUCT", e);
         }
