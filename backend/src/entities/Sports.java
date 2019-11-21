@@ -10,13 +10,13 @@ public class Sports implements Serializable {
     @Id
     private String name;
 
-    private List<Rank> escaloes;
+    private List<Rank> ranks;
 
     private TimeTable timeTable;
 
-    private List<Socio> socios;
+    private List<Partner> partners;
 
-    private List<Trainer> treinadores;
+    private List<Trainer> trainers;
 
     public Sports() {
     }
