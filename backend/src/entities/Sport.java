@@ -71,4 +71,11 @@ public class Sport implements Serializable {
         this.trainers.remove(trainer);
     }
 
+    public Set<Partner> getPartners() {
+        return partners;
+    }
+
+    public Set<Trainer> getTrainers() {
+        return trainers;
+    }
 }

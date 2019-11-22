@@ -22,7 +22,7 @@ public class TrainerBean {
     private EntityManager em;
 
     @EJB
-    private SportsBean sportsBean;
+    private SportBean sportBean;
 
     public TrainerBean() {
     }
@@ -92,7 +92,7 @@ public class TrainerBean {
     public void enroll(String username, int sportsCode) {
         try {
             Trainer trainer = find(username);
-            Sport sport = sportsBean.find(sportsCode);
+            Sport sport = sportBean.find(sportsCode);
 
             sport.addTrainer(trainer);
             trainer.addSport(sport);

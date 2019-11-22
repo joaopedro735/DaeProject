@@ -20,7 +20,7 @@ public class PartnerBean {
     private EntityManager em;
 
     @EJB
-    private SportsBean sportsBean;
+    private SportBean sportBean;
 
     public PartnerBean() {
     }
@@ -58,7 +58,7 @@ public class PartnerBean {
     public void enroll(String username, int sportsCode) {
         try {
             Partner partner = find(username);
-            Sport sport = sportsBean.find(sportsCode);
+            Sport sport = sportBean.find(sportsCode);
 
             sport.addPartner(partner);
             partner.addSport(sport);

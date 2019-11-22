@@ -11,12 +11,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 
-@Stateless(name = "SportsEJB")
-public class SportsBean {
+@Stateless(name = "SportEJB")
+public class SportBean {
     @PersistenceContext
     private EntityManager em;
 
-    public SportsBean() {
+    public SportBean() {
     }
 
     public Sport create(String name) throws MyEntityAlreadyExistsException, MyConstraintViolationException {
