@@ -14,7 +14,7 @@ import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 
-@Stateless(name = "AdministradorEJB")
+@Stateless(name = "AdministratorEJB")
 public class AdministratorBean {
     @PersistenceContext
     private EntityManager em;

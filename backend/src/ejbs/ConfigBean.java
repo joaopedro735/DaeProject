@@ -25,6 +25,9 @@ public class ConfigBean {
     @EJB
     SportsBean sportsBean;
 
+    @EJB
+    TrainerBean trainerBean;
+
     private static final Logger logger = Logger.getLogger("ejbs.ConfigBean");
 
     public ConfigBean() {
@@ -38,6 +41,7 @@ public class ConfigBean {
             Partner partner = partnerBean.create("partner", "secret123", "Partner", "email@partnet.net");
             Athlete athlete = athleteBean.create("athlete", "secret123", "Athlete", "email@athlete.net");
             Athlete athlete2 = athleteBean.create("athlete2", "secret123", "Athlete2", "email@athlete2.net");
+            Trainer trainer = trainerBean.create("trainer", "secret123", "Trainer", "email@trainer.net");
             Sport judo = sportsBean.create("Judo");
             Sport basquetebol = sportsBean.create("Basquetebol");
             System.out.println(athlete instanceof Partner);
@@ -47,6 +51,9 @@ public class ConfigBean {
             athleteBean.enroll("athlete", basquetebol.getCode());
             athleteBean.enroll("athlete2", basquetebol.getCode());
             partnerBean.enroll("partner", judo.getCode());
+            trainerBean.enroll("trainer", judo.getCode());
+            trainerBean.enroll("trainer", basquetebol.getCode());
+
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage());
         }

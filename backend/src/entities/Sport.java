@@ -58,4 +58,17 @@ public class Sport implements Serializable {
     public void addPartner(Partner partner) {
         this.partners.add(partner);
     }
+
+    public void removePartner(Partner partner) {
+        this.partners.remove(partner);
+    }
+
+    public void addTrainer(Trainer trainer) {
+        this.trainers.add(trainer);
+    }
+
+    public void removeTrainer(Trainer trainer) {
+        this.trainers.remove(trainer);
+    }
+
 }

@@ -23,4 +23,12 @@ public class Trainer extends User {
         super(username, password, name, email);
         this.sports = new LinkedHashSet<>();
     }
+
+    public void addSport(Sport sport) {
+        this.sports.add(sport);
+    }
+
+    public void removeSport(Sport sport) {
+        this.sports.remove(sport);
+    }
 }
