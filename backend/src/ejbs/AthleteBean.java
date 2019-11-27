@@ -56,15 +56,4 @@ public class AthleteBean {
         }
     }
 
-    public void enroll(String username, int sportsCode) {
-        try {
-            Athlete athlete = find(username);
-            Sport sport = sportBean.find(sportsCode);
-
-            sport.addPartner(athlete);
-            athlete.addSport(sport);
-        } catch (Exception e) {
-            throw new EJBException("ERROR_ENROLL_ATHLETE", e);
-        }
-    }
 }

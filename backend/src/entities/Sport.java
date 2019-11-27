@@ -28,6 +28,13 @@ public class Sport implements Serializable {
 
     @ManyToMany
     @JoinTable(
+            name = "SPORTS_ATHLETES",
+            joinColumns = @JoinColumn(name = "SPORTS_CODE", referencedColumnName = "CODE"),
+            inverseJoinColumns = @JoinColumn(name = "ATHLETE_USERNAME", referencedColumnName = "USERNAME"))
+    private Set<Athlete> athletes;
+
+    @ManyToMany
+    @JoinTable(
             name = "SPORTS_TRAINERS",
             joinColumns = @JoinColumn(name = "SPORTS_CODE", referencedColumnName = "CODE"),
             inverseJoinColumns = @JoinColumn(name = "TRAINER_USERNAME", referencedColumnName = "USERNAME"))
@@ -36,7 +43,7 @@ public class Sport implements Serializable {
     public Sport() {
         this.partners = new LinkedHashSet<>();
         this.trainers = new LinkedHashSet<>();
-
+        this.athletes = new LinkedHashSet<>();
     }
 
     public String getName() {
@@ -63,6 +70,16 @@ public class Sport implements Serializable {
         this.partners.remove(partner);
     }
 
+    public void addAthlete(Athlete athlete) {
+        this.partners.add(athlete);
+        this.athletes.add(athlete);
+    }
+
+    public void removeAthlete(Athlete athlete) {
+        this.partners.remove(athlete);
+        this.athletes.remove(athlete);
+    }
+
     public void addTrainer(Trainer trainer) {
         this.trainers.add(trainer);
     }
@@ -75,7 +92,16 @@ public class Sport implements Serializable {
         return partners;
     }
 
+    public Set<Athlete> getAthletes() {
+        return athletes;
+    }
+
     public Set<Trainer> getTrainers() {
         return trainers;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

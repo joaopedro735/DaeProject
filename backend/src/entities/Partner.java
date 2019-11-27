@@ -27,4 +27,8 @@ public class Partner extends User {
     public void addSport(Sport sport) {
         this.sports.add(sport);
     }
+
+    public Set<Sport> getSports() {
+        return sports;
+    }
 }

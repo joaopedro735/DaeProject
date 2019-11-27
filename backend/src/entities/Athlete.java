@@ -12,8 +12,8 @@ import java.util.Set;
         )
 })
 public class Athlete extends Partner {
-    @ManyToMany(mappedBy = "trainers", fetch = FetchType.EAGER)
-    private Set<Sport> sports;
+    @ManyToMany(mappedBy = "athletes", fetch = FetchType.EAGER)
+    private Set<Sport> athleteSports;
 
     public Athlete() {
         this.sports = new LinkedHashSet<>();
@@ -21,6 +21,15 @@ public class Athlete extends Partner {
 
     public Athlete(String username, String password, String name, String email) {
         super(username, password, name, email);
-        this.sports = new LinkedHashSet<>();
+        this.athleteSports = new LinkedHashSet<>();
+    }
+
+    public Set<Sport> getAthleteSports() {
+        return athleteSports;
+    }
+
+    public void addAthleteSport(Sport sport) {
+        this.athleteSports.add(sport);
+        this.addSport(sport);
     }
 }

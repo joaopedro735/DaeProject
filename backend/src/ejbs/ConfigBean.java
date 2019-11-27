@@ -47,15 +47,17 @@ public class ConfigBean {
             System.out.println(athlete instanceof Partner);
             System.out.println(partner instanceof Athlete);
             System.out.println(admin instanceof User);
-            athleteBean.enroll("athlete", judo.getCode());
-            athleteBean.enroll("athlete", basquetebol.getCode());
-            athleteBean.enroll("athlete2", basquetebol.getCode());
-            partnerBean.enroll("partner", judo.getCode());
+            sportBean.enrollAthlete("athlete", judo.getCode());
+            sportBean.enrollPartner("athlete", basquetebol.getCode());
+            sportBean.enrollAthlete("athlete2", basquetebol.getCode());
+            sportBean.enrollPartner("partner", judo.getCode());
             trainerBean.enroll("trainer", judo.getCode());
             trainerBean.enroll("trainer", basquetebol.getCode());
 
-            //System.out.println(judo.getPartners().stream().filter(o->(o instanceof Athlete)).findAny().toString());
-
+            System.out.println(basquetebol.getPartners().stream().filter(o->(o instanceof Athlete)).findAny().toString());
+            //System.out.println(basquetebol.getPartners().toString());
+            System.out.println(athlete.getAthleteSports().toString());
+            System.out.println(athlete.getSports().toString());
 
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage());
