@@ -32,4 +32,9 @@ public class Athlete extends Partner {
         this.athleteSports.add(sport);
         this.addSport(sport);
     }
+
+    public void removeAthleteSport(Sport sport) {
+        this.athleteSports.remove(sport);
+        this.removeSport(sport);
+    }
 }

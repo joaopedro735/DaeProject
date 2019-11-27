@@ -59,6 +59,18 @@ public class SportBean {
         }
     }
 
+    public void unrollPartner(String username, int sportsCode) {
+        try {
+            Partner partner = partnerBean.find(username);
+            Sport sport = find(sportsCode);
+
+            sport.removePartner(partner);
+            partner.removeSport(sport);
+        } catch (Exception e) {
+            throw new EJBException("ERROR_UNROLL_PARTNER", e);
+        }
+    }
+
     public void enrollAthlete(String username, int sportsCode) {
         try {
             Athlete athlete = athleteBean.find(username);
@@ -70,4 +82,17 @@ public class SportBean {
             throw new EJBException("ERROR_ENROLL_ATHLETE", e);
         }
     }
+
+    public void unrollAthlete(String username, int sportsCode) {
+        try {
+            Athlete athlete = athleteBean.find(username);
+            Sport sport = find(sportsCode);
+
+            sport.removeAthlete(athlete);
+            athlete.removeAthleteSport(sport);
+        } catch (Exception e) {
+            throw new EJBException("ERROR_UNROLL_ATHLETE", e);
+        }
+    }
+
 }

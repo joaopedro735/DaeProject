@@ -1,11 +1,16 @@
 package ejbs;
 
+import entities.Administrator;
 import entities.User;
+import exceptions.MyConstraintViolationException;
+import exceptions.MyEntityAlreadyExistsException;
+import exceptions.Utils;
 import util.PasswordManager;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.ConstraintViolationException;
 
 @Stateless(name = "UserEJB")
 public class UserBean {
@@ -24,6 +29,5 @@ public class UserBean {
         }
         throw new Exception("Failed logging in with username '" + username + "': unknown username or wrong password");
     }
-
 
 }

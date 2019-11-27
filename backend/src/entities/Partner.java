@@ -28,6 +28,10 @@ public class Partner extends User {
         this.sports.add(sport);
     }
 
+    public void removeSport(Sport sport) {
+        this.sports.remove(sport);
+    }
+
     public Set<Sport> getSports() {
         return sports;
     }
