@@ -2,8 +2,9 @@
 build/
 bin/
 target/
-#libs/
+libs/
 tmp/
+.idea/
 
 ######################
 # Windows
@@ -56,7 +57,7 @@ Desktop.ini
 
 # Gradle
 .idea/**/gradle.xml
-#.idea/**/libraries
+.idea/**/libraries
 
 # CMake
 cmake-build-*/
@@ -97,14 +98,14 @@ fabric.properties
 # *.ipr
 
 # Sonarlint plugin
-.idea/**/sonarlint/
+#.idea/**/sonarlint/
 
 # SonarQube Plugin
-.idea/**/sonarIssues.xml
+#.idea/**/sonarIssues.xml
 
 # Markdown Navigator plugin
-.idea/**/markdown-navigator.xml
-.idea/**/markdown-navigator/
+#.idea/**/markdown-navigator.xml
+#.idea/**/markdown-navigator/
 
 ### Java ###
 # Compiled class file
@@ -112,12 +113,6 @@ fabric.properties
 
 # Log file
 *.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
 
 # Package Files #
 *.jar
