@@ -4,9 +4,11 @@ import entities.Administrator;
 import entities.User;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
+import exceptions.MyEntityNotFoundException;
 import exceptions.Utils;
 import util.PasswordManager;
 
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -30,4 +32,17 @@ public class UserBean {
         throw new Exception("Failed logging in with username '" + username + "': unknown username or wrong password");
     }
 
+    public void remove(String username) {
+        try {
+            User user = em.find(User.class, username);
+            if (user == null) {
+                throw new MyEntityNotFoundException("User with username '" + username + "' not found.");
+            }
+            if(user!=null) {
+                em.remove(user);
+            }
+        } catch(Exception e){
+            throw new EJBException("ERROR_REMOVING_USER", e);
+        }
+    }
 }

@@ -2,6 +2,7 @@ package ws;
 
 import dtos.AdministratorDTO;
 import ejbs.AdministratorBean;
+import ejbs.UserBean;
 import entities.Administrator;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
@@ -20,6 +21,8 @@ import java.util.stream.Collectors;
 public class AdministratorController {
     @EJB
     private AdministratorBean administratorBean;
+    @EJB
+    private UserBean userBean;
 
     @Context
     private SecurityContext securityContext;
@@ -69,10 +72,24 @@ public class AdministratorController {
 
     }
 
+    @DELETE
+    @Path("/{username}")
+    public Response deleteAdministrator(@PathParam("username") String username) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+        String msg;
+        try {
+            userBean.remove(username);
+            return Response.status(Response.Status.OK).build();
+        } catch (Exception e) {
+            msg = "ERROR_DELETING_ADMINISTRATOR --->" + e.getMessage();
+        }
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity(msg)
+                .build();
+    }
+
     @GET
     @Path("/{username}")
     public Response getAdministratorDetails(@PathParam("username") String username) {
-        System.out.println("here");
         Principal principal = securityContext.getUserPrincipal();
         System.out.println(principal.getName());
         if (securityContext.isUserInRole("Administrator") || principal.getName().equals(username)) {
