@@ -3,16 +3,20 @@ package ejbs;
 import entities.Athlete;
 import entities.Partner;
 import entities.Sport;
+import entities.Trainer;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
+import exceptions.MyEntityNotFoundException;
 import exceptions.Utils;
 
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import java.util.List;
 
 @Stateless(name = "SportEJB")
 public class SportBean {
@@ -24,6 +28,9 @@ public class SportBean {
 
     @EJB
     PartnerBean partnerBean;
+
+    @EJB
+    TrainerBean trainerBean;
 
     public SportBean() {
     }
@@ -44,6 +51,31 @@ public class SportBean {
             return em.find(Sport.class, code);
         } catch (Exception e) {
             throw new EJBException("ERROR_FINDING_SPORTS", e);
+        }
+    }
+
+    public List<Sport> all() {
+        try {
+            return (List<Sport>) em.createNamedQuery("getAllSports").getResultList();
+        } catch (Exception e) {
+            throw new EJBException("ERROR_RETRIEVING_SPORTS", e);
+        }
+    }
+
+    public Sport update(int code, String name) throws MyEntityNotFoundException {
+        try {
+            Sport sport = em.find(Sport.class, code);
+            if (sport == null) {
+                throw new MyEntityNotFoundException("Sport with code '" + code + "' not found.");
+            }
+//TODO:            em.lock(sport, LockModeType.OPTIMISTIC);
+            sport.setName(name);
+            em.merge(sport);
+            return sport;
+        } catch (MyEntityNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EJBException("ERROR_UPDATING_SPORT", e);
         }
     }
 
@@ -95,4 +127,27 @@ public class SportBean {
         }
     }
 
+    public void enrollTrainer(String username, int sportsCode) {
+        try {
+            Trainer trainer = trainerBean.find(username);
+            Sport sport = find(sportsCode);
+
+            sport.addTrainer(trainer);
+            trainer.addSport(sport);
+        } catch (Exception e) {
+            throw new EJBException("ERROR_ENROLL_TRAINER", e);
+        }
+    }
+
+    public void unrollTrainer(String username, int sportsCode) {
+        try {
+            Trainer trainer = trainerBean.find(username);
+            Sport sport = find(sportsCode);
+
+            sport.removeTrainer(trainer);
+            trainer.removeSport(sport);
+        } catch (Exception e) {
+            throw new EJBException("ERROR_UNROLL_TRAINER", e);
+        }
+    }
 }

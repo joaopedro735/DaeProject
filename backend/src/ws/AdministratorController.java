@@ -36,8 +36,8 @@ public class AdministratorController {
         return administrators.stream().map(AdministratorController::toDTO).collect(Collectors.toList());
     }
 
-    @GET // means: to call this endpoint, we need to use the HTTP GET method
-    @Path("/") // means: the relative url path is “/api/students/”
+    @GET
+    @Path("/")
     public Response all() {
         String msg;
         try {

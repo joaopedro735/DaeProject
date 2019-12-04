@@ -26,6 +26,9 @@ public abstract class User implements Serializable {
     @Email
     protected String email;
 
+    @Version
+    private int version;
+
     public User() {
     }
 
@@ -37,21 +40,6 @@ public abstract class User implements Serializable {
     }
 
     public static String hashPassword(String password) {
-//        String encoded = null;
-//
-//        try {
-//            ByteBuffer passwdBuffer =
-//                    Charset.defaultCharset().encode(CharBuffer.wrap(password));
-//            byte[] passwdBytes = passwdBuffer.array();
-//            Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
-//            encoded = argon2.hash(12, 65536, 1, passwdBytes);
-//            boolean success1 = argon2.verify(encoded, passwdBytes);
-//            System.out.println(success1 ? "Success" : "Failure");
-//        } catch (Exception ex) {
-//            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return encoded;
-        //return PasswordManager.hashPassword(password.toCharArray());
         return PasswordManager.hashPassword(password);
     }
 

@@ -10,6 +10,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.*;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ public class TrainerController {
         );
     }
 
-    public static List<TrainerDTO> toDTOs(List<Trainer> trainers) {
+    public static List<TrainerDTO> toDTOs(Collection<Trainer> trainers) {
         return trainers.stream().map(TrainerController::toDTO).collect(Collectors.toList());
     }
 

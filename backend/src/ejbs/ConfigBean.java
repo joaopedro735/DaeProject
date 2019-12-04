@@ -54,10 +54,10 @@ public class ConfigBean {
             trainerBean.enroll("trainer", judo.getCode());
             trainerBean.enroll("trainer", basquetebol.getCode());
 
-            System.out.println(basquetebol.getPartners().stream().filter(o->(o instanceof Athlete)).findAny().toString());
+           /* System.out.println(basquetebol.getPartners().stream().filter(o->(o instanceof Athlete)).findAny().toString());
             //System.out.println(basquetebol.getPartners().toString());
             System.out.println(athlete.getAthleteSports().toString());
-            System.out.println(athlete.getSports().toString());
+            System.out.println(athlete.getSports().toString());*/
 
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage());

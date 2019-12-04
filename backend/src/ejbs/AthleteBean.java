@@ -16,6 +16,7 @@ import java.util.List;
 
 @Stateless(name = "AthleteEJB")
 public class AthleteBean {
+    //TODO: Composition??
     @PersistenceContext
     private EntityManager em;
 

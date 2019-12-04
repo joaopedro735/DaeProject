@@ -22,6 +22,9 @@ public class Product implements Serializable {
 
     protected float value;
 
+    @Version
+    private int version;
+
     public Product() {
     }
 

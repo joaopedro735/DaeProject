@@ -1,31 +1,43 @@
 package entities;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllSports",
+                query = "SELECT s FROM Sport s ORDER BY s.name"
+        ),
+        @NamedQuery(
+                name = "getSportByName", query = "SELECT s from Sport s WHERE s.name = :name")
+})
 @Table(name = "SPORTS", uniqueConstraints = @UniqueConstraint(columnNames = {"NAME"}))
 public class Sport implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int code;
 
+    @NotNull
     private String name;
 
-    private List<Rank> ranks;
+//    private Set<Rank> ranks;
 
-    private TimeTable timeTable;
+  //  private TimeTable timeTable;
 
-    @ManyToMany
+    @NotNull
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "SPORTS_PARTNERS",
             joinColumns = @JoinColumn(name = "SPORTS_CODE", referencedColumnName = "CODE"),
             inverseJoinColumns = @JoinColumn(name = "PARTNER_USERNAME", referencedColumnName = "USERNAME"))
     private Set<Partner> partners;
 
+    @NotNull
     @ManyToMany
     @JoinTable(
             name = "SPORTS_ATHLETES",
@@ -33,6 +45,7 @@ public class Sport implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "ATHLETE_USERNAME", referencedColumnName = "USERNAME"))
     private Set<Athlete> athletes;
 
+    @NotNull
     @ManyToMany
     @JoinTable(
             name = "SPORTS_TRAINERS",
@@ -41,6 +54,7 @@ public class Sport implements Serializable {
     private Set<Trainer> trainers;
 
     public Sport() {
+   //     this.ranks = new LinkedHashSet<>();
         this.partners = new LinkedHashSet<>();
         this.trainers = new LinkedHashSet<>();
         this.athletes = new LinkedHashSet<>();

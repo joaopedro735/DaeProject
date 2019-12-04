@@ -22,6 +22,9 @@ public class PasswordManager {
         String encoded = null;
         try {
             Instant beginHash = Instant.now();
+            // Compute and return the hash
+            // 1 iterations, 64 MiB of memory, and 8 degrees of parallelism ( 1 CPU core #
+            // change for more cores )
             encoded = ARGON2.hash(1, 65536, 8, password);
             Instant endHash = Instant.now();
             System.out.println(String.format(
@@ -55,7 +58,7 @@ public class PasswordManager {
         return generatedSecuredPasswordHash;
     }
 
-    public static boolean verifyPassword(String hashedPassowrd, String password) {
-        return SCryptUtil.check(password, hashedPassowrd);
+    public static boolean verifyPassword(String hashedPassword, String password) {
+        return SCryptUtil.check(password, hashedPassword);
     }
 }
