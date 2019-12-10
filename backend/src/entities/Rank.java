@@ -1,7 +1,9 @@
 package entities;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "RANKS")
@@ -10,9 +12,8 @@ public class Rank implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @NotNull
     private String name;
-
-    private int number;
 
     public Rank() {
     }

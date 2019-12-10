@@ -93,24 +93,24 @@ public class SportController {
     }
 
     @PUT
-    @Path("/{code}/trainers/{username}/enroll")
-    public Response enrollTrainer(@PathParam("code") Integer code, @PathParam("username") String username) {
+    @Path("/{code}/athletes/{username}/enroll")
+    public Response enrollAthlete(@PathParam("code") Integer code, @PathParam("username") String username) {
         try {
-            sportBean.enrollAthlete(username, code);
-            return Response.status(Response.Status.OK).build();
+            boolean success = sportBean.enrollAthlete(username, code);
+            return success ? Response.status(Response.Status.OK).build(): Response.status(Response.Status.CONFLICT).entity("Athlete already enrolled in sport").build();
         } catch (Exception e) {
-            throw new EJBException("ERROR_ENROLL_TRAINER", e);
+            throw new EJBException("ERROR_ENROLL_ATHLETE", e);
         }
     }
 
     @PUT
     @Path("/{code}/trainers/{username}/unroll")
-    public Response unrollTrainer(@PathParam("code") Integer code, @PathParam("username") String username) {
+    public Response unrollAthlete(@PathParam("code") Integer code, @PathParam("username") String username) {
         try {
-            sportBean.unrollTrainer(username, code);
+            sportBean.unrollAthlete(username, code);
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
-            throw new EJBException("ERROR_ENROLL_TRAINER", e);
+            throw new EJBException("ERROR_ENROLL_ATHLETE", e);
         }
     }
 }

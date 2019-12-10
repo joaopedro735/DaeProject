@@ -1,9 +1,6 @@
 package ejbs;
 
-import entities.Athlete;
-import entities.Partner;
-import entities.Sport;
-import entities.Trainer;
+import entities.*;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
 import exceptions.MyEntityNotFoundException;
@@ -31,6 +28,9 @@ public class SportBean {
 
     @EJB
     TrainerBean trainerBean;
+
+    @EJB
+    PracticedSportBean practicedSportBean;
 
     public SportBean() {
     }
@@ -103,13 +103,19 @@ public class SportBean {
         }
     }
 
-    public void enrollAthlete(String username, int sportsCode) {
+    public boolean enrollAthlete(String username, int sportsCode) {
         try {
             Athlete athlete = athleteBean.find(username);
             Sport sport = find(sportsCode);
-
-            sport.addAthlete(athlete);
-            athlete.addAthleteSport(sport);
+            PracticedSport practicedSport = practicedSportBean.create(username, sportsCode);
+            //boolean contains = sport.getAthletes().contains(athlete);
+//            if (contains) {
+//                return false;
+//            }
+            sport.addAthlete(practicedSport);
+          //TODO:  athlete.addAthleteSport(sport);
+            athlete.addAthleteSport(practicedSport);
+            return true;
         } catch (Exception e) {
             throw new EJBException("ERROR_ENROLL_ATHLETE", e);
         }
@@ -121,7 +127,7 @@ public class SportBean {
             Sport sport = find(sportsCode);
 
             sport.removeAthlete(athlete);
-            athlete.removeAthleteSport(sport);
+            //TODO: athlete.removeAthleteSport(sport);
         } catch (Exception e) {
             throw new EJBException("ERROR_UNROLL_ATHLETE", e);
         }

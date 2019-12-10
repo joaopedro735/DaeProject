@@ -48,12 +48,13 @@ public class ConfigBean {
             System.out.println(partner instanceof Athlete);
             System.out.println(admin instanceof User);
             sportBean.enrollAthlete("athlete", judo.getCode());
-            sportBean.enrollPartner("athlete", basquetebol.getCode());
+            sportBean.enrollAthlete("athlete", basquetebol.getCode());
             sportBean.enrollAthlete("athlete2", basquetebol.getCode());
             sportBean.enrollPartner("partner", judo.getCode());
             trainerBean.enroll("trainer", judo.getCode());
             trainerBean.enroll("trainer", basquetebol.getCode());
 
+            System.out.println(athlete.getPracticedSport().toString());
            /* System.out.println(basquetebol.getPartners().stream().filter(o->(o instanceof Athlete)).findAny().toString());
             //System.out.println(basquetebol.getPartners().toString());
             System.out.println(athlete.getAthleteSports().toString());
