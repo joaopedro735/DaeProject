@@ -15,6 +15,9 @@ public class Rank implements Serializable {
     @NotNull
     private String name;
 
+    @ManyToOne
+    private Sport sport;
+
     public Rank() {
     }
 

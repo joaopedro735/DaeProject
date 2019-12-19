@@ -11,6 +11,8 @@ public class AdministratorDTO implements Serializable {
 
     private String email;
 
+    private String birthday;
+
 
     public AdministratorDTO(String username, String name, String email) {
         this.username = username;
@@ -54,4 +56,11 @@ public class AdministratorDTO implements Serializable {
         this.email = email;
     }
 
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
 }

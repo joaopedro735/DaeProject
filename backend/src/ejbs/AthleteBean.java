@@ -8,10 +8,13 @@ import exceptions.Utils;
 
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Stateless(name = "AthleteEJB")
@@ -27,13 +30,15 @@ public class AthleteBean {
     public AthleteBean() {
     }
 
-    public Athlete create(String username, String password, String nome, String email) throws MyEntityAlreadyExistsException, MyConstraintViolationException {
+    public Athlete create(String username, String password, String nome, String email, String birthday) throws MyEntityAlreadyExistsException, MyConstraintViolationException {
         if (find(username) != null) {
             throw new MyEntityAlreadyExistsException("Username '" + username + "' already exists");
         }
 
         try {
-            Athlete athlete = new Athlete(username, password, nome, email);
+            DateTimeFormatter birthdayFormat= DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate birthdayDate = LocalDate.parse(birthday, birthdayFormat);
+            Athlete athlete = new Athlete(username, password, nome, email,birthdayDate);
             em.persist(athlete);
             return athlete;
         } catch (ConstraintViolationException e) {

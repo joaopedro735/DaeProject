@@ -7,6 +7,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.Period;
 
 @Entity
 @Table(name = "USERS")
@@ -26,17 +28,20 @@ public abstract class User implements Serializable {
     @Email
     protected String email;
 
+    protected LocalDate birthday;
+
     @Version
     private int version;
 
     public User() {
     }
 
-    public User(String username, String password, String name, String email) {
+    public User(String username, String password, String name, String email, LocalDate birthday) {
         this.username = username;
         this.password = hashPassword(password);
         this.name = name;
         this.email = email;
+        this.birthday = birthday;
     }
 
     public static String hashPassword(String password) {
@@ -73,6 +78,18 @@ public abstract class User implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public LocalDate getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
+    }
+
+    public int getAge() {
+        return Period.between(birthday, LocalDate.now()).getYears();
     }
 
     @Override

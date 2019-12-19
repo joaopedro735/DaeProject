@@ -61,7 +61,8 @@ public class AdministratorController {
         Administrator newAdministrator = administratorBean.create(administratorDTO.getUsername(),
                 administratorDTO.getPassword(),
                 administratorDTO.getName(),
-                administratorDTO.getEmail());
+                administratorDTO.getEmail(),
+                administratorDTO.getBirthday());
 
         return Response.status(Response.Status.CREATED)
                 .entity(toDTO(newAdministrator))

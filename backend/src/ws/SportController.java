@@ -3,6 +3,7 @@ package ws;
 import dtos.SportDTO;
 import ejbs.SportBean;
 import entities.Sport;
+import entities.TimeTable;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
 import exceptions.MyEntityNotFoundException;
@@ -94,9 +95,9 @@ public class SportController {
 
     @PUT
     @Path("/{code}/athletes/{username}/enroll")
-    public Response enrollAthlete(@PathParam("code") Integer code, @PathParam("username") String username) {
+    public Response enrollAthlete(@PathParam("code") Integer code, @PathParam("username") String username, List<TimeTable> timeTables) {
         try {
-            boolean success = sportBean.enrollAthlete(username, code);
+            boolean success = sportBean.enrollAthlete(username, code, timeTables);
             return success ? Response.status(Response.Status.OK).build(): Response.status(Response.Status.CONFLICT).entity("Athlete already enrolled in sport").build();
         } catch (Exception e) {
             throw new EJBException("ERROR_ENROLL_ATHLETE", e);

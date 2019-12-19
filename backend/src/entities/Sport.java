@@ -3,8 +3,12 @@ package entities;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 
 @Entity
 @NamedQueries({
@@ -24,15 +28,14 @@ public class Sport implements Serializable {
     @NotNull
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "SPORTS_RANKS",
-            joinColumns = @JoinColumn(name = "SPORT_CODE", referencedColumnName = "CODE"),
-            inverseJoinColumns = @JoinColumn(name = "RANK_CODE", referencedColumnName = "CODE")
-    )
+    @OneToMany(mappedBy = "sport",fetch = FetchType.LAZY)
     private Set<Rank> ranks;
 
-  //  private TimeTable timeTable;
+    @OneToMany(mappedBy = "sport",fetch = FetchType.LAZY)
+    private Set<Graduation> graduations;
+
+    @OneToMany(mappedBy = "sport", fetch = FetchType.LAZY)
+    private Set<TimeTable> timeTables;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -56,17 +59,19 @@ public class Sport implements Serializable {
     private Set<Trainer> trainers;
 
     @OneToMany(mappedBy = "sport")
-    private Set<PracticedSport> practicedBy;
+    private Set<SportRegistration> practicedBy;
 
    @Version
    private int version;
 
     public Sport() {
-     //   this.ranks = new LinkedHashSet<>();
+        this.ranks = new LinkedHashSet<>();
+        this.graduations = new LinkedHashSet<>();
         this.partners = new LinkedHashSet<>();
         this.trainers = new LinkedHashSet<>();
         this.athletes = new LinkedHashSet<>();
         this.practicedBy = new LinkedHashSet<>();
+        this.timeTables = new LinkedHashSet<>();
     }
 
     public String getName() {
@@ -93,10 +98,10 @@ public class Sport implements Serializable {
         this.partners.remove(partner);
     }
 
-    public void addAthlete(PracticedSport practicedSport) {
-        this.partners.add(practicedSport.getAthlete());
+    public void addAthlete(SportRegistration sportRegistration) {
+        this.partners.add(sportRegistration.getAthlete());
         //this.athletes.add(athlete);
-        this.practicedBy.add(practicedSport);
+        this.practicedBy.add(sportRegistration);
     }
 
     public void removeAthlete(Athlete athlete) {
@@ -112,16 +117,56 @@ public class Sport implements Serializable {
         this.trainers.remove(trainer);
     }
 
+    public void addTimeTable(TimeTable timeTable) { this.timeTables.add(timeTable);}
+
+    public void removeTimeTable(TimeTable timeTable) { this.timeTables.remove(timeTable);}
+
+    public void addRank(Rank rank) {
+        this.ranks.add(rank);
+    }
+
+    public void removeRank(Rank rank) {
+        this.ranks.remove(rank);
+    }
+
+    public void addGraduation(Graduation graduation) {
+        this.graduations.add(graduation);
+    }
+
+    public void removeGraduation(Graduation graduation) {
+        this.graduations.remove(graduation);
+    }
+
+    @Transient
+    public List<Athlete> getAhtletes() {
+        return practicedBy.stream().map(SportRegistration::getAthlete).collect(Collectors.toList());
+    }
+
     public Set<Partner> getPartners() {
         return partners;
     }
 
-    public Set<Athlete> getAthletes() {
+    //TODO: remove
+    /*public Set<Athlete> getAthletes() {
         return athletes;
-    }
+    }*/
 
     public Set<Trainer> getTrainers() {
         return trainers;
+    }
+
+    public Set<TimeTable> getTimeTables() {
+        return timeTables;
+    }
+
+    @Transient
+    public boolean timeTablesExists(Collection<TimeTable> timeTables) {
+        return this.timeTables.containsAll(timeTables);
+    }
+
+    @Transient
+    public boolean timeTableExists(TimeTable timeTable) {
+        return this.timeTables.contains(timeTable);
     }
 
     @Override

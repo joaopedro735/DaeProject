@@ -14,6 +14,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Stateless(name = "TrainerEJB")
@@ -27,13 +29,15 @@ public class TrainerBean {
     public TrainerBean() {
     }
 
-    public Trainer create(String username, String password, String nome, String email) throws MyEntityAlreadyExistsException, MyConstraintViolationException {
+    public Trainer create(String username, String password, String nome, String email, String birthday) throws MyEntityAlreadyExistsException, MyConstraintViolationException {
         if (find(username) != null) {
             throw new MyEntityAlreadyExistsException("Username '" + username + "' already exists");
         }
 
         try {
-            Trainer trainer = new Trainer(username, password, nome, email);
+            DateTimeFormatter birthdayFormat= DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate birthdayDate = LocalDate.parse(birthday, birthdayFormat);
+            Trainer trainer = new Trainer(username, password, nome, email, birthdayDate);
             em.persist(trainer);
             return trainer;
         } catch (ConstraintViolationException e) {

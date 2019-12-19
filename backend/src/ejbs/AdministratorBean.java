@@ -12,6 +12,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Stateless(name = "AdministratorEJB")
@@ -19,17 +21,18 @@ public class AdministratorBean {
     @PersistenceContext
     private EntityManager em;
 
-
     public AdministratorBean() {
     }
 
-    public Administrator create(String username, String password, String nome, String email) throws MyEntityAlreadyExistsException, MyConstraintViolationException {
+    public Administrator create(String username, String password, String nome, String email, String birthday) throws MyEntityAlreadyExistsException, MyConstraintViolationException {
         if (find(username) != null) {
             throw new MyEntityAlreadyExistsException("Username '" + username + "' already exists");
         }
 
         try {
-            Administrator admin = new Administrator(username, password, nome, email);
+            DateTimeFormatter birthdayFormat= DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate birthdayDate = LocalDate.parse(birthday,birthdayFormat);
+            Administrator admin = new Administrator(username, password, nome, email, birthdayDate);
             em.persist(admin);
             return admin;
         } catch (ConstraintViolationException e) {
