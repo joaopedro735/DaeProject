@@ -10,8 +10,10 @@ import exceptions.MyEntityNotFoundException;
 import exceptions.Utils;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.util.Collection;
@@ -33,16 +35,13 @@ public class SportRegistrationBean {
     }
 
     public SportRegistration create(String athleteUsername, int sportCode, Collection<TimeTable> timeTables) throws MyEntityAlreadyExistsException, MyConstraintViolationException, MyEntityNotFoundException {
-        /*TODO: chefk if exists
-        if (find(username) != null) {
-            throw new MyEntityAlreadyExistsException("Username '" + username + "' already exists");
-        }*/
+        //TODO: check if exists
+        if (find(sportCode, athleteUsername) != null) {
+            throw new MyEntityAlreadyExistsException("Atlhete '" + athleteUsername + "' already is signed up on the selected sport");
+        }
         try {
             Sport sport = sportBean.find(sportCode);
             boolean timeTableExists = sport.timeTablesExists(timeTables);
-            System.out.println(sport.getName());
-            System.out.println(timeTables.stream().findFirst().get().getDay());
-            System.out.println(timeTableExists);
             if (!timeTableExists) {
                 throw new MyEntityNotFoundException("Selected time tables doesn't belong to '" + sport.getName() + "'");
             }
@@ -59,6 +58,25 @@ public class SportRegistrationBean {
             return sportRegistration;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+        }
+    }
+
+    public SportRegistration find(int id) {
+        try {
+            return em.find(SportRegistration.class, id);
+        } catch (Exception e) {
+            throw new EJBException("ERROR_FINDING_SPORTREGISTRATION", e);
+        }
+    }
+
+    public SportRegistration find(int code, String athleteUsername) {
+        try {
+            System.out.println(code + athleteUsername);
+            return (SportRegistration) em.createNamedQuery("getSportRegistrationByUsernameAndSportCode").setParameter("username", athleteUsername).setParameter("code", code).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (Exception e) {
+            throw new EJBException("ERROR_RETRIEVING_SPORT_REGISTRATION", e);
         }
     }
 }

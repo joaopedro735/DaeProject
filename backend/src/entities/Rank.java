@@ -7,7 +7,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "RANKS")
+//TODO: rename class
 public class Rank implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

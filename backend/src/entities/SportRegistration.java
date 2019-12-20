@@ -12,6 +12,16 @@ import java.util.Set;
 
 @Entity
 @Table(name = "SPORT_REGISTRATION")
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllSportRegistration",
+                query = "SELECT s FROM SportRegistration s ORDER BY s.sport.name"
+        ),
+        @NamedQuery(
+                name = "getSportRegistrationByUsernameAndSportCode",
+                query = "SELECT s FROM SportRegistration s WHERE s.athlete.username = :username AND s.sport.code = :code"
+        )
+})
 public class SportRegistration implements Serializable {
 
     @Id
@@ -49,12 +59,11 @@ public class SportRegistration implements Serializable {
     }
 
     public SportRegistration(Athlete athlete, Sport sport, Rank rank, Graduation graduation) {
-        this.timeTables = new LinkedHashSet<>();
+        this();
         this.athlete = athlete;
         this.sport = sport;
         this.rank = rank;
         this.graduation = graduation;
-        this.createdOn = LocalDateTime.now();
     }
 
     public int getId() {

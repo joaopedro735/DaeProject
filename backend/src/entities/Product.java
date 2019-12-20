@@ -1,6 +1,7 @@
 package entities;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
@@ -16,10 +17,14 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    protected String type;
+    @ManyToOne
+    @NotNull
+    protected Type type;
 
+    @NotNull
     protected String description;
 
+    @NotNull
     protected float value;
 
     @Version
@@ -28,17 +33,17 @@ public class Product implements Serializable {
     public Product() {
     }
 
-    public Product(String type, String description, float value) {
+    public Product(Type type, String description, float value) {
         this.type = type;
         this.description = description;
         this.value = value;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 
