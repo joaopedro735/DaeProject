@@ -10,6 +10,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.util.Collection;
@@ -71,7 +72,7 @@ public class SportBean {
             if (sport == null) {
                 throw new MyEntityNotFoundException("Sport with code '" + code + "' not found.");
             }
-//TODO:            em.lock(sport, LockModeType.OPTIMISTIC);
+            em.lock(sport, LockModeType.OPTIMISTIC);
             sport.setName(name);
             em.merge(sport);
             return sport;
@@ -104,6 +105,7 @@ public class SportBean {
 
     public void removeTimetable(int sportCode, int timeTableId) throws MyEntityNotFoundException {
         try {
+            //TODO: is this right?
             Sport sport = find(sportCode);
             if (sport == null) {
                 throw new MyEntityNotFoundException("Sport with code '" + sportCode + "' not found.");
@@ -148,6 +150,7 @@ public class SportBean {
         try {
             Athlete athlete = athleteBean.find(username);
             Sport sport = find(sportsCode);
+            System.out.println(timeTables.stream().map(TimeTable::getId).findAny());
             SportRegistration sportRegistration = sportRegistrationBean.create(username, sportsCode, timeTables);
             //boolean contains = sport.getAthletes().contains(athlete);
 //            if (contains) {

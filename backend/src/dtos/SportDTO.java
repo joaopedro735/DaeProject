@@ -2,6 +2,7 @@ package dtos;
 
 import entities.Partner;
 import entities.Sport;
+import entities.TimeTable;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -17,10 +18,13 @@ public class SportDTO {
 
     private Collection<UserDTO> athletes;
 
+    private Collection<TimeTableDTO> timeTables;
+
     public SportDTO() {
         this.partners = new LinkedHashSet<>();
         this.trainers = new LinkedHashSet<>();
         this.athletes = new LinkedHashSet<>();
+        this.timeTables = new LinkedHashSet<>();
     }
 
     public SportDTO(int code, String name) {
@@ -29,6 +33,7 @@ public class SportDTO {
         this.partners = new LinkedHashSet<>();
         this.trainers = new LinkedHashSet<>();
         this.athletes = new LinkedHashSet<>();
+        this.timeTables = new LinkedHashSet<>();
     }
 
     public int getCode() {
@@ -69,5 +74,13 @@ public class SportDTO {
 
     public void setAthletes(Collection<UserDTO> athletes) {
         this.athletes = athletes;
+    }
+
+    public Collection<TimeTableDTO> getTimeTables() {
+        return timeTables;
+    }
+
+    public void setTimeTables(Collection<TimeTableDTO> timeTables) {
+        this.timeTables = timeTables;
     }
 }

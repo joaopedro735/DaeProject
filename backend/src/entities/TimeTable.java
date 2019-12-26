@@ -12,7 +12,13 @@ import java.util.Locale;
 
 @Entity
 @Table(name = "TIMETABLES")
-public class TimeTable  {
+@NamedQueries({
+        @NamedQuery(
+                name = "TimeTable.getAll",
+                query = "SELECT t FROM TimeTable t ORDER BY t.sport.name"
+        )
+})
+public class TimeTable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -38,6 +44,10 @@ public class TimeTable  {
         this.start = start;
         this.end = end;
         this.sport = sport;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getId() {

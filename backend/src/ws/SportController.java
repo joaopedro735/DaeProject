@@ -12,6 +12,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
@@ -75,7 +76,8 @@ public class SportController {
     @Path("/{code}")
     public Response updateSport(@PathParam("code") Integer code, SportDTO sportDTO) throws MyEntityNotFoundException {
         Sport sport = sportBean.update(code, sportDTO.getName());
-        return Response.status(Response.Status.ACCEPTED).entity(toDTO(sport, null)).build();
+        return Response.status(Response.Status.ACCEPTED)
+                .entity(toDTO(sport, null)).build();
     }
 
     @GET
@@ -87,7 +89,10 @@ public class SportController {
                     .entity(toDTO(sport, /*dto -> {
                             dto.setTrainers(TrainerController.toDTOs(sport.getTrainers()));
                             return dto;
-                }*/null)).build();
+                }*/dto -> {
+                        dto.setTimeTables(TimeTableController.toDTOs(sport.getTimeTables(),null));
+                        return dto;
+                    })).build();
         } catch (Exception e) {
             throw new EJBException("ERROR_GET_SPORT", e);
         }
@@ -97,7 +102,7 @@ public class SportController {
     @Path("/{code}/athletes/{username}/enroll")
     public Response enrollAthlete(@PathParam("code") Integer code, @PathParam("username") String username, List<TimeTable> timeTables) {
         try {
-            boolean success = sportBean.enrollAthlete(username, code, timeTables);
+            boolean success = sportBean.enrollAthlete(username, code,timeTables);
             return success ? Response.status(Response.Status.OK).build(): Response.status(Response.Status.CONFLICT).entity("Athlete already enrolled in sport").build();
         } catch (Exception e) {
             throw new EJBException("ERROR_ENROLL_ATHLETE", e);
