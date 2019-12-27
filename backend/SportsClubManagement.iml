@@ -44,20 +44,18 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="wildfly 17.0.1.Final" level="application_server_libraries" />
+    <orderEntry type="library" name="org.jboss.resteasy:resteasy-multipart-provider:4.4.1.Final" level="project" />
     <orderEntry type="library" name="Jersey-2.2" level="project" />
-    <orderEntry type="library" name="javax.json.binding-1.0" level="project" />
+    <orderEntry type="library" name="JavaeeSecurity-1.0" level="project" />
     <orderEntry type="library" name="de.mkammerer:argon2-jvm:2.6" level="project" />
     <orderEntry type="library" name="JPA 2.0-2.0" level="project" />
     <orderEntry type="library" name="com.nimbusds:nimbus-jose-jwt:7.0.1" level="project" />
     <orderEntry type="library" name="JavaeeSecurity-1.0" level="project" />
     <orderEntry type="library" name="javax:javaee-web-api:8.0.1" level="project" />
-    <orderEntry type="library" name="org.jboss.resteasy:resteasy-multipart-provider:4.4.1.Final" level="project" />
     <orderEntry type="library" name="Hibernate Validator-5.0.1" level="project" />
     <orderEntry type="library" name="com.lambdaworks:scrypt:1.4.0" level="project" />
     <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
     <orderEntry type="library" name="javax.json.processing-1.0" level="project" />
     <orderEntry type="library" name="javax.json.binding-1.0" level="project" />
-    <orderEntry type="library" name="javax.json.processing-1.0" level="project" />
   </component>
 </module>

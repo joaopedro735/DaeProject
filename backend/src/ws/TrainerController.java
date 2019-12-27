@@ -1,16 +1,20 @@
 package ws;
 
+import dtos.AdministratorDTO;
 import dtos.TrainerDTO;
 import ejbs.TrainerBean;
+import entities.Administrator;
 import entities.Trainer;
+import entities.User;
+import exceptions.MyConstraintViolationException;
+import exceptions.MyEntityAlreadyExistsException;
+import exceptions.MyEntityNotFoundException;
 
 import javax.ejb.EJB;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.Collection;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +52,83 @@ public class TrainerController {
                     .build();
         } catch (Exception e) {
             msg = "ERROR_GET_TRAINERS --->" + e.getMessage();
+        }
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity(msg)
+                .build();
+    }
+
+
+    @GET
+    @Path("/{username}")
+    public Response getTrainerDetails(@PathParam("username") String username) {
+        Principal principal = securityContext.getUserPrincipal();
+        System.out.println(principal.getName());
+        if (securityContext.isUserInRole("Administrator") || principal.getName().equals(username)) {
+            Trainer trainer = trainerBean.find(username);
+            return Response.status(Response.Status.OK).entity(toDTO(trainer)).build();
+        }
+        return Response.status(Response.Status.FORBIDDEN).build();
+    }
+
+    @GET
+    @Path("/name/{tosearch}")
+    public Response getTrainersBySearch(@PathParam("tosearch") String toSearch){
+        Principal principal = securityContext.getUserPrincipal();
+        if(securityContext.isUserInRole("Administrator")){
+            GenericEntity<List<TrainerDTO>> entity = new GenericEntity<List<TrainerDTO>>(toDTOs(trainerBean.findBySearch(toSearch))) {
+            };
+            return Response.status(Response.Status.OK).entity(entity).build();
+        }
+        return Response.status(Response.Status.FORBIDDEN).build();
+    }
+
+    @POST
+    @Path("/")
+    public Response createNewTrainer(TrainerDTO trainerDTO) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+
+        Trainer trainer = trainerBean.create(trainerDTO.getUsername(),
+                trainerDTO.getPassword(),
+                trainerDTO.getName(),
+                trainerDTO.getEmail());
+
+        return Response.status(Response.Status.CREATED)
+                .entity(toDTO(trainer))
+                .build();
+
+    }
+
+    @PUT
+    @Path("/{username}")
+    public Response updateAdministrator(@PathParam("username") String username, TrainerDTO trainerDTO){
+        String msg;
+        User user;
+        System.out.println(username);
+        try {
+            user = trainerBean.find(username);
+            if (user == null){
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            trainerBean.update(username, trainerDTO.getPassword(), trainerDTO.getName(), trainerDTO.getEmail());
+
+            return Response.status(Response.Status.OK).build();
+        } catch (Exception e){
+            msg = "ERROR_UPDATING_ADMINISTRATOR ---> " + e.getMessage();
+        }
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity(msg)
+                .build();
+    }
+
+    @DELETE
+    @Path("/{username}")
+    public Response deleteAdministrator(@PathParam("username") String username) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+        String msg;
+        try {
+            trainerBean.remove(username);
+            return Response.status(Response.Status.OK).build();
+        } catch (Exception e) {
+            msg = "ERROR_DELETING_ADMINISTRATOR --->" + e.getMessage();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(msg)

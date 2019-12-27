@@ -104,4 +104,12 @@ public class TrainerBean {
             throw new EJBException("ERROR_ENROLL_ATHLETE", e);
         }
     }
+
+    public List<Trainer> findBySearch(String toSearch) {
+        try {
+            return (List<Trainer>) em.createNamedQuery("getTrainersByNameSearch").setParameter("name", "%" + toSearch + "%").getResultList();
+        }catch (Exception e) {
+            throw new EJBException("ERROR_RETRIEVING_TRAINERS_BY_NAME_SEARCH", e);
+        }
+    }
 }

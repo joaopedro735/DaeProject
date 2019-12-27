@@ -11,6 +11,7 @@ import util.PasswordManager;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 
@@ -43,6 +44,14 @@ public class UserBean {
             }
         } catch(Exception e){
             throw new EJBException("ERROR_REMOVING_USER", e);
+        }
+    }
+
+    public User find(String username) {
+        try {
+            return em.find(User.class, username);
+        } catch (Exception e) {
+            throw new EJBException("ERROR_FINDING_ADMINISTRATOR", e);
         }
     }
 }
