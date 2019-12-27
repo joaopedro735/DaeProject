@@ -24,7 +24,6 @@ public class AdministratorBean {
     public AdministratorBean() {
     }
 
-    //TODO Criar utilizadores conforme o tipo pedido (admin, treinador, socio/atleta...)
     public Administrator create(String username, String password, String nome, String email) throws MyEntityAlreadyExistsException, MyConstraintViolationException {
         if (find(username) != null) {
             throw new MyEntityAlreadyExistsException("Username '" + username + "' already exists");
@@ -38,12 +37,10 @@ public class AdministratorBean {
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
         }
     }
-    //TODO Procurar
 
-    //TODO Filtrar
     public void remove(String username){
         try {
-            Administrator administrator = em.find(Administrator.class, username);
+            Administrator administrator = find(username);
             System.out.println(administrator.getUsername());
             if (administrator == null) {
                 throw new MyEntityNotFoundException("Administrator with username '" + username + "' not found.");
@@ -56,11 +53,10 @@ public class AdministratorBean {
         }
     }
 
-    //TODO Atualizar um utilizador (UPDATE)
     public Administrator update(String username, String password, String name, String email) throws MyEntityNotFoundException {
         try {
             Administrator administrator = em.find(Administrator.class, username);
-
+            System.out.println("Administrator get username: " + administrator.getUsername());
             if (administrator == null) {
                 throw new MyEntityNotFoundException("Administrator with username '" + username + "' not found.");
             }
@@ -68,6 +64,7 @@ public class AdministratorBean {
             administrator.setPassword(password);
             administrator.setName(name);
             administrator.setEmail(email);
+
             em.merge(administrator);
             return administrator;
         } catch (MyEntityNotFoundException e) {
@@ -90,6 +87,14 @@ public class AdministratorBean {
             return em.find(Administrator.class, username);
         } catch (Exception e) {
             throw new EJBException("ERROR_FINDING_ADMINISTRATOR", e);
+        }
+    }
+
+    public List<Administrator> findBySearch(String toSearch) {
+        try {
+            return (List<Administrator>) em.createNamedQuery("getAdministratorsByNameSearch").setParameter("name", "%" + toSearch + "%").getResultList();
+        }catch (Exception e) {
+            throw new EJBException("ERROR_RETRIEVING_ADMINISTRATORS_BY_NAME_SEARCH", e);
         }
     }
 }

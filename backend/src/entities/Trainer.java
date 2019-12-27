@@ -9,6 +9,10 @@ import java.util.Set;
         @NamedQuery(
                 name = "getAllTrainers",
                 query = "SELECT t FROM Trainer t ORDER BY t.name"
+        ),
+        @NamedQuery(
+                name = "getTrainersByNameSearch",
+                query = "SELECT t FROM Trainer t where upper(t.name) LIKE upper(:name) ORDER BY t.name"
         )
 })
 public class Trainer extends User {
