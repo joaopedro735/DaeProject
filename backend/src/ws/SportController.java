@@ -109,29 +109,21 @@ public class SportController {
 
     @POST
     @Path("/{code}/athletes/{username}/enroll")
-    public Response enrollAthlete(@PathParam("code") Integer code, @PathParam("username") String username, TimeTableDTO[] timeTables) throws MyEntityAlreadyExistsException {
+    public Response enrollAthlete(@PathParam("code") Integer code, @PathParam("username") String username, TimeTableDTO[] timeTableDTOs) throws MyEntityAlreadyExistsException {
         try {
-            //timeTables
-            List<Integer> ints = Arrays.stream(timeTables).map(TimeTableDTO::getId).collect(Collectors.toList());
-            List<TimeTable> times = timeTableBean.find(ints);
-            System.out.println("what?"+(timeTables.length==times.size()));
-            Collection<TimeTable> timeTableCollection = new LinkedHashSet<>();
-            for (TimeTableDTO dto :
-                    timeTables) {
-                TimeTable t = timeTableBean.find(dto.getId());
-                if (t == null) {
-                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("TimeTable with ID '" + dto.getId() + "' not found").build();
-                }
-                timeTableCollection.add(t);
+            List<Integer> ids = Arrays.stream(timeTableDTOs).map(TimeTableDTO::getId).collect(Collectors.toList());
+            List<TimeTable> times = timeTableBean.find(ids);
+            if (times.size() != timeTableDTOs.length) {
+                return Response.status(Response.Status.NOT_FOUND).entity("TimeTables not found").build();
             }
-            Athlete athlete = sportBean.enrollAthlete(username, code, timeTableCollection);
+            Athlete athlete = sportBean.enrollAthlete(username, code, times);
             //TODO: change return
             return Response.status(Response.Status.OK).entity(TimeTableController.toDTOs(athlete.getMySportRegistrations().stream().filter(s -> s.getSport().getCode() == code).map(SportRegistration::getTimeTables).findFirst().orElseThrow(MyConstraintViolationException::new),null)).build();
 
         } catch (MyEntityAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT).entity("Athlete already enrolled in sport").build();
         } catch (Exception e) {
-            throw new EJBException("ERROR_ENROLL_ATHLETE ----> "+ e.getCause().getMessage()     , e);
+            throw new EJBException("ERROR_ENROLL_ATHLETE ----> "+ e.getCause().getMessage(), e);
         }
     }
 

@@ -55,7 +55,6 @@ public class TimeTableBean {
 
     public List<TimeTable> find(List<Integer> ids) {
         try {
-            String joinedIds = ids.stream().map(String::valueOf).collect(Collectors.joining(","));
             return (List<TimeTable>) em.createNamedQuery("TimeTable.getByIds").setParameter("ids", ids).getResultList();
         } catch (Exception e) {
             throw new EJBException("ERROR_FINDING_TIMETABLE", e);
