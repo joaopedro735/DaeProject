@@ -57,5 +57,7 @@
     <orderEntry type="library" name="com.lambdaworks:scrypt:1.4.0" level="project" />
     <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
     <orderEntry type="library" name="javax.json.processing-1.0" level="project" />
+    <orderEntry type="library" name="javax.json.binding-1.0" level="project" />
+    <orderEntry type="library" name="javax.json.processing-1.0" level="project" />
   </component>
 </module>

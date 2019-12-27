@@ -1,7 +1,6 @@
 package dtos;
 
 import java.io.Serializable;
-import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 public class TimeTableDTO implements Serializable {
@@ -18,10 +17,7 @@ public class TimeTableDTO implements Serializable {
     private String sportName;
 
     public TimeTableDTO() {
-    }
-
-    public TimeTableDTO(int id) {
-        this.id = id;
+        System.out.println("nada");
     }
 
     public TimeTableDTO(int id, String day, LocalTime start, LocalTime end, int sportCode, String sportName) {
@@ -33,7 +29,7 @@ public class TimeTableDTO implements Serializable {
         this.sportName = sportName;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

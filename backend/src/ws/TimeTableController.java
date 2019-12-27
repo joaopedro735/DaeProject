@@ -7,10 +7,7 @@ import entities.Sport;
 import entities.TimeTable;
 
 import javax.ejb.EJB;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.Collection;
 import java.util.List;
@@ -64,5 +61,12 @@ public class TimeTableController {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(msg)
                 .build();
+    }
+
+    @POST
+    @Path("/teste")
+    public Response teste(String time) {
+        System.out.println(time);
+        return Response.ok().entity(time).build();
     }
 }

@@ -1,9 +1,10 @@
 package ws;
 
 import dtos.SportDTO;
+import dtos.TimeTableDTO;
 import ejbs.SportBean;
+import ejbs.TimeTableBean;
 import entities.Sport;
-import entities.TimeTable;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
 import exceptions.MyEntityNotFoundException;
@@ -24,6 +25,9 @@ import java.util.stream.Collectors;
 public class SportController {
     @EJB
     private SportBean sportBean;
+
+    @EJB
+    private TimeTableBean timeTableBean;
 
     @Context
     private SecurityContext securityContext;
@@ -98,12 +102,16 @@ public class SportController {
         }
     }
 
-    @PUT
+    @POST
     @Path("/{code}/athletes/{username}/enroll")
-    public Response enrollAthlete(@PathParam("code") Integer code, @PathParam("username") String username, List<TimeTable> timeTables) {
+    public Response enrollAthlete(@PathParam("code") Integer code, @PathParam("username") String username, TimeTableDTO[] timeTableDTO) {
         try {
-            boolean success = sportBean.enrollAthlete(username, code,timeTables);
-            return success ? Response.status(Response.Status.OK).build(): Response.status(Response.Status.CONFLICT).entity("Athlete already enrolled in sport").build();
+            //System.out.println(Arrays.stream(timeTableDTO).map().collect(Collectors.toList()));
+            //TimeTable timeTable = timeTableBean.find(timeTableDTO.getId());
+            return Response.ok().entity(timeTableDTO).build();
+            //boolean success = sportBean.enrollAthlete(username, code,timeTable);
+            //return success ? Response.status(Response.Status.OK).build(): Response.status(Response.Status.CONFLICT).entity("Athlete already enrolled in sport").build();
+            //return null;
         } catch (Exception e) {
             throw new EJBException("ERROR_ENROLL_ATHLETE", e);
         }
