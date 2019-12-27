@@ -33,9 +33,6 @@ public abstract class User implements Serializable {
 
     protected LocalDate birthday;
 
-    @Version
-    private int version;
-
     public User() {
     }
 

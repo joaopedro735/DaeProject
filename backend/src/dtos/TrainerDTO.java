@@ -1,5 +1,7 @@
 package dtos;
 
+import com.sun.xml.internal.ws.api.server.AbstractInstanceResolver;
+
 import java.io.Serializable;
 
 public class TrainerDTO implements Serializable {
@@ -11,6 +13,8 @@ public class TrainerDTO implements Serializable {
 
     private String email;
 
+    private String birthday;
+
 
     public TrainerDTO(String username, String name, String email) {
         this.username = username;
@@ -20,6 +24,14 @@ public class TrainerDTO implements Serializable {
 
     public TrainerDTO() {
 
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 
     public String getUsername() {

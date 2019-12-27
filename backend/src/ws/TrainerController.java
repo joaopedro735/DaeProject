@@ -90,7 +90,8 @@ public class TrainerController {
         Trainer trainer = trainerBean.create(trainerDTO.getUsername(),
                 trainerDTO.getPassword(),
                 trainerDTO.getName(),
-                trainerDTO.getEmail());
+                trainerDTO.getEmail(),
+                trainerDTO.getBirthday());
 
         return Response.status(Response.Status.CREATED)
                 .entity(toDTO(trainer))
