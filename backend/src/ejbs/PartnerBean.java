@@ -12,6 +12,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Stateless(name = "PartnerEJB")
@@ -25,13 +27,15 @@ public class PartnerBean {
     public PartnerBean() {
     }
 
-    public Partner create(String username, String password, String nome, String email) throws MyEntityAlreadyExistsException, MyConstraintViolationException {
+    public Partner create(String username, String password, String nome, String email, String birthday) throws MyEntityAlreadyExistsException, MyConstraintViolationException {
         if (find(username) != null) {
             throw new MyEntityAlreadyExistsException("Username '" + username + "' already exists");
         }
 
         try {
-            Partner partner = new Partner(username, password, nome, email);
+            DateTimeFormatter birthdayFormat= DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate birthdayDate = LocalDate.parse(birthday,birthdayFormat);
+            Partner partner = new Partner(username, password, nome, email, birthdayDate);
             em.persist(partner);
             return partner;
         } catch (ConstraintViolationException e) {

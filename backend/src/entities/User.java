@@ -7,6 +7,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.Period;
 
 @Entity
 @Table(name = "USERS")
@@ -29,32 +31,23 @@ public abstract class User implements Serializable {
     @Email
     protected String email;
 
+    protected LocalDate birthday;
+
+    @Version
+    private int version;
+
     public User() {
     }
 
-    public User(String username, String password, String name, String email) {
+    public User(String username, String password, String name, String email, LocalDate birthday) {
         this.username = username;
         this.password = hashPassword(password);
         this.name = name;
         this.email = email;
+        this.birthday = birthday;
     }
 
     public static String hashPassword(String password) {
-//        String encoded = null;
-//
-//        try {
-//            ByteBuffer passwdBuffer =
-//                    Charset.defaultCharset().encode(CharBuffer.wrap(password));
-//            byte[] passwdBytes = passwdBuffer.array();
-//            Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
-//            encoded = argon2.hash(12, 65536, 1, passwdBytes);
-//            boolean success1 = argon2.verify(encoded, passwdBytes);
-//            System.out.println(success1 ? "Success" : "Failure");
-//        } catch (Exception ex) {
-//            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return encoded;
-        //return PasswordManager.hashPassword(password.toCharArray());
         return PasswordManager.hashPassword(password);
     }
 
@@ -88,6 +81,18 @@ public abstract class User implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public LocalDate getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
+    }
+
+    public int getAge() {
+        return Period.between(birthday, LocalDate.now()).getYears();
     }
 
     @Override

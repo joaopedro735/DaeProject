@@ -1,6 +1,7 @@
 package entities;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -19,8 +20,8 @@ public class Partner extends User {
         this.sports = new LinkedHashSet<>();
     }
 
-    public Partner(String username, String password, String name, String email) {
-        super(username, password, name, email);
+    public Partner(String username, String password, String name, String email, LocalDate birthday) {
+        super(username, password, name, email, birthday);
         this.sports = new LinkedHashSet<>();
     }
 

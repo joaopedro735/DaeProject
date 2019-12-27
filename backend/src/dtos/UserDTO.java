@@ -1,8 +1,6 @@
 package dtos;
 
-import java.io.Serializable;
-
-public class AdministratorDTO implements Serializable {
+public class UserDTO {
     private String username;
 
     private String password;
@@ -11,17 +9,14 @@ public class AdministratorDTO implements Serializable {
 
     private String email;
 
-    private String birthday;
-
-
-    public AdministratorDTO(String username, String name, String email) {
-        this.username = username;
-        this.name = name;
-        this.email = email;
+    public UserDTO() {
     }
 
-    public AdministratorDTO() {
-
+    public UserDTO(String username, String password, String name, String email) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.email = email;
     }
 
     public String getUsername() {
@@ -54,13 +49,5 @@ public class AdministratorDTO implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
     }
 }

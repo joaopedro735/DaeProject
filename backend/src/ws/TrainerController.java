@@ -13,6 +13,7 @@ import exceptions.MyEntityNotFoundException;
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.util.Collection;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class TrainerController {
         );
     }
 
-    public static List<TrainerDTO> toDTOs(List<Trainer> trainers) {
+    public static List<TrainerDTO> toDTOs(Collection<Trainer> trainers) {
         return trainers.stream().map(TrainerController::toDTO).collect(Collectors.toList());
     }
 

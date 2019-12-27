@@ -17,7 +17,7 @@ public class PasswordManager {
         return generatedSecuredPasswordHash;
     }
 
-    public static boolean verifyPassword(String hashedPassowrd, String password) {
-        return SCryptUtil.check(password, hashedPassowrd);
+    public static boolean verifyPassword(String hashedPassword, String password) {
+        return SCryptUtil.check(password, hashedPassword);
     }
 }

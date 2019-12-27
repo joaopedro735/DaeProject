@@ -3,7 +3,7 @@ package entities;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Version;
+import java.time.LocalDate;
 
 @Entity
 @NamedQueries({
@@ -21,7 +21,7 @@ public class Administrator extends User {
 
     }
 
-    public Administrator(String username, String password, String name, String email) {
-        super(username, password, name, email);
+    public Administrator(String username, String password, String name, String email, LocalDate birthday) {
+        super(username, password, name, email, birthday);
     }
 }
