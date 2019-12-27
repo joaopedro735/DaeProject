@@ -146,7 +146,7 @@ public class SportBean {
         }
     }
 
-    public boolean enrollAthlete(String username, int sportsCode, Collection<TimeTable> timeTables) {
+    public Athlete enrollAthlete(String username, int sportsCode, Collection<TimeTable> timeTables) throws MyEntityAlreadyExistsException {
         try {
             Athlete athlete = athleteBean.find(username);
             Sport sport = find(sportsCode);
@@ -157,9 +157,11 @@ public class SportBean {
 //                return false;
 //            }
             sport.addAthlete(sportRegistration);
-          //TODO:  athlete.addAthleteSport(sport);
+            //TODO:  athlete.addAthleteSport(sport);
             athlete.addAthleteSport(sportRegistration);
-            return true;
+            return athlete;
+        } catch (MyEntityAlreadyExistsException e) {
+            throw e;
         } catch (Exception e) {
             throw new EJBException("ERROR_ENROLL_ATHLETE", e);
         }

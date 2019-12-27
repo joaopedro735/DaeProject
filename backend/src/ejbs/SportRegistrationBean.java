@@ -17,6 +17,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Stateless(name = "PracticedSportEJB")
 public class SportRegistrationBean {
@@ -58,6 +59,8 @@ public class SportRegistrationBean {
             return sportRegistration;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+        } catch (Exception e) {
+            throw new EJBException(e);
         }
     }
 

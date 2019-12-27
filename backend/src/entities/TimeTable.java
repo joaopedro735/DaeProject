@@ -3,12 +3,12 @@ package entities;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.text.DateFormatSymbols;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Objects;
 
 @Entity
 @Table(name = "TIMETABLES")
@@ -16,6 +16,10 @@ import java.util.Locale;
         @NamedQuery(
                 name = "TimeTable.getAll",
                 query = "SELECT t FROM TimeTable t ORDER BY t.sport.name"
+        ),
+        @NamedQuery(
+                name = "TimeTable.getByIds",
+                query = "SELECT t FROM TimeTable t WHERE t.id IN :ids ORDER BY t.sport.name"
         )
 })
 public class TimeTable implements Serializable {
@@ -93,5 +97,18 @@ public class TimeTable implements Serializable {
         long hours = Duration.between(start, end).toHours();
         long minutes = Duration.between(start, end).toMinutes() - (hours * 60);
         return hours + ":" + minutes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TimeTable)) return false;
+        TimeTable timeTable = (TimeTable) o;
+        return id == timeTable.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
