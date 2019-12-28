@@ -1,9 +1,12 @@
 package ejbs;
 
+import entities.Administrator;
 import entities.Athlete;
+import entities.Partner;
 import entities.Sport;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
+import exceptions.MyEntityNotFoundException;
 import exceptions.Utils;
 
 import javax.ejb.EJB;
@@ -11,6 +14,7 @@ import javax.ejb.EJBException;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
@@ -54,6 +58,44 @@ public class AthleteBean {
         }
     }
 
+    public Athlete update(String username, String password, String name, String email) throws MyEntityNotFoundException {
+        try {
+            Athlete athlete = em.find(Athlete.class, username);
+            if (athlete == null) {
+                throw new MyEntityNotFoundException("Athlete with username '" + username + "' not found.");
+            }
+
+            em.lock(athlete, LockModeType.OPTIMISTIC);
+            athlete.setPassword(password);
+            athlete.setName(name);
+            athlete.setEmail(email);
+
+            em.merge(athlete);
+            return athlete;
+        } catch (MyEntityNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EJBException("ERROR_UPDATING_ATHLETE", e);
+        }
+    }
+
+    //TODO REMOVE (SOFT DELETE)
+    public void remove(String username){
+        try {
+            Athlete athlete = find(username);
+            System.out.println(athlete.getUsername());
+            if (athlete == null) {
+                throw new MyEntityNotFoundException("Athlete with username '" + username + "' not found.");
+            }
+
+            if(athlete!=null) {
+                em.remove(athlete);
+            }
+        } catch(Exception e){
+            throw new EJBException("ERROR_REMOVING_ATHLETE", e);
+        }
+    }
+
     public Athlete find(String username) {
         try {
             return em.find(Athlete.class, username);
@@ -62,4 +104,11 @@ public class AthleteBean {
         }
     }
 
+    public List<Athlete> findBySearch(String toSearch) {
+        try {
+            return (List<Athlete>) em.createNamedQuery("getAthletesByNameSearch").setParameter("name", "%" + toSearch + "%").getResultList();
+        }catch (Exception e) {
+            throw new EJBException("ERROR_RETRIEVING_ATHLETES_BY_NAME_SEARCH", e);
+        }
+    }
 }

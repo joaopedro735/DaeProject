@@ -10,6 +10,10 @@ import java.util.Set;
         @NamedQuery(
                 name = "getAllPartners",
                 query = "SELECT p FROM Partner p ORDER BY p.name"
+        ),
+        @NamedQuery(
+                name = "getPartnersByNameSearch",
+                query = "SELECT p FROM Partner p where upper(p.name) LIKE upper(:name) ORDER BY p.name"
         )
 })
 public class Partner extends User {
