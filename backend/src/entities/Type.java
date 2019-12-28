@@ -15,6 +15,10 @@ public class Type {
     @OneToMany(mappedBy = "type")
     Set<Product> products;
 
+    public Type(String name) {
+        this.name = name;
+    }
+
     public Type() {
     }
 
