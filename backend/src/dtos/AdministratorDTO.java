@@ -14,10 +14,11 @@ public class AdministratorDTO implements Serializable {
     private String birthday;
 
 
-    public AdministratorDTO(String username, String name, String email) {
+    public AdministratorDTO(String username, String name, String email, String birthday) {
         this.username = username;
         this.name = name;
         this.email = email;
+        this.birthday = birthday;
     }
 
     public AdministratorDTO() {

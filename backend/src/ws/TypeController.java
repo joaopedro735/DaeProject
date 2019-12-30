@@ -1,10 +1,11 @@
 package ws;
 
-import dtos.AdministratorDTO;
 import dtos.TrainerDTO;
+import dtos.TypeDTO;
 import ejbs.TrainerBean;
-import entities.Administrator;
+import ejbs.TypeBean;
 import entities.Trainer;
+import entities.Type;
 import entities.User;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
@@ -13,32 +14,30 @@ import exceptions.MyEntityNotFoundException;
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.util.Collection;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Path("/trainers")
+@Path("/types")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-public class TrainerController {
+public class TypeController {
     @EJB
-    private TrainerBean trainerBean;
+    private TypeBean typeBean;
 
     @Context
     private SecurityContext securityContext;
 
-    public static TrainerDTO toDTO(Trainer trainer) {
-        return new TrainerDTO(
-                trainer.getUsername(),
-                trainer.getName(),
-                trainer.getEmail(),
-                trainer.getBirthday().toString()
+    public static TypeDTO toDTO(Type type) {
+        return new TypeDTO(
+                (type.getId()),
+                type.getName()
         );
     }
 
-    public static List<TrainerDTO> toDTOs(Collection<Trainer> trainers) {
-        return trainers.stream().map(TrainerController::toDTO).collect(Collectors.toList());
+    public static List<TypeDTO> toDTOs(Collection<Type> types) {
+        return types.stream().map(TypeController::toDTO).collect(Collectors.toList());
     }
 
     @GET // means: to call this endpoint, we need to use the HTTP GET method
@@ -46,23 +45,23 @@ public class TrainerController {
     public Response all() {
         String msg;
         try {
-            GenericEntity<List<TrainerDTO>> entity = new GenericEntity<List<TrainerDTO>>(toDTOs(trainerBean.all())) {
+            GenericEntity<List<TypeDTO>> entity = new GenericEntity<List<TypeDTO>>(toDTOs(typeBean.all())) {
             };
             return Response.status(Response.Status.OK)
                     .entity(entity)
                     .build();
         } catch (Exception e) {
-            msg = "ERROR_GET_TRAINERS --->" + e.getMessage();
+            msg = "ERROR_GET_TYPES --->" + e.getMessage();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(msg)
                 .build();
     }
 
-
+/*
     @GET
-    @Path("/{username}")
-    public Response getTrainerDetails(@PathParam("username") String username) {
+    @Path("/{id}")
+    public Response getTrainerDetails(@PathParam("id") String username) {
         Principal principal = securityContext.getUserPrincipal();
         System.out.println(principal.getName());
         if (securityContext.isUserInRole("Administrator") || principal.getName().equals(username)) {
@@ -83,35 +82,26 @@ public class TrainerController {
         }
         return Response.status(Response.Status.FORBIDDEN).build();
     }
-
+*/
     @POST
     @Path("/")
-    public Response createNewTrainer(TrainerDTO trainerDTO) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+    public Response createNewType(TypeDTO typeDTO) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
 
-        Trainer trainer = trainerBean.create(trainerDTO.getUsername(),
-                trainerDTO.getPassword(),
-                trainerDTO.getName(),
-                trainerDTO.getEmail(),
-                trainerDTO.getBirthday());
+        Type type = typeBean.create(typeDTO.getName());
 
         return Response.status(Response.Status.CREATED)
-                .entity(toDTO(trainer))
+                .entity(toDTO(type))
                 .build();
 
     }
 
     @PUT
-    @Path("/{username}")
-    public Response updateAdministrator(@PathParam("username") String username, TrainerDTO trainerDTO){
+    @Path("/{id}")
+    public Response updateType(@PathParam("id") int id, TypeDTO typeDTO){
+        Type type;
         String msg;
-        User user;
-        System.out.println(username);
         try {
-            user = trainerBean.find(username);
-            if (user == null){
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-            trainerBean.update(username, trainerDTO.getPassword(), trainerDTO.getName(), trainerDTO.getEmail());
+            typeBean.update(id, typeDTO.getName());
 
             return Response.status(Response.Status.OK).build();
         } catch (Exception e){
@@ -122,18 +112,20 @@ public class TrainerController {
                 .build();
     }
 
+
     @DELETE
-    @Path("/{username}")
-    public Response deleteAdministrator(@PathParam("username") String username) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+    @Path("/{id}")
+    public Response deleteAdministrator(@PathParam("id") int id) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
         String msg;
         try {
-            trainerBean.remove(username);
+            typeBean.remove(id);
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
-            msg = "ERROR_DELETING_ADMINISTRATOR --->" + e.getMessage();
+            msg = "ERROR_DELETING_TYPE --->" + e.getMessage();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(msg)
                 .build();
     }
+
 }

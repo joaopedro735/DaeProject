@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
         @NamedQuery(
                 name = "getAllAthletes",
                 query = "SELECT a FROM Athlete a ORDER BY a.name"
+        ),
+        @NamedQuery(
+                name = "getAthletesByNameSearch",
+                query = "SELECT p FROM Partner p where upper(p.name) LIKE upper(:name) ORDER BY p.name"
         )
 })
 public class Athlete extends Partner {

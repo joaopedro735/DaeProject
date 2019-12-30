@@ -32,7 +32,8 @@ public class AdministratorController extends UserController {
         return new AdministratorDTO(
                 administrator.getUsername(),
                 administrator.getName(),
-                administrator.getEmail()
+                administrator.getEmail(),
+                administrator.getBirthday().toString()
         );
     }
 

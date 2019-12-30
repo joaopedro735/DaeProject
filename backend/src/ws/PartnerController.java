@@ -1,9 +1,10 @@
 package ws;
 
-import dtos.AdministratorDTO;
+import dtos.PartnerDTO;
 import dtos.TrainerDTO;
+import ejbs.PartnerBean;
 import ejbs.TrainerBean;
-import entities.Administrator;
+import entities.Partner;
 import entities.Trainer;
 import entities.User;
 import exceptions.MyConstraintViolationException;
@@ -13,32 +14,33 @@ import exceptions.MyEntityNotFoundException;
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.util.Collection;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Path("/trainers")
+@Path("/partners")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-public class TrainerController {
+
+public class PartnerController {
     @EJB
-    private TrainerBean trainerBean;
+    private PartnerBean partnerBean;
 
     @Context
     private SecurityContext securityContext;
 
-    public static TrainerDTO toDTO(Trainer trainer) {
-        return new TrainerDTO(
-                trainer.getUsername(),
-                trainer.getName(),
-                trainer.getEmail(),
-                trainer.getBirthday().toString()
+    public static PartnerDTO toDTO(Partner partner) {
+        return new PartnerDTO(
+                partner.getUsername(),
+                partner.getName(),
+                partner.getEmail(),
+                partner.getBirthday().toString()
         );
     }
 
-    public static List<TrainerDTO> toDTOs(Collection<Trainer> trainers) {
-        return trainers.stream().map(TrainerController::toDTO).collect(Collectors.toList());
+    public static List<PartnerDTO> toDTOs(Collection<Partner> partners) {
+        return partners.stream().map(ws.PartnerController::toDTO).collect(Collectors.toList());
     }
 
     @GET // means: to call this endpoint, we need to use the HTTP GET method
@@ -46,7 +48,7 @@ public class TrainerController {
     public Response all() {
         String msg;
         try {
-            GenericEntity<List<TrainerDTO>> entity = new GenericEntity<List<TrainerDTO>>(toDTOs(trainerBean.all())) {
+            GenericEntity<List<PartnerDTO>> entity = new GenericEntity<List<PartnerDTO>>(toDTOs(partnerBean.all())) {
             };
             return Response.status(Response.Status.OK)
                     .entity(entity)
@@ -61,23 +63,23 @@ public class TrainerController {
 
 
     @GET
-    @Path("/{username}")
-    public Response getTrainerDetails(@PathParam("username") String username) {
+    @Path("/partner/{username}")
+    public Response getPartnerDetails(@PathParam("username") String username) {
         Principal principal = securityContext.getUserPrincipal();
         System.out.println(principal.getName());
         if (securityContext.isUserInRole("Administrator") || principal.getName().equals(username)) {
-            Trainer trainer = trainerBean.find(username);
-            return Response.status(Response.Status.OK).entity(toDTO(trainer)).build();
+            Partner partner = partnerBean.find(username);
+            return Response.status(Response.Status.OK).entity(toDTO(partner)).build();
         }
         return Response.status(Response.Status.FORBIDDEN).build();
     }
 
     @GET
     @Path("/name/{tosearch}")
-    public Response getTrainersBySearch(@PathParam("tosearch") String toSearch){
+    public Response getPartnersBySearch(@PathParam("tosearch") String toSearch){
         Principal principal = securityContext.getUserPrincipal();
         if(securityContext.isUserInRole("Administrator")){
-            GenericEntity<List<TrainerDTO>> entity = new GenericEntity<List<TrainerDTO>>(toDTOs(trainerBean.findBySearch(toSearch))) {
+            GenericEntity<List<PartnerDTO>> entity = new GenericEntity<List<PartnerDTO>>(toDTOs(partnerBean.findBySearch(toSearch))) {
             };
             return Response.status(Response.Status.OK).entity(entity).build();
         }
@@ -86,32 +88,32 @@ public class TrainerController {
 
     @POST
     @Path("/")
-    public Response createNewTrainer(TrainerDTO trainerDTO) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+    public Response createNewPartner(TrainerDTO trainerDTO) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
 
-        Trainer trainer = trainerBean.create(trainerDTO.getUsername(),
+        Partner partner = partnerBean.create(trainerDTO.getUsername(),
                 trainerDTO.getPassword(),
                 trainerDTO.getName(),
                 trainerDTO.getEmail(),
                 trainerDTO.getBirthday());
 
         return Response.status(Response.Status.CREATED)
-                .entity(toDTO(trainer))
+                .entity(toDTO(partner))
                 .build();
 
     }
 
     @PUT
     @Path("/{username}")
-    public Response updateAdministrator(@PathParam("username") String username, TrainerDTO trainerDTO){
+    public Response updatePartner(@PathParam("username") String username, TrainerDTO trainerDTO){
         String msg;
         User user;
         System.out.println(username);
         try {
-            user = trainerBean.find(username);
+            user = partnerBean.find(username);
             if (user == null){
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
-            trainerBean.update(username, trainerDTO.getPassword(), trainerDTO.getName(), trainerDTO.getEmail());
+            partnerBean.update(username, trainerDTO.getPassword(), trainerDTO.getName(), trainerDTO.getEmail());
 
             return Response.status(Response.Status.OK).build();
         } catch (Exception e){
@@ -124,13 +126,13 @@ public class TrainerController {
 
     @DELETE
     @Path("/{username}")
-    public Response deleteAdministrator(@PathParam("username") String username) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+    public Response deletePartner(@PathParam("username") String username) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
         String msg;
         try {
-            trainerBean.remove(username);
+            partnerBean.remove(username);
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
-            msg = "ERROR_DELETING_ADMINISTRATOR --->" + e.getMessage();
+            msg = "ERROR_DELETING_PARTNER --->" + e.getMessage();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(msg)

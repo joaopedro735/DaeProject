@@ -1,12 +1,15 @@
 package ejbs;
 
 import entities.Product;
+import entities.Sport;
+import entities.SportRegistration;
 import entities.Type;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
 import exceptions.MyEntityNotFoundException;
 import exceptions.Utils;
 
+import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -20,19 +23,26 @@ public class ProductBean {
     @PersistenceContext
     private EntityManager em;
 
+    @EJB
+    private TypeBean typeBean;
+
     public ProductBean() {
     }
 
-    public Product create(int typeCode, String description, float value) throws MyEntityAlreadyExistsException, MyConstraintViolationException {
-        //TODO:
-        /*if (find(type) != null) {
-            throw new MyEntityAlreadyExistsException("Type '" + type + "' already exists");
-        }*/
-        Type type = new Type(); // = find()
+    public Product create(int typeCode, String description, float value, Integer originalId, String className) throws MyEntityAlreadyExistsException, MyConstraintViolationException, MyEntityNotFoundException {
+       //TODO See if the product already exists
+        Type type = typeBean.find(typeCode);
+        String tableName;
+        Product product;
+        if ( type == null) {
+            throw new MyEntityNotFoundException("Type '" + type + "' doesn't exists");
+        }
+
         try {
-            Product product = new Product(type, description, value);
+            product = new Product(type, description, value, Product.class.getName());
             em.persist(product);
             return product;
+
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
         }
@@ -50,20 +60,19 @@ public class ProductBean {
         }
     }
 
-    public Product update(int id,String typeCode, String description, float value) throws MyEntityNotFoundException {
+    public Product update(int id,int typeCode, String description, float value) throws MyEntityNotFoundException {
         try {
             Product product = em.find(Product.class, id);
-
+            Type type = typeBean.find(typeCode);
             if (product == null) {
                 throw new MyEntityNotFoundException("Product with id '" + id + "' not found.");
             }
-            Type type = new Type();//TODO: find type and check if exists
-            em.lock(product, LockModeType.OPTIMISTIC);
-            product.setType(type);
-            product.setDescription(description);
-            product.setValue(value);
-            em.merge(product);
-            return product;
+            if (type == null){
+                throw new MyEntityNotFoundException("Type with id '" + id + "' not found. ");
+            }
+            Product productNewVersion = new Product(product.getId(), type, description, value, product.getTableName());
+            em.persist(productNewVersion);
+            return productNewVersion;
         } catch (MyEntityNotFoundException e) {
             throw e;
         } catch (Exception e) {

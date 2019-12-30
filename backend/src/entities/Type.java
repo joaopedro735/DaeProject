@@ -4,16 +4,31 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "TYPES")
+@Table(name="TYPES")
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllTypes",
+                query = "SELECT a FROM Type a ORDER BY a.name" //JPQL
+        )
+})
+
+
 public class Type {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    private String name;
+    protected String name;
+
+    @Version
+    private int version;
 
     @OneToMany(mappedBy = "type")
     Set<Product> products;
+
+    public Type(String name) {
+        this.name = name;
+    }
 
     public Type() {
     }

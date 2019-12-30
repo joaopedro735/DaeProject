@@ -21,12 +21,21 @@ import java.util.List;
 
 @Stateless(name = "PracticedSportEJB")
 public class SportRegistrationBean {
+    @PersistenceContext
+    private EntityManager em;
+
     @EJB
     AthleteBean athleteBean;
     @EJB
     SportBean sportBean;
-    @PersistenceContext
-    private EntityManager em;
+
+    @EJB
+    ProductBean productBean;
+
+    @EJB
+    SportSubscriptionPriceListBean sportSubscriptionPriceListBean;
+
+
 
     public SportRegistrationBean() {
     }
@@ -51,7 +60,17 @@ public class SportRegistrationBean {
             sportRegistration.setSport(sport);
             sportRegistration.setAthlete(athlete);
             sportRegistration.addTimeTables(timeTables);
+
             em.persist(sportRegistration);
+
+
+            float value = sportSubscriptionPriceListBean.findValue(sportCode);
+            //TODO subsitutir id 6 para alterar dinâmicamente
+            productBean.create(6, "Registration of Athlete: " + athleteUsername + "in sport: " + sportRegistration.getSport().getName(),
+                   value, sportRegistration.getId(), SportRegistration.class.getName());
+            //TODO Criar Purchase!
+
+
             return sportRegistration;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
