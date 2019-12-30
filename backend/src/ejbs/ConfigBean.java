@@ -6,6 +6,9 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.text.DateFormatSymbols;
 import java.time.DayOfWeek;
 import java.time.Duration;
@@ -40,6 +43,9 @@ public class ConfigBean {
     @EJB
     TimeTableBean timeTableBean;
 
+    @EJB
+    SportRegistrationBean sportRegistrationBean;
+
     private static final Logger logger = Logger.getLogger("ejbs.ConfigBean");
 
     public ConfigBean() {
@@ -49,9 +55,8 @@ public class ConfigBean {
     private void populateDB() {
         System.out.println("Seed DB");
         try {
-
             //region Users
-            Administrator admin = administratorBean.create("admin", "secret123", "Administrador", "email@a","15/03/1990");
+            Administrator admin = administratorBean.create("admin", "secret123", "Administrador", "jpfcarreira@gmail.com","15/03/1990");
             Partner partner = partnerBean.create("partner", "secret123", "Partner", "email@partnet.net","20/04/1997");
             Athlete athlete = athleteBean.create("athlete", "secret123", "Athlete", "email@athlete.net", "12/07/1974");
             Athlete athlete2 = athleteBean.create("athlete2", "secret123", "Athlete2", "email@athlete2.net","02/12/1980");

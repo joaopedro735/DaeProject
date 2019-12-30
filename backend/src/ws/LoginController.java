@@ -5,6 +5,7 @@ import com.nimbusds.jwt.JWTParser;
 import dtos.AuthDTO;
 import ejbs.JwtBean;
 import ejbs.UserBean;
+import entities.SportRegistration;
 import entities.User;
 import jwt.Jwt;
 
@@ -23,7 +24,6 @@ public class LoginController {
     private JwtBean jwtBean;
     @EJB
     private UserBean userBean;
-
     @POST
     @Path("/token")
     @Produces(MediaType.APPLICATION_JSON)

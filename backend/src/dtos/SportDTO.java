@@ -21,19 +21,11 @@ public class SportDTO {
     private Collection<TimeTableDTO> timeTables;
 
     public SportDTO() {
-        this.partners = new LinkedHashSet<>();
-        this.trainers = new LinkedHashSet<>();
-        this.athletes = new LinkedHashSet<>();
-        this.timeTables = new LinkedHashSet<>();
     }
 
     public SportDTO(int code, String name) {
         this.code = code;
         this.name = name;
-        this.partners = new LinkedHashSet<>();
-        this.trainers = new LinkedHashSet<>();
-        this.athletes = new LinkedHashSet<>();
-        this.timeTables = new LinkedHashSet<>();
     }
 
     public int getCode() {

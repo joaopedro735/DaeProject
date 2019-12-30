@@ -51,7 +51,7 @@ public class UserBean {
         try {
             return em.find(User.class, username);
         } catch (Exception e) {
-            throw new EJBException("ERROR_FINDING_ADMINISTRATOR", e);
+            throw new EJBException("ERROR_FINDING_USER", e);
         }
     }
 }

@@ -4,6 +4,7 @@ import dtos.SportDTO;
 import dtos.TimeTableDTO;
 import ejbs.AthleteBean;
 import ejbs.SportBean;
+import ejbs.SportRegistrationBean;
 import ejbs.TimeTableBean;
 import entities.Athlete;
 import entities.Sport;
@@ -33,6 +34,9 @@ public class SportController {
 
     @EJB
     private TimeTableBean timeTableBean;
+
+    @EJB
+    private SportRegistrationBean sportRegistrationBean;
 
     @Context
     private SecurityContext securityContext;
@@ -107,7 +111,7 @@ public class SportController {
         }
     }
 
-    @POST
+    @PUT
     @Path("/{code}/athletes/{username}/enroll")
     public Response enrollAthlete(@PathParam("code") Integer code, @PathParam("username") String username, TimeTableDTO[] timeTableDTOs) throws MyEntityAlreadyExistsException {
         try {
@@ -128,7 +132,7 @@ public class SportController {
     }
 
     @PUT
-    @Path("/{code}/trainers/{username}/unroll")
+    @Path("/{code}/athletes/{username}/unroll")
     public Response unrollAthlete(@PathParam("code") Integer code, @PathParam("username") String username) {
         try {
             sportBean.unrollAthlete(username, code);
@@ -136,5 +140,13 @@ public class SportController {
         } catch (Exception e) {
             throw new EJBException("ERROR_ENROLL_ATHLETE", e);
         }
+    }
+
+    @POST
+    @Path("/teste")
+    public Response teste(String time) {
+        System.out.println(sportRegistrationBean.find(6));
+        sportRegistrationBean.remove(6);
+        return Response.ok().entity(sportRegistrationBean.all().size()).build();
     }
 }

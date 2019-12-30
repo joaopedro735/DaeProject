@@ -44,6 +44,7 @@ public class Sport implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "PARTNER_USERNAME", referencedColumnName = "USERNAME"))
     private Set<Partner> partners;
 
+    //TODO: remove
     @ManyToMany
     @JoinTable(
             name = "SPORTS_ATHLETES",
@@ -106,7 +107,14 @@ public class Sport implements Serializable {
 
     public void removeAthlete(Athlete athlete) {
         this.partners.remove(athlete);
+        //TODO: remove
         this.athletes.remove(athlete);
+        //TODO: should we do this way?
+        this.practicedBy.removeIf(pB -> pB.getSport().getCode() == this.code);
+        athlete.getMySportRegistrations().removeIf(msp -> {
+            System.out.println("validationmsp" + (msp.getSport().getCode() == this.code));
+            return msp.getSport().getCode() == this.code;
+        });
     }
 
     public void addTrainer(Trainer trainer) {
