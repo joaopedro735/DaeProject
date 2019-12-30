@@ -29,6 +29,9 @@ public class SportRegistrationBean {
     @EJB
     SportBean sportBean;
 
+    @EJB
+    ProductBean productBean;
+
 
 
     public SportRegistrationBean() {
@@ -54,7 +57,12 @@ public class SportRegistrationBean {
             sportRegistration.setSport(sport);
             sportRegistration.setAthlete(athlete);
             sportRegistration.addTimeTables(timeTables);
+
             em.persist(sportRegistration);
+            //TODO Subsituir pelo valor da tabela! e substituir valor do typeCode (ir buscar dinamicamente)
+            productBean.create(6, "Registration of Athlete: " + athleteUsername , 100, sportRegistration.getId(), SportRegistration.class.getName());
+            //TODO Criar Purchase!
+
             return sportRegistration;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
