@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@Table(name="TYPES")
 @NamedQueries({
         @NamedQuery(
                 name = "getAllTypes",
@@ -17,7 +18,7 @@ public class Type {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    private String name;
+    protected String name;
 
     @Version
     private int version;
