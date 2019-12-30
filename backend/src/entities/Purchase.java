@@ -1,25 +1,60 @@
 package entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name = "PURCHASES")
-public class Purchase /*tem uma Fatura.class */ {
+@Table(name = "PURCHASE")
+public class Purchase {
     @Id
+    @GeneratedValue
     private int id;
 
-    private String name;
+    @OneToMany
+    private Set<Payment> paymentList;
 
-    @Version
-    private int version;
-    /*
-    list payment
-    list products
-    compradoA
-    preco
-    descontos/vouchers
-     */
+    @OneToMany
+    private Set<ProductPurchase> productPurchases;
+
+    private LocalDate localDate;
+
+    @OneToOne
+    private User user;
+
+    public Purchase() {
+    }
+
+    public Set<Payment> getPaymentList() {
+        return paymentList;
+    }
+
+    public void setPaymentList(Set<Payment> paymentList) {
+        this.paymentList = paymentList;
+    }
+
+    public Set<ProductPurchase> getProductPurchases() {
+        return productPurchases;
+    }
+
+    public void setProductPurchases(Set<ProductPurchase> productPurchases) {
+        this.productPurchases = productPurchases;
+    }
+
+    public LocalDate getLocalDate() {
+        return localDate;
+    }
+
+    public void setLocalDate(LocalDate localDate) {
+        this.localDate = localDate;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
