@@ -40,6 +40,9 @@ public class ConfigBean {
     @EJB
     TimeTableBean timeTableBean;
 
+    @EJB
+    TypeBean typeBean;
+
     private static final Logger logger = Logger.getLogger("ejbs.ConfigBean");
 
     public ConfigBean() {
@@ -62,6 +65,15 @@ public class ConfigBean {
             Sport judo = sportBean.create("Judo");
             Sport basquetebol = sportBean.create("Basquetebol");
             //endregion
+
+            //region Types
+            Type sportItem = typeBean.create("Sport Item");
+            Type insurance = typeBean.create("Insurance");
+            Type graduation = typeBean.create("Graduation");
+            Type subscription = typeBean.create("Subscription");
+            Type share = typeBean.create("Share");
+            Type typeClass = typeBean.create("Class");
+            Type internship = typeBean.create("Internship");
 
             //region TimeTables
             TimeTable timeTableJudo = timeTableBean.create(DayOfWeek.MONDAY, LocalTime.of(9, 30), LocalTime.of(11,00), judo.getCode());

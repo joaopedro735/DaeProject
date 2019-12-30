@@ -36,29 +36,29 @@ public class TypeController {
         );
     }
 
-    public static List<TrainerDTO> toDTOs(Collection<Trainer> trainers) {
-        return trainers.stream().map(TrainerController::toDTO).collect(Collectors.toList());
+    public static List<TypeDTO> toDTOs(Collection<Type> types) {
+        return types.stream().map(TypeController::toDTO).collect(Collectors.toList());
     }
 
-    /*@GET // means: to call this endpoint, we need to use the HTTP GET method
+    @GET // means: to call this endpoint, we need to use the HTTP GET method
     @Path("/") // means: the relative url path is “/api/students/”
     public Response all() {
         String msg;
         try {
-            GenericEntity<List<TrainerDTO>> entity = new GenericEntity<List<TrainerDTO>>(toDTOs(trainerBean.all())) {
+            GenericEntity<List<TypeDTO>> entity = new GenericEntity<List<TypeDTO>>(toDTOs(typeBean.all())) {
             };
             return Response.status(Response.Status.OK)
                     .entity(entity)
                     .build();
         } catch (Exception e) {
-            msg = "ERROR_GET_TRAINERS --->" + e.getMessage();
+            msg = "ERROR_GET_TYPES --->" + e.getMessage();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(msg)
                 .build();
     }
 
-
+/*
     @GET
     @Path("/{id}")
     public Response getTrainerDetails(@PathParam("id") String username) {
@@ -94,19 +94,14 @@ public class TypeController {
                 .build();
 
     }
-/*
+
     @PUT
-    @Path("/{username}")
-    public Response updateAdministrator(@PathParam("username") String username, TrainerDTO trainerDTO){
+    @Path("/{id}")
+    public Response updateType(@PathParam("id") int id, TypeDTO typeDTO){
+        Type type;
         String msg;
-        User user;
-        System.out.println(username);
         try {
-            user = trainerBean.find(username);
-            if (user == null){
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-            trainerBean.update(username, trainerDTO.getPassword(), trainerDTO.getName(), trainerDTO.getEmail());
+            typeBean.update(id, typeDTO.getName());
 
             return Response.status(Response.Status.OK).build();
         } catch (Exception e){
@@ -117,20 +112,20 @@ public class TypeController {
                 .build();
     }
 
+
     @DELETE
-    @Path("/{username}")
-    public Response deleteAdministrator(@PathParam("username") String username) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+    @Path("/{id}")
+    public Response deleteAdministrator(@PathParam("id") int id) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
         String msg;
         try {
-            trainerBean.remove(username);
+            typeBean.remove(id);
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
-            msg = "ERROR_DELETING_ADMINISTRATOR --->" + e.getMessage();
+            msg = "ERROR_DELETING_TYPE --->" + e.getMessage();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(msg)
                 .build();
     }
 
- */
 }

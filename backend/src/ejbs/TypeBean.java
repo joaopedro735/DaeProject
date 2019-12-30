@@ -1,6 +1,5 @@
 package ejbs;
 
-import entities.Athlete;
 import entities.Type;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
@@ -13,8 +12,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Stateless(name = "TypeEJB")
@@ -25,11 +22,12 @@ public class TypeBean {
     public TypeBean() {
     }
 
-    public Type create(String name) throws MyEntityAlreadyExistsException, MyConstraintViolationException {
-        if (find(name) != null) {
-            throw new MyEntityAlreadyExistsException("Type named '" + name + "' already exists");
-        }
 
+    //TODO See if the find work for the name ;)
+    public Type create(String name) throws MyEntityAlreadyExistsException, MyConstraintViolationException {
+       /* if (find(name) != null) {
+            throw new MyEntityAlreadyExistsException("Type named '" + name + "' already exists");
+        }*/
         try {
             Type type = new Type(name);
             em.persist(type);
@@ -39,57 +37,54 @@ public class TypeBean {
         }
     }
 
-    public List<Athlete> all() {
+    public List<Type> all() {
         try {
-            return (List<Athlete>) em.createNamedQuery("getAllAthletes").getResultList();
+            return (List<Type>) em.createNamedQuery("getAllTypes").getResultList();
         } catch (Exception e) {
-            throw new EJBException("ERROR_RETRIEVING_ATHLETES", e);
+            throw new EJBException("ERROR_RETRIEVING_TYPES", e);
         }
     }
 
-    public Athlete update(String username, String password, String name, String email) throws MyEntityNotFoundException {
+    public Type update(int id, String newName) throws MyEntityNotFoundException {
         try {
-            Athlete athlete = em.find(Athlete.class, username);
-            if (athlete == null) {
-                throw new MyEntityNotFoundException("Athlete with username '" + username + "' not found.");
+            Type type = find(id);
+            if (type == null) {
+                throw new MyEntityNotFoundException("Type with id '" + id + "' not found.");
             }
 
-            em.lock(athlete, LockModeType.OPTIMISTIC);
-            athlete.setPassword(password);
-            athlete.setName(name);
-            athlete.setEmail(email);
+            em.lock(type, LockModeType.OPTIMISTIC);
+            type.setName(newName);
 
-            em.merge(athlete);
-            return athlete;
+            em.merge(type);
+            return type;
         } catch (MyEntityNotFoundException e) {
             throw e;
         } catch (Exception e) {
-            throw new EJBException("ERROR_UPDATING_ATHLETE", e);
+            throw new EJBException("ERROR_UPDATING_TYPE", e);
         }
     }
 
     //TODO REMOVE (SOFT DELETE)
-    public void remove(String username){
+    public void remove(int id){
         try {
-            Athlete athlete = find(username);
-            System.out.println(athlete.getUsername());
-            if (athlete == null) {
-                throw new MyEntityNotFoundException("Athlete with username '" + username + "' not found.");
+            Type type = find(id);
+            if (type == null) {
+                throw new MyEntityNotFoundException("Type with id '" + id + "' not found.");
             }
 
-            if(athlete!=null) {
-                em.remove(athlete);
+            if(type!=null) {
+                em.remove(type);
             }
         } catch(Exception e){
-            throw new EJBException("ERROR_REMOVING_ATHLETE", e);
+            throw new EJBException("ERROR_REMOVING_TYPE", e);
         }
     }
 
-    public Athlete find(String username) {
+    public Type find(int id) {
         try {
-            return em.find(Athlete.class, username);
+            return em.find(Type.class, id);
         } catch (Exception e) {
-            throw new EJBException("ERROR_FINDING_ATHLETE", e);
+            throw new EJBException("ERROR_FINDING_TYPE", e);
         }
     }
 }
