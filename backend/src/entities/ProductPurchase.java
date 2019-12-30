@@ -2,6 +2,13 @@ package entities;
 
 import javax.persistence.*;
 
+
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllProductPurchases",
+                query = "SELECT p FROM ProductPurchase p ORDER BY p.id"
+        )
+})
 @Entity
 @Table(name = "PRODUCT_PURCHASE")
 public class ProductPurchase {
@@ -14,12 +21,22 @@ public class ProductPurchase {
 
     private String unity;
 
+    private int quantity;
+
     public ProductPurchase() {
     }
 
-    public ProductPurchase(Product product, String unity){
+    public ProductPurchase(Product product, String unity, int quantity){
         this.product = product;
         this.unity = unity;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public int getId() {
