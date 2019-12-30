@@ -1,6 +1,7 @@
 package ejbs;
 
 import entities.Athlete;
+import entities.Payment;
 import entities.Product;
 import entities.ProductPurchase;
 import exceptions.MyConstraintViolationException;
@@ -23,9 +24,9 @@ public class ProductPurchaseBean {
     public ProductPurchaseBean() {
     }
 
-    public List<ProductPurchase> all() {
+    public List<Payment> all() {
         try {
-            return (List<ProductPurchase>) em.createNamedQuery("getAllProductPurchases").getResultList();
+            return (List<Payment>) em.createNamedQuery("getAllProductPurchases").getResultList();
         } catch (Exception e) {
             throw new EJBException("ERROR_RETRIEVING_PRODUCTS_PURCHASES", e);
         }

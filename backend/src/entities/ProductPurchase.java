@@ -5,7 +5,7 @@ import javax.persistence.*;
 
 @NamedQueries({
         @NamedQuery(
-                name = "getAllProductPurchases",
+                name = "getAllPayments",
                 query = "SELECT p FROM ProductPurchase p ORDER BY p.id"
         )
 })

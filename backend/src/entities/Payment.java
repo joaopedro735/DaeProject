@@ -5,6 +5,12 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
 
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllPayments",
+                query = "SELECT p FROM Payment p ORDER BY p.id"
+        )
+})
 @Entity
 @Table(name = "PAYMENT")
 public class Payment /*tem uma Fatura.class */ {
@@ -16,16 +22,13 @@ public class Payment /*tem uma Fatura.class */ {
 
     private LocalDate limitDayPayment;
 
-    private int quantity;
-
     private State state;
 
     private String paymentMethod;
 
-    public Payment(LocalDate datePayment, LocalDate limitDayPayment, int quantity, State state, String paymentMethod) {
+    public Payment(LocalDate datePayment, LocalDate limitDayPayment, State state, String paymentMethod) {
         this.datePayment = datePayment;
         this.limitDayPayment = limitDayPayment;
-        this.quantity = quantity;
         this.state = state;
         this.paymentMethod = paymentMethod;
     }
@@ -55,14 +58,6 @@ public class Payment /*tem uma Fatura.class */ {
 
     public void setLimitDayPayment(LocalDate limitDayPayment) {
         this.limitDayPayment = limitDayPayment;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
 
     public State getState() {
