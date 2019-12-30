@@ -43,6 +43,9 @@ public class ConfigBean {
     @EJB
     TypeBean typeBean;
 
+    @EJB
+    SportSubscriptionPriceListBean sportSubscriptionPriceListBean;
+
     private static final Logger logger = Logger.getLogger("ejbs.ConfigBean");
 
     public ConfigBean() {
@@ -65,6 +68,10 @@ public class ConfigBean {
             Sport judo = sportBean.create("Judo");
             Sport basquetebol = sportBean.create("Basquetebol");
             //endregion
+
+            //region to create SportSubscriptionPriceList
+            sportSubscriptionPriceListBean.create(judo.getCode(), 100);
+            sportSubscriptionPriceListBean.create(basquetebol.getCode(),  200);
 
             //region Types
             Type sportItem = typeBean.create("Sport Item");
