@@ -1,5 +1,6 @@
 package ejbs;
 
+import dtos.TimeTableDTO;
 import entities.*;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
@@ -13,8 +14,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.core.Response;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless(name = "SportEJB")
 public class SportBean {
@@ -146,20 +150,22 @@ public class SportBean {
         }
     }
 
-    public boolean enrollAthlete(String username, int sportsCode, Collection<TimeTable> timeTables) {
+    public Athlete enrollAthlete(String username, int sportsCode, Collection<TimeTable> timeTables) throws MyEntityAlreadyExistsException, MyEntityNotFoundException {
         try {
             Athlete athlete = athleteBean.find(username);
             Sport sport = find(sportsCode);
-            System.out.println(timeTables.stream().map(TimeTable::getId).findAny());
             SportRegistration sportRegistration = sportRegistrationBean.create(username, sportsCode, timeTables);
-            //boolean contains = sport.getAthletes().contains(athlete);
-//            if (contains) {
-//                return false;
-//            }
+            //TODO: do we need this?
+//          boolean contains = sport.getAthletes().contains(athlete);
+//          if (contains) {
+//              return false;
+//          }
+
             sport.addAthlete(sportRegistration);
-          //TODO:  athlete.addAthleteSport(sport);
             athlete.addAthleteSport(sportRegistration);
-            return true;
+            return athlete;
+        } catch (MyEntityAlreadyExistsException | MyEntityNotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new EJBException("ERROR_ENROLL_ATHLETE", e);
         }

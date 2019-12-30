@@ -1,8 +1,8 @@
 package ejbs;
 
 import entities.Athlete;
-import entities.SportRegistration;
 import entities.Sport;
+import entities.SportRegistration;
 import entities.TimeTable;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
@@ -17,6 +17,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.util.Collection;
+import java.util.List;
 
 @Stateless(name = "PracticedSportEJB")
 public class SportRegistrationBean {
@@ -25,7 +26,6 @@ public class SportRegistrationBean {
 
     @EJB
     AthleteBean athleteBean;
-
     @EJB
     SportBean sportBean;
 
@@ -74,6 +74,16 @@ public class SportRegistrationBean {
             return sportRegistration;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+        } catch (Exception e) {
+            throw new EJBException(e);
+        }
+    }
+
+    public List<SportRegistration> all() {
+        try {
+            return (List<SportRegistration>) em.createNamedQuery("SportRegistration.getAllSportRegistration").getResultList();
+        } catch (Exception e) {
+            throw new EJBException("ERROR_RETRIEVING_SPORT_REGISTRATIONS", e);
         }
     }
 
@@ -81,7 +91,7 @@ public class SportRegistrationBean {
         try {
             return em.find(SportRegistration.class, id);
         } catch (Exception e) {
-            throw new EJBException("ERROR_FINDING_SPORTREGISTRATION", e);
+            throw new EJBException("ERROR_FINDING_SPORT_REGISTRATION", e);
         }
     }
 
@@ -93,6 +103,18 @@ public class SportRegistrationBean {
             return null;
         } catch (Exception e) {
             throw new EJBException("ERROR_RETRIEVING_SPORT_REGISTRATION", e);
+        }
+    }
+
+    public void remove(int code) {
+        try {
+            SportRegistration sportRegistration = find(code);
+            if (sportRegistration == null) {
+                throw new MyEntityNotFoundException("Sport Registration with code '" + code + "' not found.");
+            }
+            em.remove(sportRegistration);
+        } catch (Exception e) {
+            throw new EJBException("ERROR_REMOVING_SPORT_REGISTRATION ---->" + e.getMessage(), e);
         }
     }
 }

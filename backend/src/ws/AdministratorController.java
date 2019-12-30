@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Path("/administrators")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-public class AdministratorController {
+public class AdministratorController extends UserController {
     @EJB
     private AdministratorBean administratorBean;
     @EJB

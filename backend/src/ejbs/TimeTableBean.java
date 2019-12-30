@@ -16,6 +16,7 @@ import javax.validation.ConstraintViolationException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless(name = "TimeTableBeanEJB")
 public class TimeTableBean {
@@ -47,6 +48,14 @@ public class TimeTableBean {
     public TimeTable find(int id) {
         try {
             return em.find(TimeTable.class, id);
+        } catch (Exception e) {
+            throw new EJBException("ERROR_FINDING_TIMETABLE", e);
+        }
+    }
+
+    public List<TimeTable> find(List<Integer> ids) {
+        try {
+            return (List<TimeTable>) em.createNamedQuery("TimeTable.getByIds").setParameter("ids", ids).getResultList();
         } catch (Exception e) {
             throw new EJBException("ERROR_FINDING_TIMETABLE", e);
         }

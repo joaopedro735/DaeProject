@@ -9,15 +9,18 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Date;
+import java.util.logging.Logger;
 
 @Stateless(name = "EmailEJB")
 public class EmailBean {
     @Resource(name = "java:/jboss/mail/mailgun")
     private Session mailSession;
 
+    private Logger logger = Logger.getLogger(EmailBean.class.getName());
+
     public void send(String to, String subject, String text) throws
             MessagingException {
-
+        logger.info("Begin to send email to->[" + to + "],subject->[" + subject + "]");
         Runnable r = new Runnable() {
             @Override
             public void run() {

@@ -2,9 +2,14 @@ package ws;
 
 import dtos.SportDTO;
 import dtos.TimeTableDTO;
+import ejbs.AthleteBean;
 import ejbs.SportBean;
+import ejbs.SportRegistrationBean;
 import ejbs.TimeTableBean;
+import entities.Athlete;
 import entities.Sport;
+import entities.SportRegistration;
+import entities.TimeTable;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
 import exceptions.MyEntityNotFoundException;
@@ -15,6 +20,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -28,6 +34,9 @@ public class SportController {
 
     @EJB
     private TimeTableBean timeTableBean;
+
+    @EJB
+    private SportRegistrationBean sportRegistrationBean;
 
     @Context
     private SecurityContext securityContext;
@@ -102,23 +111,28 @@ public class SportController {
         }
     }
 
-    @POST
+    @PUT
     @Path("/{code}/athletes/{username}/enroll")
-    public Response enrollAthlete(@PathParam("code") Integer code, @PathParam("username") String username, TimeTableDTO[] timeTableDTO) {
+    public Response enrollAthlete(@PathParam("code") Integer code, @PathParam("username") String username, TimeTableDTO[] timeTableDTOs) throws MyEntityAlreadyExistsException {
         try {
-            //System.out.println(Arrays.stream(timeTableDTO).map().collect(Collectors.toList()));
-            //TimeTable timeTable = timeTableBean.find(timeTableDTO.getId());
-            return Response.ok().entity(timeTableDTO).build();
-            //boolean success = sportBean.enrollAthlete(username, code,timeTable);
-            //return success ? Response.status(Response.Status.OK).build(): Response.status(Response.Status.CONFLICT).entity("Athlete already enrolled in sport").build();
-            //return null;
+            List<Integer> ids = Arrays.stream(timeTableDTOs).map(TimeTableDTO::getId).collect(Collectors.toList());
+            List<TimeTable> times = timeTableBean.find(ids);
+            if (times.size() != timeTableDTOs.length) {
+                return Response.status(Response.Status.NOT_FOUND).entity("TimeTables not found").build();
+            }
+            Athlete athlete = sportBean.enrollAthlete(username, code, times);
+            //TODO: change return
+            return Response.status(Response.Status.OK).entity(TimeTableController.toDTOs(athlete.getMySportRegistrations().stream().filter(s -> s.getSport().getCode() == code).map(SportRegistration::getTimeTables).findFirst().orElseThrow(MyConstraintViolationException::new),null)).build();
+
+        } catch (MyEntityAlreadyExistsException e) {
+            return Response.status(Response.Status.CONFLICT).entity("Athlete already enrolled in sport").build();
         } catch (Exception e) {
-            throw new EJBException("ERROR_ENROLL_ATHLETE", e);
+            throw new EJBException("ERROR_ENROLL_ATHLETE ----> "+ e.getCause().getMessage(), e);
         }
     }
 
     @PUT
-    @Path("/{code}/trainers/{username}/unroll")
+    @Path("/{code}/athletes/{username}/unroll")
     public Response unrollAthlete(@PathParam("code") Integer code, @PathParam("username") String username) {
         try {
             sportBean.unrollAthlete(username, code);
@@ -126,5 +140,13 @@ public class SportController {
         } catch (Exception e) {
             throw new EJBException("ERROR_ENROLL_ATHLETE", e);
         }
+    }
+
+    @POST
+    @Path("/teste")
+    public Response teste(String time) {
+        System.out.println(sportRegistrationBean.find(6));
+        sportRegistrationBean.remove(6);
+        return Response.ok().entity(sportRegistrationBean.all().size()).build();
     }
 }

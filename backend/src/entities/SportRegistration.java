@@ -1,20 +1,21 @@
 package entities;
 
+import org.eclipse.persistence.annotations.Customizer;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "SPORT_REGISTRATION")
+@Customizer(SportRegistrationCustomizer.class)
+//@QueryRedirectors(delete = SportRegistrationInterceptor.class)
 @NamedQueries({
         @NamedQuery(
-                name = "getAllSportRegistration",
+                name = "SportRegistration.getAllSportRegistration",
                 query = "SELECT s FROM SportRegistration s ORDER BY s.sport.name"
         ),
         @NamedQuery(
@@ -27,7 +28,6 @@ public class SportRegistration implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-
 
     @ManyToOne
     @JoinColumn(name = "SPORT_CODE", nullable = false)
@@ -49,9 +49,14 @@ public class SportRegistration implements Serializable {
     //DateSignUp
     //@Temporal(TemporalType.TIMESTAMP)
     //private Date createdOn;
+    @Column(name = "CREATED_ON")
     private LocalDateTime createdOn;
 
     //EpocaDesportiva
+
+    //DELETED ON
+    @Column(name = "DELETED_ON")
+    private LocalDateTime deletedOn;
 
     public SportRegistration() {
         this.timeTables = new LinkedHashSet<>();
@@ -102,6 +107,22 @@ public class SportRegistration implements Serializable {
         this.graduation = graduation;
     }
 
+    public LocalDateTime getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(LocalDateTime createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public LocalDateTime getDeletedOn() {
+        return deletedOn;
+    }
+
+    public void setDeletedOn(LocalDateTime deletedOn) {
+        this.deletedOn = deletedOn;
+    }
+
     public void addTimeTables(TimeTable timeTable) {
         this.timeTables.add(timeTable);
     }
@@ -117,5 +138,6 @@ public class SportRegistration implements Serializable {
     public Set<TimeTable> getTimeTables() {
         return timeTables;
     }
+
 
 }
