@@ -26,6 +26,7 @@ public class EmailBean {
             public void run() {
                 try {
                     Message message = new MimeMessage(mailSession);
+                    message.addFrom(InternetAddress.parse("sports@mail.restaurantte.tk", false));
                     message.setRecipients(Message.RecipientType.TO,
                             InternetAddress.parse(to, false));
 
