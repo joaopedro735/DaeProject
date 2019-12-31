@@ -1,22 +1,26 @@
 package dtos;
 
-public class UserDTO {
-    private String username;
+import java.io.Serializable;
 
-    private String password;
+public abstract class UserDTO implements Serializable {
+    protected String username;
 
-    private String name;
+    protected String password;
 
-    private String email;
+    protected String name;
+
+    protected String email;
+
+    private String birthday;
 
     public UserDTO() {
     }
 
-    public UserDTO(String username, String password, String name, String email) {
+    public UserDTO(String username, String name, String email, String birthday) {
         this.username = username;
-        this.password = password;
         this.name = name;
         this.email = email;
+        this.birthday = birthday;
     }
 
     public String getUsername() {
@@ -49,5 +53,13 @@ public class UserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 }

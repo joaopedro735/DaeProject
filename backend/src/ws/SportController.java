@@ -1,7 +1,6 @@
 package ws;
 
-import dtos.SportDTO;
-import dtos.TimeTableDTO;
+import dtos.*;
 import ejbs.AthleteBean;
 import ejbs.SportBean;
 import ejbs.SportRegistrationBean;
@@ -18,10 +17,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -54,6 +50,29 @@ public class SportController {
 
     public static List<SportDTO> toDTOs(Collection<Sport> sports, Function<SportDTO, SportDTO> fn) {
         return sports.stream().map(s -> SportController.toDTO(s, fn)).collect(Collectors.toList());
+    }
+
+    //todo: change place
+    public static SportRegistrationDTO toSportRegistrationDTO(SportRegistration sportRegistration, Function<SportRegistrationDTO, SportRegistrationDTO> fn) {
+        SportRegistrationDTO dto = new SportRegistrationDTO(
+                sportRegistration.getId(),
+                sportRegistration.getSport().getCode(),
+                sportRegistration.getSport().getName(),
+                sportRegistration.getAthlete().getUsername(),
+                sportRegistration.getAthlete().getName(),
+                new RankDTO(),
+                new GraduationDTO()
+        );
+
+        if (fn != null) {
+            return fn.apply(dto);
+        }
+        return dto;
+    }
+
+    //todo: change place
+    public static List<SportRegistrationDTO> toSportRegistrationDTOs(Collection<SportRegistration> sportRegistrations, Function<SportRegistrationDTO, SportRegistrationDTO> fn) {
+        return sportRegistrations.stream().map(s -> SportController.toSportRegistrationDTO(s, fn)).collect(Collectors.toList());
     }
 
     @GET
@@ -103,7 +122,7 @@ public class SportController {
                         dto.setTimeTables(TimeTableController.toDTOs(sport.getTimeTables(),null));
                         dto.setTrainers(TrainerController.toDTOs(sport.getTrainers()));
                         dto.setPartners(PartnerController.toDTOs(sport.getPartners()));
-                        dto.setAthletes(AthleteController.toDTOs(sport.getAhtletes()));
+                        dto.setAthletes(AthleteController.toDTOs(sport.getAhtletes(), null));
                         return dto;
                     })).build();
         } catch (Exception e) {

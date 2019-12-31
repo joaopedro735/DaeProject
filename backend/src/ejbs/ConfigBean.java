@@ -77,7 +77,7 @@ public class ConfigBean {
             //region Users
             Administrator admin = administratorBean.create("admin", "secret123", "Administrador", "jpfcarreira@gmail.com","15/03/1990");
             Partner partner = partnerBean.create("partner", "secret123", "Partner", "email@partnet.net","20/04/1997");
-            Athlete athlete = athleteBean.create("athlete", "secret123", "Athlete", "athlete@inwmail.net", "12/07/1974");
+            Athlete athlete = athleteBean.create("athlete", "secret123", "Athlete", "email@athlete.net", "12/07/1974");
             Athlete athlete2 = athleteBean.create("athlete2", "secret123", "Athlete2", "email@athlete2.net","02/12/1980");
             Trainer trainer = trainerBean.create("trainer", "secret123", "Trainer", "email@trainer.net","29/08/1992");
             //endregion

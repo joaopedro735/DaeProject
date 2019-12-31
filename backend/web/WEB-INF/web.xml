@@ -3,6 +3,26 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
+    <context-param>
+        <param-name>resteasy.role.based.security</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <security-role>
+        <description>Administrator role</description>
+        <role-name>Administrator</role-name>
+    </security-role>
+    <security-role>
+        <description>Athlete role</description>
+        <role-name>Athlete</role-name>
+    </security-role>
+    <security-role>
+        <description>Partner role</description>
+        <role-name>Partner</role-name>
+    </security-role>
+    <security-role>
+        <description>Trainer role</description>
+        <role-name>Trainer</role-name>
+    </security-role>
     <login-config>
         <auth-method>BEARER_TOKEN</auth-method>
         <realm-name>jwt-realm</realm-name>
