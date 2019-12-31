@@ -20,6 +20,8 @@ public class SportDTO {
 
     private Collection<TimeTableDTO> timeTables;
 
+    //todo: send rank and graduation
+
     public SportDTO() {
     }
 
