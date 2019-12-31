@@ -99,11 +99,11 @@ public class SportController {
         try {
             Sport sport = sportBean.find(code);
             return Response.status(Response.Status.OK)
-                    .entity(toDTO(sport, /*dto -> {
-                            dto.setTrainers(TrainerController.toDTOs(sport.getTrainers()));
-                            return dto;
-                }*/dto -> {
+                    .entity(toDTO(sport, dto -> {
                         dto.setTimeTables(TimeTableController.toDTOs(sport.getTimeTables(),null));
+                        dto.setTrainers(TrainerController.toDTOs(sport.getTrainers()));
+                        dto.setPartners(PartnerController.toDTOs(sport.getPartners()));
+                        dto.setAthletes(AthleteController.toDTOs(sport.getAhtletes()));
                         return dto;
                     })).build();
         } catch (Exception e) {

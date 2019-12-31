@@ -146,8 +146,8 @@ public class Sport implements Serializable {
     }
 
     @Transient
-    public List<Athlete> getAhtletes() {
-        return practicedBy.stream().map(SportRegistration::getAthlete).collect(Collectors.toList());
+    public Set<Athlete> getAhtletes() {
+        return practicedBy.stream().map(SportRegistration::getAthlete).collect(Collectors.toSet());
     }
 
     public Set<Partner> getPartners() {
