@@ -15,7 +15,7 @@ import java.util.Set;
         )
 })
 @Entity
-@Table(name = "PURCHASE")
+@Table(name = "PURCHASES")
 public class Purchase {
     @Id
     @GeneratedValue
@@ -25,6 +25,7 @@ public class Purchase {
     private Set<Payment> paymentList;
 
     @OneToMany
+    @JoinTable
     private Set<ProductPurchase> productPurchases;
 
     private LocalDate purchaseDate;

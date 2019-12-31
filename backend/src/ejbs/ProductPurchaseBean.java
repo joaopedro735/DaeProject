@@ -26,7 +26,7 @@ public class ProductPurchaseBean {
 
     public List<Payment> all() {
         try {
-            return (List<Payment>) em.createNamedQuery("getAllProductPurchases").getResultList();
+            return (List<Payment>) em.createNamedQuery("getAllProductPurchase").getResultList();
         } catch (Exception e) {
             throw new EJBException("ERROR_RETRIEVING_PRODUCTS_PURCHASES", e);
         }

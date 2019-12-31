@@ -5,6 +5,7 @@ import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityNotFoundException;
 import exceptions.Utils;
 
+import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -19,6 +20,9 @@ public class PurchaseBean {
     @PersistenceContext
     private EntityManager em;
 
+    @EJB
+    UserBean userBean;
+
     public PurchaseBean() {
     }
 
@@ -30,8 +34,13 @@ public class PurchaseBean {
         }
     }
 
-    public Purchase create(Set<ProductPurchase> productPurchases, User user, float totalEuros) throws MyConstraintViolationException {
+    public Purchase create(Set<ProductPurchase> productPurchases, String username, float totalEuros) throws MyConstraintViolationException, MyEntityNotFoundException {
         try {
+            User user = userBean.find(username);
+            if(user == null){
+                throw new MyEntityNotFoundException("Username + " + username +" not found!");
+            }
+
             Purchase purchase = new Purchase(productPurchases, totalEuros, user);
             em.persist(purchase);
             return purchase;

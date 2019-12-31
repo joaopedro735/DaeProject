@@ -17,6 +17,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -51,6 +52,18 @@ public class ConfigBean {
 
     @EJB
     SportSubscriptionPriceListBean sportSubscriptionPriceListBean;
+
+    @EJB
+    ProductPurchaseBean productPurchaseBean;
+
+    @EJB
+    PaymentBean paymentBean;
+
+    @EJB
+    PurchaseBean purchaseBean;
+
+    @EJB
+    ProductBean productBean;
 
     private static final Logger logger = Logger.getLogger("ejbs.ConfigBean");
 
@@ -110,6 +123,22 @@ public class ConfigBean {
             trainerBean.enroll("trainer", judo.getCode());
             trainerBean.enroll("trainer", basquetebol.getCode());
             //endregion
+
+            //Region Purchases
+            Product product = productBean.create(6, "Televisão", 100, null, Product.class.getName());
+            Product product2 = productBean.create(6, "Carro", 100, null, Product.class.getName());
+
+            //Payments
+            ProductPurchase productPurchase = productPurchaseBean.create(product, "un", 2);
+            ProductPurchase productPurchase2 = productPurchaseBean.create(product2, "un", 2);
+
+            //Product Purchases
+            Set<ProductPurchase> productPurchases = new LinkedHashSet<>();
+            productPurchases.add(productPurchase);
+            productPurchases.add(productPurchase2);
+
+            //Purchase
+            purchaseBean.create(productPurchases, "athlete", 150);
 
             //region ETC...
             /*System.out.println(timeTableJudo.getDuration());

@@ -5,7 +5,7 @@ import javax.persistence.*;
 
 @NamedQueries({
         @NamedQuery(
-                name = "getAllPayments",
+                name = "getAllProductPurchase",
                 query = "SELECT p FROM ProductPurchase p ORDER BY p.id"
         )
 })
@@ -29,6 +29,7 @@ public class ProductPurchase {
     public ProductPurchase(Product product, String unity, int quantity){
         this.product = product;
         this.unity = unity;
+        this.quantity = quantity;
     }
 
     public int getQuantity() {
