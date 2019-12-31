@@ -16,7 +16,7 @@ public class SportDTO {
 
     private Collection<TrainerDTO> trainers;
 
-    private Collection<UserDTO> athletes;
+    private Collection<AthleteDTO> athletes;
 
     private Collection<TimeTableDTO> timeTables;
 
@@ -60,11 +60,11 @@ public class SportDTO {
         this.trainers = trainers;
     }
 
-    public Collection<UserDTO> getAthletes() {
+    public Collection<AthleteDTO> getAthletes() {
         return athletes;
     }
 
-    public void setAthletes(Collection<UserDTO> athletes) {
+    public void setAthletes(Collection<AthleteDTO> athletes) {
         this.athletes = athletes;
     }
 
