@@ -9,12 +9,14 @@ import exceptions.MyEntityNotFoundException;
 import exceptions.Utils;
 
 import javax.ejb.EJBException;
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Stateless(name = "PaymentEJB")
@@ -33,9 +35,12 @@ public class PaymentBean {
         }
     }
 
-    public Payment create(LocalDate paymentDate, State state, LocalDate limiteDate, String paymentMethod) throws MyConstraintViolationException {
+    public Payment create(LocalDate paymentDate, State state, String limitDateString, String paymentMethod) throws MyConstraintViolationException {
         try {
-            Payment payment = new Payment(paymentDate, limiteDate, state, paymentMethod);
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate limiteDate = LocalDate.parse(limitDateString,format);
+
+            Payment payment = new Payment(limiteDate, state, paymentMethod);
             em.persist(payment);
             return payment;
         } catch (ConstraintViolationException e) {
@@ -43,15 +48,16 @@ public class PaymentBean {
         }
     }
 
-    public Payment update(int id, LocalDate paymentDate, State state, LocalDate limiteDate, String paymentMethod) throws MyConstraintViolationException, MyEntityNotFoundException {
+    public Payment update(int id, State state, String limitDateString, String paymentMethod) throws MyConstraintViolationException, MyEntityNotFoundException {
         try{
             Payment payment = em.find(Payment.class, id);
             if(payment == null){
                 throw new MyEntityNotFoundException("Payment entity with id " + id + " not found");
             }
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate limiteDate = LocalDate.parse(limitDateString,format);
 
             em.lock(payment, LockModeType.OPTIMISTIC);
-            payment.setDatePayment(paymentDate);
             payment.setLimitDayPayment(limiteDate);
             payment.setState(state);
             payment.setPaymentMethod(paymentMethod);

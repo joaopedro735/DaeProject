@@ -43,22 +43,22 @@ public class ProductPurchaseBean {
     }
 
     public ProductPurchase update(int id, String unity, int quantity, Product product) throws MyConstraintViolationException, MyEntityNotFoundException {
-        try{
-            ProductPurchase productPurchase = em.find(ProductPurchase.class, id);
-            if(productPurchase == null){
-                throw new MyEntityNotFoundException("ProductPurchase entity with id " + id + " not found");
+            try{
+                ProductPurchase productPurchase = em.find(ProductPurchase.class, id);
+                if(productPurchase == null){
+                    throw new MyEntityNotFoundException("ProductPurchase entity with id " + id + " not found");
+                }
+
+                em.lock(productPurchase, LockModeType.OPTIMISTIC);
+                productPurchase.setProduct(product);
+                productPurchase.setQuantity(quantity);
+                productPurchase.setUnity(unity);
+                em.merge(productPurchase);
+
+                return productPurchase;
+            }catch (ConstraintViolationException e){
+                throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
             }
-
-            em.lock(productPurchase, LockModeType.OPTIMISTIC);
-            productPurchase.setProduct(product);
-            productPurchase.setQuantity(quantity);
-            productPurchase.setUnity(unity);
-            em.merge(productPurchase);
-
-            return productPurchase;
-        }catch (ConstraintViolationException e){
-            throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
-        }
     }
 
     public void remove (int id) throws MyEntityNotFoundException, MyConstraintViolationException {
