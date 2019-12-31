@@ -30,7 +30,7 @@ public class AthleteController {
     private SecurityContext securityContext;
 
     public static AthleteDTO toDTO(Athlete athlete, Function<AthleteDTO, AthleteDTO> fn) {
-        AthleteDTO dto =  new AthleteDTO(
+        AthleteDTO dto = new AthleteDTO(
                 athlete.getUsername(),
                 athlete.getName(),
                 athlete.getEmail(),
@@ -69,26 +69,22 @@ public class AthleteController {
     @GET
     @Path("/{username}")
     public Response getAthleteDetails(@PathParam("username") String username) {
-        try {
-            Principal principal = securityContext.getUserPrincipal();
-            if (securityContext.isUserInRole("Administrator") || principal.getName().equals(username)) {
-                Athlete athlete = athleteBean.find(username);
-                return Response.status(Response.Status.OK).entity(toDTO(athlete, dto -> {
-                    dto.setSportRegistrations(SportController.toSportRegistrationDTOs(athlete.getMySportRegistrations(), null));
-                    return dto;
-                })).build();
-            }
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        Principal principal = securityContext.getUserPrincipal();
+        if (principal != null && (securityContext.isUserInRole("Administrator") || principal.getName().equals(username))) {
+            Athlete athlete = athleteBean.find(username);
+            return Response.status(Response.Status.OK).entity(toDTO(athlete, dto -> {
+                dto.setSportRegistrations(SportController.toSportRegistrationDTOs(athlete.getMySportRegistrations(), null));
+                return dto;
+            })).build();
         }
         return Response.status(Response.Status.FORBIDDEN).build();
     }
 
     @GET
     @Path("/name/{tosearch}")
-    public Response getAthletesBySearch(@PathParam("tosearch") String toSearch){
+    public Response getAthletesBySearch(@PathParam("tosearch") String toSearch) {
         Principal principal = securityContext.getUserPrincipal();
-        if(securityContext.isUserInRole("Administrator")){
+        if (securityContext.isUserInRole("Administrator")) {
             GenericEntity<List<AthleteDTO>> entity = new GenericEntity<List<AthleteDTO>>(toDTOs(athleteBean.findBySearch(toSearch), null)) {
             };
             return Response.status(Response.Status.OK).entity(entity).build();
@@ -114,19 +110,19 @@ public class AthleteController {
 
     @PUT
     @Path("/{username}")
-    public Response updateAthlete(@PathParam("username") String username, AthleteDTO athleteDTO){
+    public Response updateAthlete(@PathParam("username") String username, AthleteDTO athleteDTO) {
         String msg;
         User user;
         System.out.println(username);
         try {
             user = athleteBean.find(username);
-            if (user == null){
+            if (user == null) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
             athleteBean.update(username, athleteDTO.getPassword(), athleteDTO.getName(), athleteDTO.getEmail());
 
             return Response.status(Response.Status.OK).build();
-        } catch (Exception e){
+        } catch (Exception e) {
             msg = "ERROR_UPDATING_ADMINISTRATOR ---> " + e.getMessage();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
