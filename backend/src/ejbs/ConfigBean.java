@@ -68,6 +68,9 @@ public class ConfigBean {
     @EJB
     private RankBean rankBean;
 
+    @EJB
+    private GraduationBean graduationBean;
+
     private static final Logger logger = Logger.getLogger("ejbs.ConfigBean");
 
     public ConfigBean() {
@@ -109,6 +112,10 @@ public class ConfigBean {
             Rank rankJudoSenior = rankBean.create("Senior", judo.getCode());
             //endregion
 
+            //region Graduation
+            Graduation gradJudocBranco = graduationBean.create("Branco", judo.getCode());
+            //endregion
+
             //region TimeTables
             TimeTable timeTableJudo = timeTableBean.create(DayOfWeek.MONDAY, LocalTime.of(9, 30), LocalTime.of(11,00), judo.getCode());
             TimeTable timeTableJudo1 = timeTableBean.create(DayOfWeek.FRIDAY, LocalTime.of(9, 30), LocalTime.of(11,00), judo.getCode());
@@ -127,6 +134,7 @@ public class ConfigBean {
             //region ENROLL
             SportRegistration athleteJudoRegistration = sportBean.enrollAthlete("athlete", judo.getCode(), timeTablesJudo);
             athleteJudoRegistration.setRank(rankJudoSenior);
+            athleteJudoRegistration.setGraduation(gradJudocBranco);
             SportRegistration athleteBasketSignup = sportBean.enrollAthlete("athlete", basquetebol.getCode(), timeTablesBasquet);
             SportRegistration athlete2BasketSignup = sportBean.enrollAthlete("athlete2", basquetebol.getCode(), timeTablesBasquet);
             sportBean.enrollPartner("partner", judo.getCode());

@@ -1,11 +1,9 @@
 package ws;
 
 import dtos.*;
-import ejbs.AthleteBean;
 import ejbs.SportBean;
 import ejbs.SportRegistrationBean;
 import ejbs.TimeTableBean;
-import entities.Athlete;
 import entities.Sport;
 import entities.SportRegistration;
 import entities.TimeTable;
@@ -50,44 +48,6 @@ public class SportController {
 
     public static List<SportDTO> toDTOs(Collection<Sport> sports, Function<SportDTO, SportDTO> fn) {
         return sports.stream().map(s -> SportController.toDTO(s, fn)).collect(Collectors.toList());
-    }
-
-    //todo: change place
-    public static SportRegistrationDTO toSportRegistrationDTO(SportRegistration sportRegistration, Function<SportRegistrationDTO, SportRegistrationDTO> fn) {
-
-
-        SportRegistrationDTO dto = new SportRegistrationDTO(
-                sportRegistration.getId(),
-                sportRegistration.getSport().getCode(),
-                sportRegistration.getSport().getName(),
-                sportRegistration.getAthlete().getUsername(),
-                sportRegistration.getAthlete().getName()
-        );
-
-        if (sportRegistration.getRank() != null) {
-            RankDTO rankDTO = RankController.toDTO(sportRegistration.getRank());
-            dto.setRank(rankDTO);
-        }
-        if (sportRegistration.getGraduation() != null) {
-            //todo: change to GraduationControler.toDTO
-            GraduationDTO graduationDTO = new GraduationDTO(sportRegistration.getGraduation().getId(), sportRegistration.getGraduation().getName());
-            dto.setGraduation(graduationDTO);
-        }
-
-        if (sportRegistration.getTimeTables() != null) {
-            List<TimeTableDTO> timeTableDTOS = TimeTableController.toDTOs(sportRegistration.getTimeTables(), null);
-            dto.setTimeTables(timeTableDTOS);
-        }
-
-        if (fn != null) {
-            return fn.apply(dto);
-        }
-        return dto;
-    }
-
-    //todo: change place
-    public static List<SportRegistrationDTO> toSportRegistrationDTOs(Collection<SportRegistration> sportRegistrations, Function<SportRegistrationDTO, SportRegistrationDTO> fn) {
-        return sportRegistrations.stream().map(s -> SportController.toSportRegistrationDTO(s, fn)).collect(Collectors.toList());
     }
 
     @GET
@@ -156,7 +116,7 @@ public class SportController {
                 return Response.status(Response.Status.NOT_FOUND).entity("TimeTables not found").build();
             }
             SportRegistration sportRegistration = sportBean.enrollAthlete(username, code, times);
-            return Response.status(Response.Status.OK).entity(SportController.toSportRegistrationDTO(sportRegistration, null)).build();
+            return Response.status(Response.Status.OK).entity(SportRegistrationController.toSportRegistrationDTO(sportRegistration, null)).build();
 
         } catch (MyEntityAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT).entity("Athlete already enrolled in sport").build();

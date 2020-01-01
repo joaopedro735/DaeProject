@@ -73,7 +73,7 @@ public class AthleteController {
         if (principal != null && (securityContext.isUserInRole("Administrator") || principal.getName().equals(username))) {
             Athlete athlete = athleteBean.find(username);
             return Response.status(Response.Status.OK).entity(toDTO(athlete, dto -> {
-                dto.setSportRegistrations(SportController.toSportRegistrationDTOs(athlete.getMySportRegistrations(), null));
+                dto.setSportRegistrations(SportRegistrationController.toSportRegistrationDTOs(athlete.getMySportRegistrations(), null));
                 return dto;
             })).build();
         }
