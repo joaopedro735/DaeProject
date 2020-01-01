@@ -65,12 +65,18 @@ public class SportController {
         );
 
         if (sportRegistration.getRank() != null) {
-            RankDTO rankDTO = new RankDTO(sportRegistration.getRank().getId(), sportRegistration.getRank().getName());
+            RankDTO rankDTO = RankController.toDTO(sportRegistration.getRank());
             dto.setRank(rankDTO);
         }
         if (sportRegistration.getGraduation() != null) {
+            //todo: change to GraduationControler.toDTO
             GraduationDTO graduationDTO = new GraduationDTO(sportRegistration.getGraduation().getId(), sportRegistration.getGraduation().getName());
             dto.setGraduation(graduationDTO);
+        }
+
+        if (sportRegistration.getTimeTables() != null) {
+            List<TimeTableDTO> timeTableDTOS = TimeTableController.toDTOs(sportRegistration.getTimeTables(), null);
+            dto.setTimeTables(timeTableDTOS);
         }
 
         if (fn != null) {
