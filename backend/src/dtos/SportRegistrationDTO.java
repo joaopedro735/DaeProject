@@ -23,15 +23,15 @@ public class SportRegistrationDTO implements Serializable {
     public SportRegistrationDTO() {
     }
 
-    public SportRegistrationDTO(int id, int sportCode, String sportName, String athleteUsername, String athleteName, RankDTO rank, GraduationDTO graduation) {
+    public SportRegistrationDTO(int id, int sportCode, String sportName, String athleteUsername, String athleteName) {
         this.id = id;
         this.sportCode = sportCode;
         this.sportName = sportName;
         this.athleteUsername = athleteUsername;
         this.athleteName = athleteName;
-        this.rank = rank;
-        this.graduation = graduation;
     }
+
+
 
     public int getId() {
         return id;

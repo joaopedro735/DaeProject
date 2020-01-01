@@ -1,13 +1,7 @@
 package ejbs;
 
-import entities.Athlete;
-import entities.Sport;
-import entities.SportRegistration;
-import entities.TimeTable;
-import exceptions.MyConstraintViolationException;
-import exceptions.MyEntityAlreadyExistsException;
-import exceptions.MyEntityNotFoundException;
-import exceptions.Utils;
+import entities.*;
+import exceptions.*;
 
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
@@ -25,17 +19,19 @@ public class SportRegistrationBean {
     private EntityManager em;
 
     @EJB
-    AthleteBean athleteBean;
-    @EJB
-    SportBean sportBean;
+    private AthleteBean athleteBean;
 
     @EJB
-    ProductBean productBean;
+    private SportBean sportBean;
 
     @EJB
-    SportSubscriptionPriceListBean sportSubscriptionPriceListBean;
+    private ProductBean productBean;
 
+    @EJB
+    private SportSubscriptionPriceListBean sportSubscriptionPriceListBean;
 
+    @EJB
+    private RankBean rankBean;
 
     public SportRegistrationBean() {
     }
@@ -116,5 +112,20 @@ public class SportRegistrationBean {
         } catch (Exception e) {
             throw new EJBException("ERROR_REMOVING_SPORT_REGISTRATION ---->" + e.getMessage(), e);
         }
+    }
+
+    public void setRank(int sportRegistrationId, int rankId) throws MyEntityNotFoundException, MyEntityIllegalArgumentException {
+        SportRegistration sportRegistration = find(sportRegistrationId);
+        Rank rank = rankBean.find(rankId);
+        if (sportRegistration == null) {
+            throw new MyEntityNotFoundException("Sport Registration with id '" + sportRegistrationId + "' not found");
+        }
+        if (rank == null) {
+            throw new MyEntityNotFoundException("Rank with id '" + rankId + "' not found");
+        }
+        if (!sportRegistration.getSport().getRanks().contains(rank)) {
+            throw new MyEntityIllegalArgumentException("Rank with id '" + rankId + "' does not belong to sport with id '" + sportRegistrationId + "'");
+        }
+        sportRegistration.setRank(rank);
     }
 }

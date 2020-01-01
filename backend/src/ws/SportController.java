@@ -54,15 +54,24 @@ public class SportController {
 
     //todo: change place
     public static SportRegistrationDTO toSportRegistrationDTO(SportRegistration sportRegistration, Function<SportRegistrationDTO, SportRegistrationDTO> fn) {
+
+
         SportRegistrationDTO dto = new SportRegistrationDTO(
                 sportRegistration.getId(),
                 sportRegistration.getSport().getCode(),
                 sportRegistration.getSport().getName(),
                 sportRegistration.getAthlete().getUsername(),
-                sportRegistration.getAthlete().getName(),
-                new RankDTO(),
-                new GraduationDTO()
+                sportRegistration.getAthlete().getName()
         );
+
+        if (sportRegistration.getRank() != null) {
+            RankDTO rankDTO = new RankDTO(sportRegistration.getRank().getId(), sportRegistration.getRank().getName());
+            dto.setRank(rankDTO);
+        }
+        if (sportRegistration.getGraduation() != null) {
+            GraduationDTO graduationDTO = new GraduationDTO(sportRegistration.getGraduation().getId(), sportRegistration.getGraduation().getName());
+            dto.setGraduation(graduationDTO);
+        }
 
         if (fn != null) {
             return fn.apply(dto);
@@ -123,6 +132,7 @@ public class SportController {
                         dto.setTrainers(TrainerController.toDTOs(sport.getTrainers()));
                         dto.setPartners(PartnerController.toDTOs(sport.getPartners()));
                         dto.setAthletes(AthleteController.toDTOs(sport.getAhtletes(), null));
+                        dto.setRanks(RankController.toDTOs(sport.getRanks()));
                         return dto;
                     })).build();
         } catch (Exception e) {
@@ -139,9 +149,8 @@ public class SportController {
             if (times.size() != timeTableDTOs.length) {
                 return Response.status(Response.Status.NOT_FOUND).entity("TimeTables not found").build();
             }
-            Athlete athlete = sportBean.enrollAthlete(username, code, times);
-            //TODO: change return
-            return Response.status(Response.Status.OK).entity(TimeTableController.toDTOs(athlete.getMySportRegistrations().stream().filter(s -> s.getSport().getCode() == code).map(SportRegistration::getTimeTables).findFirst().orElseThrow(MyConstraintViolationException::new),null)).build();
+            SportRegistration sportRegistration = sportBean.enrollAthlete(username, code, times);
+            return Response.status(Response.Status.OK).entity(SportController.toSportRegistrationDTO(sportRegistration, null)).build();
 
         } catch (MyEntityAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT).entity("Athlete already enrolled in sport").build();

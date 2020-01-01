@@ -167,6 +167,14 @@ public class Sport implements Serializable {
         return timeTables;
     }
 
+    public Set<Rank> getRanks() {
+        return ranks;
+    }
+
+    public Set<Graduation> getGraduations() {
+        return graduations;
+    }
+
     @Transient
     public boolean timeTablesExists(Collection<TimeTable> timeTables) {
         return this.timeTables.containsAll(timeTables);
