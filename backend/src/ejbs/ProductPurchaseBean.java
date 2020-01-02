@@ -75,4 +75,18 @@ public class ProductPurchaseBean {
         }
     }
 
+    public ProductPurchase find(int id) throws MyEntityNotFoundException, MyConstraintViolationException {
+        try{
+            ProductPurchase productPurchase = em.find(ProductPurchase.class, id);
+            if(productPurchase == null){
+                throw new MyEntityNotFoundException("ProductPurchase entity with id " + id + " not found");
+            }
+            //TODO SEE IF IT HAS RELATIONS AND THEN IF NOT REMOVE IT
+           return productPurchase;
+
+        }catch (ConstraintViolationException e){
+            throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+        }
+    }
+
 }

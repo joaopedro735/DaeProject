@@ -3,10 +3,7 @@ package entities;
 import javax.ejb.Local;
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @NamedQueries({
         @NamedQuery(
@@ -17,6 +14,8 @@ import java.util.Set;
 @Entity
 @Table(name = "PURCHASES")
 public class Purchase {
+
+
     @Id
     @GeneratedValue
     private int id;
@@ -44,6 +43,14 @@ public class Purchase {
         this.productPurchases = productPurchases;
         this.totalEuros = totalEuros;
         this.purchaseDate = LocalDate.now();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public LocalDate getPurchaseDate() {
@@ -84,5 +91,21 @@ public class Purchase {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public ArrayList getPaymentListIDs() {
+        ArrayList list = null;
+        for (Payment payment: paymentList) {
+            list.add(payment.getId());
+        };
+        return list;
+    }
+
+    public ArrayList getProductPurchasesListIDs() {
+        ArrayList list = null;
+        for (ProductPurchase productPurchase: productPurchases) {
+            list.add(productPurchase.getId());
+        };
+        return list;
     }
 }
