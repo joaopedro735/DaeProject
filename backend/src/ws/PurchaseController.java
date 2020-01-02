@@ -73,7 +73,7 @@ public class PurchaseController {
                 }
                 productPurchase = productPurchaseBean.create(product, purchaseDTO.getProductPurchases()[i].getUnity(), purchaseDTO.getProductPurchases()[i].getQuantity());
                 productPurchases.add(productPurchase);
-                totalEuros += product.getValue();
+                totalEuros += product.getValue() * purchaseDTO.getProductPurchases()[i].getQuantity();
             }
            purchase = purchaseBean.create(productPurchases, purchaseDTO.getUsername(), totalEuros);
         return Response.status(Response.Status.OK).entity(toDTO(purchase)).build();
