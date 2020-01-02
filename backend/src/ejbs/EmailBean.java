@@ -8,6 +8,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -26,6 +27,7 @@ public class EmailBean {
             public void run() {
                 try {
                     Message message = new MimeMessage(mailSession);
+                    message.addFrom(InternetAddress.parse("sports@mail.restaurantte.tk", false));
                     message.setRecipients(Message.RecipientType.TO,
                             InternetAddress.parse(to, false));
 

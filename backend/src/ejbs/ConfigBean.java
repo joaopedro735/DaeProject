@@ -27,43 +27,49 @@ import java.util.stream.Collectors;
 public class ConfigBean {
 
     @EJB
-    AdministratorBean administratorBean;
+    private AdministratorBean administratorBean;
 
     @EJB
-    PartnerBean partnerBean;
+    private PartnerBean partnerBean;
 
     @EJB
-    AthleteBean athleteBean;
+    private AthleteBean athleteBean;
 
     @EJB
-    SportBean sportBean;
+    private SportBean sportBean;
 
     @EJB
-    TrainerBean trainerBean;
+    private TrainerBean trainerBean;
 
     @EJB
-    TimeTableBean timeTableBean;
+    private TimeTableBean timeTableBean;
 
     @EJB
-    SportRegistrationBean sportRegistrationBean;
+    private SportRegistrationBean sportRegistrationBean;
 
     @EJB
-    TypeBean typeBean;
+    private TypeBean typeBean;
 
     @EJB
-    SportSubscriptionPriceListBean sportSubscriptionPriceListBean;
+    private SportSubscriptionPriceListBean sportSubscriptionPriceListBean;
 
     @EJB
-    ProductPurchaseBean productPurchaseBean;
+    private ProductPurchaseBean productPurchaseBean;
 
     @EJB
-    PaymentBean paymentBean;
+    private PaymentBean paymentBean;
 
     @EJB
-    PurchaseBean purchaseBean;
+    private PurchaseBean purchaseBean;
 
     @EJB
-    ProductBean productBean;
+    private ProductBean productBean;
+
+    @EJB
+    private RankBean rankBean;
+
+    @EJB
+    private GraduationBean graduationBean;
 
     private static final Logger logger = Logger.getLogger("ejbs.ConfigBean");
 
@@ -90,6 +96,7 @@ public class ConfigBean {
             //region to create SportSubscriptionPriceList
             sportSubscriptionPriceListBean.create(judo.getCode(), 100);
             sportSubscriptionPriceListBean.create(basquetebol.getCode(),  200);
+            //endregion
 
             //region Types
             Type sportItem = typeBean.create("Sport Item");
@@ -99,6 +106,15 @@ public class ConfigBean {
             Type share = typeBean.create("Share");
             Type typeClass = typeBean.create("Class");
             Type internship = typeBean.create("Internship");
+            //endregion
+
+            //region Ranks
+            Rank rankJudoSenior = rankBean.create("Senior", judo.getCode());
+            //endregion
+
+            //region Graduation
+            Graduation gradJudocBranco = graduationBean.create("Branco", judo.getCode());
+            //endregion
 
             //region TimeTables
             TimeTable timeTableJudo = timeTableBean.create(DayOfWeek.MONDAY, LocalTime.of(9, 30), LocalTime.of(11,00), judo.getCode());
@@ -116,29 +132,35 @@ public class ConfigBean {
             System.out.println(judo.timeTablesExists(timeTablesJudo));*/
 
             //region ENROLL
-            sportBean.enrollAthlete("athlete", judo.getCode(), timeTablesJudo);
-            sportBean.enrollAthlete("athlete", basquetebol.getCode(), timeTablesBasquet);
-            sportBean.enrollAthlete("athlete2", basquetebol.getCode(), timeTablesBasquet);
+            SportRegistration athleteJudoRegistration = sportBean.enrollAthlete("athlete", judo.getCode(), timeTablesJudo);
+            athleteJudoRegistration.setRank(rankJudoSenior);
+            athleteJudoRegistration.setGraduation(gradJudocBranco);
+            SportRegistration athleteBasketSignup = sportBean.enrollAthlete("athlete", basquetebol.getCode(), timeTablesBasquet);
+            SportRegistration athlete2BasketSignup = sportBean.enrollAthlete("athlete2", basquetebol.getCode(), timeTablesBasquet);
             sportBean.enrollPartner("partner", judo.getCode());
             trainerBean.enroll("trainer", judo.getCode());
             trainerBean.enroll("trainer", basquetebol.getCode());
             //endregion
 
-            //Region Purchases
+            //region Purchases
             Product product = productBean.create(6, "Televisão", 100, null, Product.class.getName());
             Product product2 = productBean.create(6, "Carro", 100, null, Product.class.getName());
+            //endregion
 
-            //Payments
+            //region Payments
             ProductPurchase productPurchase = productPurchaseBean.create(product, "un", 2);
             ProductPurchase productPurchase2 = productPurchaseBean.create(product2, "un", 2);
+            //endregion
 
-            //Product Purchases
+            //region Product Purchases
             Set<ProductPurchase> productPurchases = new LinkedHashSet<>();
             productPurchases.add(productPurchase);
             productPurchases.add(productPurchase2);
+            //endregion
 
-            //Purchase
+            //region Purchase
             purchaseBean.create(productPurchases, "athlete", 150);
+            //endregion
 
             //region ETC...
             /*System.out.println(timeTableJudo.getDuration());

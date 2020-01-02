@@ -8,18 +8,20 @@ import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
 import exceptions.MyEntityNotFoundException;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Path("/athletes")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-
+@RolesAllowed({"Administrator", "Athlete"})
 public class AthleteController {
     @EJB
     private AthleteBean athleteBean;
@@ -27,17 +29,22 @@ public class AthleteController {
     @Context
     private SecurityContext securityContext;
 
-    public static AthleteDTO toDTO(Athlete athlete) {
-        return new AthleteDTO(
+    public static AthleteDTO toDTO(Athlete athlete, Function<AthleteDTO, AthleteDTO> fn) {
+        AthleteDTO dto = new AthleteDTO(
                 athlete.getUsername(),
                 athlete.getName(),
                 athlete.getEmail(),
                 athlete.getBirthday().toString()
         );
+
+        if (fn != null) {
+            return fn.apply(dto);
+        }
+        return dto;
     }
 
-    public static List<AthleteDTO> toDTOs(Collection<Athlete> athletes) {
-        return athletes.stream().map(ws.AthleteController::toDTO).collect(Collectors.toList());
+    public static List<AthleteDTO> toDTOs(Collection<Athlete> athletes, Function<AthleteDTO, AthleteDTO> fn) {
+        return athletes.stream().map(a -> AthleteController.toDTO(a, null)).collect(Collectors.toList());
     }
 
     @GET // means: to call this endpoint, we need to use the HTTP GET method
@@ -45,7 +52,7 @@ public class AthleteController {
     public Response all() {
         String msg;
         try {
-            GenericEntity<List<AthleteDTO>> entity = new GenericEntity<List<AthleteDTO>>(toDTOs(athleteBean.all())) {
+            GenericEntity<List<AthleteDTO>> entity = new GenericEntity<List<AthleteDTO>>(toDTOs(athleteBean.all(), null)) {
             };
             return Response.status(Response.Status.OK)
                     .entity(entity)
@@ -60,22 +67,25 @@ public class AthleteController {
 
 
     @GET
-    @Path("/athlete/{username}")
+    @Path("/{username}")
     public Response getAthleteDetails(@PathParam("username") String username) {
         Principal principal = securityContext.getUserPrincipal();
-        if (securityContext.isUserInRole("Administrator") || principal.getName().equals(username)) {
+        if (principal != null && (securityContext.isUserInRole("Administrator") || principal.getName().equals(username))) {
             Athlete athlete = athleteBean.find(username);
-            return Response.status(Response.Status.OK).entity(toDTO(athlete)).build();
+            return Response.status(Response.Status.OK).entity(toDTO(athlete, dto -> {
+                dto.setSportRegistrations(SportRegistrationController.toSportRegistrationDTOs(athlete.getMySportRegistrations(), null));
+                return dto;
+            })).build();
         }
         return Response.status(Response.Status.FORBIDDEN).build();
     }
 
     @GET
     @Path("/name/{tosearch}")
-    public Response getAthletesBySearch(@PathParam("tosearch") String toSearch){
+    public Response getAthletesBySearch(@PathParam("tosearch") String toSearch) {
         Principal principal = securityContext.getUserPrincipal();
-        if(securityContext.isUserInRole("Administrator")){
-            GenericEntity<List<AthleteDTO>> entity = new GenericEntity<List<AthleteDTO>>(toDTOs(athleteBean.findBySearch(toSearch))) {
+        if (securityContext.isUserInRole("Administrator")) {
+            GenericEntity<List<AthleteDTO>> entity = new GenericEntity<List<AthleteDTO>>(toDTOs(athleteBean.findBySearch(toSearch), null)) {
             };
             return Response.status(Response.Status.OK).entity(entity).build();
         }
@@ -84,7 +94,7 @@ public class AthleteController {
 
     @POST
     @Path("/")
-    public Response createNewAthlete(AthleteDTO athleteDTO) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+    public Response createNewAthlete(AthleteDTO athleteDTO) throws MyEntityAlreadyExistsException, MyConstraintViolationException {
 
         Athlete athlete = athleteBean.create(athleteDTO.getUsername(),
                 athleteDTO.getPassword(),
@@ -93,26 +103,26 @@ public class AthleteController {
                 athleteDTO.getBirthday());
 
         return Response.status(Response.Status.CREATED)
-                .entity(toDTO(athlete))
+                .entity(toDTO(athlete, null))
                 .build();
 
     }
 
     @PUT
     @Path("/{username}")
-    public Response updateAthlete(@PathParam("username") String username, AthleteDTO athleteDTO){
+    public Response updateAthlete(@PathParam("username") String username, AthleteDTO athleteDTO) {
         String msg;
         User user;
         System.out.println(username);
         try {
             user = athleteBean.find(username);
-            if (user == null){
+            if (user == null) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
             athleteBean.update(username, athleteDTO.getPassword(), athleteDTO.getName(), athleteDTO.getEmail());
 
             return Response.status(Response.Status.OK).build();
-        } catch (Exception e){
+        } catch (Exception e) {
             msg = "ERROR_UPDATING_ADMINISTRATOR ---> " + e.getMessage();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

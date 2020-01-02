@@ -6,12 +6,10 @@ import java.util.Set;
 
 @Entity
 public class TaughtSport implements Serializable {
+    //todo:
     @Id
     @GeneratedValue
     private int id;
-
-    @OneToOne
-    SportSeason sportSeason;
 
     @OneToOne
     Trainer trainer;

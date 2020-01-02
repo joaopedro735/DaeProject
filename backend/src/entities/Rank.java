@@ -3,7 +3,7 @@ package entities;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.Objects;
 
 @Entity
 @Table(name = "RANKS")
@@ -12,7 +12,7 @@ public class Rank implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private int id;
 
     @NotNull
     private String name;
@@ -23,11 +23,11 @@ public class Rank implements Serializable {
     public Rank() {
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -37,5 +37,27 @@ public class Rank implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Sport getSport() {
+        return sport;
+    }
+
+    public void setSport(Sport sport) {
+        this.sport = sport;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Rank rank = (Rank) o;
+        return Objects.equals(name, rank.name) &&
+                Objects.equals(sport, rank.sport);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, sport);
     }
 }

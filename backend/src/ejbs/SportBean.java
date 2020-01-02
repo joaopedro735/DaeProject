@@ -26,19 +26,22 @@ public class SportBean {
     private EntityManager em;
 
     @EJB
-    AthleteBean athleteBean;
+    private AthleteBean athleteBean;
 
     @EJB
-    PartnerBean partnerBean;
+    private PartnerBean partnerBean;
 
     @EJB
-    TrainerBean trainerBean;
+    private TrainerBean trainerBean;
 
     @EJB
-    SportRegistrationBean sportRegistrationBean;
+    private SportRegistrationBean sportRegistrationBean;
 
     @EJB
-    TimeTableBean timeTableBean;
+    private TimeTableBean timeTableBean;
+
+    @EJB
+    private RankBean rankBean;
 
     public SportBean() {
     }
@@ -58,7 +61,7 @@ public class SportBean {
         try {
             return em.find(Sport.class, code);
         } catch (Exception e) {
-            throw new EJBException("ERROR_FINDING_SPORTS", e);
+            throw new EJBException("ERROR_FINDING_SPORT", e);
         }
     }
 
@@ -150,7 +153,7 @@ public class SportBean {
         }
     }
 
-    public Athlete enrollAthlete(String username, int sportsCode, Collection<TimeTable> timeTables) throws MyEntityAlreadyExistsException, MyEntityNotFoundException {
+    public SportRegistration enrollAthlete(String username, int sportsCode, Collection<TimeTable> timeTables) throws MyEntityAlreadyExistsException, MyEntityNotFoundException {
         try {
             Athlete athlete = athleteBean.find(username);
             Sport sport = find(sportsCode);
@@ -163,7 +166,7 @@ public class SportBean {
 
             sport.addAthlete(sportRegistration);
             athlete.addAthleteSport(sportRegistration);
-            return athlete;
+            return sportRegistration;
         } catch (MyEntityAlreadyExistsException | MyEntityNotFoundException e) {
             throw e;
         } catch (Exception e) {
@@ -206,4 +209,5 @@ public class SportBean {
             throw new EJBException("ERROR_UNROLL_TRAINER", e);
         }
     }
+
 }

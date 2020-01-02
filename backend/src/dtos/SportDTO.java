@@ -1,11 +1,6 @@
 package dtos;
 
-import entities.Partner;
-import entities.Sport;
-import entities.TimeTable;
-
 import java.util.Collection;
-import java.util.LinkedHashSet;
 
 public class SportDTO {
     private int code;
@@ -16,9 +11,14 @@ public class SportDTO {
 
     private Collection<TrainerDTO> trainers;
 
-    private Collection<UserDTO> athletes;
+    private Collection<AthleteDTO> athletes;
 
     private Collection<TimeTableDTO> timeTables;
+
+    //todo: send rank and graduation
+    private Collection<RankDTO> ranks;
+
+    private Collection<GraduationDTO> graduations;
 
     public SportDTO() {
     }
@@ -60,11 +60,11 @@ public class SportDTO {
         this.trainers = trainers;
     }
 
-    public Collection<UserDTO> getAthletes() {
+    public Collection<AthleteDTO> getAthletes() {
         return athletes;
     }
 
-    public void setAthletes(Collection<UserDTO> athletes) {
+    public void setAthletes(Collection<AthleteDTO> athletes) {
         this.athletes = athletes;
     }
 
@@ -74,5 +74,21 @@ public class SportDTO {
 
     public void setTimeTables(Collection<TimeTableDTO> timeTables) {
         this.timeTables = timeTables;
+    }
+
+    public Collection<RankDTO> getRanks() {
+        return ranks;
+    }
+
+    public void setRanks(Collection<RankDTO> ranks) {
+        this.ranks = ranks;
+    }
+
+    public Collection<GraduationDTO> getGraduations() {
+        return graduations;
+    }
+
+    public void setGraduations(Collection<GraduationDTO> graduations) {
+        this.graduations = graduations;
     }
 }

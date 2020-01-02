@@ -1,71 +1,37 @@
 package dtos;
 
+import entities.Purchase;
+import entities.Sport;
+import entities.SportRegistration;
+
+import java.util.Collection;
+
 public class AthleteDTO extends UserDTO {
-    private String username;
+    private Collection<SportRegistrationDTO> sportRegistrations;
 
-    private String password;
-
-    private String name;
-
-    private String email;
-
-    private String birthday;
+    private Collection<Purchase> purchases;
 
     public AthleteDTO(String username, String name, String email, String birthday) {
-        this.username = username;
-        this.name = name;
-        this.email = email;
-        this.birthday = birthday;
+        super(username, name, email, birthday);
     }
 
     public AthleteDTO() {
+        super();
     }
 
-    @Override
-    public String getUsername() {
-        return username;
+    public Collection<SportRegistrationDTO> getSportRegistrations() {
+        return sportRegistrations;
     }
 
-    @Override
-    public void setUsername(String username) {
-        this.username = username;
+    public void setSportRegistrations(Collection<SportRegistrationDTO> sportRegistrations) {
+        this.sportRegistrations = sportRegistrations;
     }
 
-    @Override
-    public String getPassword() {
-        return password;
+    public Collection<Purchase> getPurchases() {
+        return purchases;
     }
 
-    @Override
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getEmail() {
-        return email;
-    }
-
-    @Override
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
+    public void setPurchases(Collection<Purchase> purchases) {
+        this.purchases = purchases;
     }
 }
