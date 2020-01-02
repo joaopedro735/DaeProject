@@ -63,7 +63,11 @@ public class PurchaseController {
     @POST
     @Path("/")
     public Response createNewPurchase(PurchaseDTO purchaseDTO) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
-        Principal principal = securityContext.getUserPrincipal();
+        System.out.println(purchaseDTO.getProductPurchases().length);
+        System.out.println(purchaseDTO.getProductPurchases()[0].getUnity());
+        //TODO:
+        return Response.ok().entity(purchaseDTO.getProductPurchases()[0]).build();
+        /*Principal principal = securityContext.getUserPrincipal();
         if(securityContext.isUserInRole("Administrator")){
             ArrayList arrayProductPurchasesIDs = purchaseDTO.getProductPurchasesIDs();
             Set<ProductPurchase> productPurchaseSet = null;
@@ -78,6 +82,6 @@ public class PurchaseController {
                     .entity(toDTO(purchase))
                     .build();
         }
-        return Response.status(Response.Status.FORBIDDEN).build();
+        return Response.status(Response.Status.FORBIDDEN).build();*/
     }
 }

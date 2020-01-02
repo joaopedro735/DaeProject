@@ -6,17 +6,23 @@ import entities.Product;
 public class ProductPurchaseDTO {
     private int id;
 
-    private Product product;
+    private ProductDTO product;
 
     private String unity;
 
     private int quantity;
 
-    public ProductPurchaseDTO(int id, Product product, String unity, int quantity) {
+    public ProductPurchaseDTO() {
+    }
+
+    public ProductPurchaseDTO(int id, int productTypeCode, String productTypeName, String productDescription, String unity, int quantity) {
         this.id = id;
-        this.product = product;
+        this.product = new ProductDTO();
         this.unity = unity;
         this.quantity = quantity;
+        product.setTypeCode(productTypeCode);
+        product.setTypeName(productTypeName);
+        product.setDescription(productDescription);
     }
 
     public int getId() {
@@ -27,11 +33,11 @@ public class ProductPurchaseDTO {
         this.id = id;
     }
 
-    public Product getProduct() {
+    public ProductDTO getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public void setProduct(ProductDTO product) {
         this.product = product;
     }
 

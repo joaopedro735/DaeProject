@@ -12,9 +12,13 @@ public class PurchaseDTO {
     private int id;
     private ArrayList productPurchasesIDs ;
     private ArrayList paymentIDs;
+    private ProductPurchaseDTO[] productPurchases;
     private LocalDate purchaseDate;
     private String username;
     private float totalEuros;
+
+    public PurchaseDTO() {
+    }
 
     public PurchaseDTO(int id, ArrayList paymentListIDs, ArrayList productPurchasesIDs, LocalDate purchaseDate, String username, float totalEuros) {
         this.id = id;
@@ -23,9 +27,6 @@ public class PurchaseDTO {
         this.purchaseDate = purchaseDate;
         this.username = username;
         this.totalEuros = totalEuros;
-    }
-
-    public PurchaseDTO() {
     }
 
     public int getId() {
@@ -74,5 +75,13 @@ public class PurchaseDTO {
 
     public void setTotalEuros(float totalEuros) {
         this.totalEuros = totalEuros;
+    }
+
+    public ProductPurchaseDTO[] getProductPurchases() {
+        return productPurchases;
+    }
+
+    public void setProductPurchases(ProductPurchaseDTO[] productPurchases) {
+        this.productPurchases = productPurchases;
     }
 }
