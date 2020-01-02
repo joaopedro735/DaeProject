@@ -12,6 +12,7 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.core.Response;
@@ -48,6 +49,9 @@ public class SportBean {
 
     public Sport create(String name) throws MyEntityAlreadyExistsException, MyConstraintViolationException {
         try {
+            if (findByName(name) != null) {
+                throw new MyEntityAlreadyExistsException("Sport with name '" + name + "' already exists");
+            }
             Sport sport = new Sport();
             sport.setName(name);
             em.persist(sport);
@@ -62,6 +66,16 @@ public class SportBean {
             return em.find(Sport.class, code);
         } catch (Exception e) {
             throw new EJBException("ERROR_FINDING_SPORT", e);
+        }
+    }
+
+    public Sport findByName(String name) {
+        try {
+            return (Sport) em.createNamedQuery("getSportByName").setParameter("name", name).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (Exception e) {
+            throw new EJBException("ERROR_RETRIEVING_SPORT", e);
         }
     }
 
