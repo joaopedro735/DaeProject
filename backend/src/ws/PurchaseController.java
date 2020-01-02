@@ -19,10 +19,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.lang.reflect.Array;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Path("/purchases")
@@ -48,8 +45,6 @@ public class PurchaseController {
     public static PurchaseDTO toDTO(Purchase purchase) {
         return new PurchaseDTO(
                 purchase.getId(),
-                purchase.getPaymentListIDs(),
-                purchase.getProductPurchasesListIDs(),
                 purchase.getPurchaseDate(),
                 purchase.getUser().getUsername(),
                 purchase.getTotalEuros()
@@ -63,25 +58,26 @@ public class PurchaseController {
     @POST
     @Path("/")
     public Response createNewPurchase(PurchaseDTO purchaseDTO) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
-        System.out.println(purchaseDTO.getProductPurchases().length);
-        System.out.println(purchaseDTO.getProductPurchases()[0].getUnity());
-        //TODO:
-        return Response.ok().entity(purchaseDTO.getProductPurchases()[0]).build();
-        /*Principal principal = securityContext.getUserPrincipal();
+        Principal principal = securityContext.getUserPrincipal();
         if(securityContext.isUserInRole("Administrator")){
-            ArrayList arrayProductPurchasesIDs = purchaseDTO.getProductPurchasesIDs();
-            Set<ProductPurchase> productPurchaseSet = null;
-            for (Object id: arrayProductPurchasesIDs) {
-                productPurchaseSet.add(productPurchaseBean.find((int) id));
-            }
+            Set<ProductPurchase> productPurchases = new HashSet<ProductPurchase>();
+            Product product;
+            ProductPurchase productPurchase;
+            Purchase purchase;
+            float totalEuros = 0;
 
-            Purchase purchase = purchaseBean.create(
-                productPurchaseSet, purchaseDTO.getUsername(), purchaseDTO.getTotalEuros()
-            );
-            return Response.status(Response.Status.CREATED)
-                    .entity(toDTO(purchase))
-                    .build();
+            for (int i = 0; i < purchaseDTO.getProductPurchases().length; i++) {
+                product = productBean.find(purchaseDTO.getProductPurchases()[i].getProduct().getId());
+                if (product == null){
+                    throw new MyEntityNotFoundException("Product with id " + purchaseDTO.getProductPurchases()[i].getProduct().getId() + " not found");
+                }
+                productPurchase = productPurchaseBean.create(product, purchaseDTO.getProductPurchases()[i].getUnity(), purchaseDTO.getProductPurchases()[i].getQuantity());
+                productPurchases.add(productPurchase);
+                totalEuros += product.getValue();
+            }
+           purchase = purchaseBean.create(productPurchases, purchaseDTO.getUsername(), totalEuros);
+        return Response.status(Response.Status.OK).entity(toDTO(purchase)).build();
         }
-        return Response.status(Response.Status.FORBIDDEN).build();*/
+        return Response.status(Response.Status.FORBIDDEN).build();
     }
 }
