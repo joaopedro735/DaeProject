@@ -167,6 +167,14 @@ public class Sport implements Serializable {
         return graduations;
     }
 
+    public boolean rankExists(Rank rank) {
+        return this.ranks.contains(rank);
+    }
+
+    public boolean graduationExists(Graduation graduation) {
+        return this.graduations.contains(graduation);
+    }
+
     @Transient
     public boolean timeTablesExists(Collection<TimeTable> timeTables) {
         return this.timeTables.containsAll(timeTables);

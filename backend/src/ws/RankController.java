@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Path("/ranks")
+@Produces({MediaType.APPLICATION_JSON})
+@Consumes({MediaType.APPLICATION_JSON})
 public class RankController {
     @EJB
     private RankBean rankBean;
@@ -43,17 +46,17 @@ public class RankController {
 
     @POST
     @Path("/")
-    public Response createNewRank(RankDTO rankDTO) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+    public Response createNewRank(RankDTO rankDTO) {
         String msg;
         try {
+            System.out.println(rankDTO.getName()+ rankDTO.getSportCode());
             Rank rank = rankBean.create(rankDTO.getName(), rankDTO.getSportCode());
 
             return Response.status(Response.Status.CREATED)
                     .entity(toDTO(rank))
                     .build();
-        } catch (MyEntityAlreadyExistsException | MyConstraintViolationException | MyEntityNotFoundException e) {
+        } catch (Exception e) {
             msg = e.getMessage();
-            //System.out.println(e.getCause().getMessage());
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(msg).build();
     }
