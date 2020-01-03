@@ -2,12 +2,15 @@ package dtos;
 
 import entities.Type;
 
+import java.util.Collection;
+
 public class ProductDTO {
     private int id;
     protected int typeCode;
     protected String typeName;
     protected String description;
     protected float value;
+    private TypeDTO typeDTO;
 
     public ProductDTO(int id, String description, int type, float value, String typeName) {
         this.typeCode = type;
@@ -19,6 +22,14 @@ public class ProductDTO {
 
     public ProductDTO() {
 
+    }
+
+    public TypeDTO getTypeDTO() {
+        return typeDTO;
+    }
+
+    public void setTypeDTO(TypeDTO typeDTO) {
+        this.typeDTO = typeDTO;
     }
 
     public String getTypeName() {

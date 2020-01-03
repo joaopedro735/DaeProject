@@ -14,6 +14,16 @@ import java.time.Period;
 @Table(name = "USERS")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @MappedSuperclass
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllUsers",
+                query = "SELECT u FROM User u ORDER BY u.name" //JPQL
+        ),
+        @NamedQuery(
+                name = "getUsersByNameSearch",
+                query = "SELECT u FROM User u where upper(u.name) LIKE upper(:name) ORDER BY u.name"
+        )
+})
 public abstract class User implements Serializable {
     @Id
     protected String username;

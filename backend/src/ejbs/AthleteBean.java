@@ -58,17 +58,20 @@ public class AthleteBean {
         }
     }
 
-    public Athlete update(String username, String password, String name, String email) throws MyEntityNotFoundException {
+    public Athlete update(String username, String password, String name, String email, String birthday) throws MyEntityNotFoundException {
         try {
             Athlete athlete = em.find(Athlete.class, username);
             if (athlete == null) {
                 throw new MyEntityNotFoundException("Athlete with username '" + username + "' not found.");
             }
 
+            DateTimeFormatter birthdayFormat= DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate birthdayDate = LocalDate.parse(birthday, birthdayFormat);
             em.lock(athlete, LockModeType.OPTIMISTIC);
             athlete.setPassword(password);
             athlete.setName(name);
             athlete.setEmail(email);
+            athlete.setBirthday(birthdayDate);
 
             em.merge(athlete);
             return athlete;

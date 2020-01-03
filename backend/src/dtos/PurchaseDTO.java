@@ -12,6 +12,7 @@ public class PurchaseDTO {
     private int id;
     private ProductPurchaseDTO[] productPurchases;
     private LocalDate purchaseDate;
+    private PaymentDTO paymentDTO;
     private String username;
     private float totalEuros;
 

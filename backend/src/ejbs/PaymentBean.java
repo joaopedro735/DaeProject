@@ -35,7 +35,7 @@ public class PaymentBean {
         }
     }
 
-    public Payment create(LocalDate paymentDate, State state, String limitDateString, String paymentMethod) throws MyConstraintViolationException {
+    /*public Payment create(LocalDate paymentDate, State state, String limitDateString, String paymentMethod) throws MyConstraintViolationException {
         try {
             DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             LocalDate limiteDate = LocalDate.parse(limitDateString,format);
@@ -46,7 +46,7 @@ public class PaymentBean {
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
         }
-    }
+    }*/
 
     public Payment update(int id, State state, String limitDateString, String paymentMethod) throws MyConstraintViolationException, MyEntityNotFoundException {
         try{

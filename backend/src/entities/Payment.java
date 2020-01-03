@@ -26,7 +26,9 @@ public class Payment /*tem uma Fatura.class */ {
 
     private String paymentMethod;
 
-    public Payment(LocalDate limitDayPayment, State state, String paymentMethod) {
+    private int valor;
+
+    public Payment(LocalDate limitDayPayment, State state, String paymentMethod, int valor) {
         this.datePayment = LocalDate.now();
         this.limitDayPayment = limitDayPayment;
         this.state = state;

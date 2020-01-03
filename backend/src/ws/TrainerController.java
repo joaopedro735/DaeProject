@@ -111,7 +111,7 @@ public class TrainerController {
             if (user == null){
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
-            trainerBean.update(username, trainerDTO.getPassword(), trainerDTO.getName(), trainerDTO.getEmail());
+            trainerBean.update(username, trainerDTO.getPassword(), trainerDTO.getName(), trainerDTO.getEmail(), trainerDTO.getBirthday());
 
             return Response.status(Response.Status.OK).build();
         } catch (Exception e){

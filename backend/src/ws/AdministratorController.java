@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Path("/administrators")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-public class AdministratorController extends UserController {
+public class AdministratorController {
     @EJB
     private AdministratorBean administratorBean;
     @EJB
@@ -114,7 +114,7 @@ public class AdministratorController extends UserController {
                 if (user == null){
                     return Response.status(Response.Status.NOT_FOUND).build();
                 }
-                administratorBean.update(username, administratorDTO.getPassword(), administratorDTO.getName(), administratorDTO.getEmail());
+                administratorBean.update(username, administratorDTO.getPassword(), administratorDTO.getName(), administratorDTO.getEmail(), administratorDTO.getBirthday());
 
                 return Response.status(Response.Status.OK).build();
             } catch (Exception e){

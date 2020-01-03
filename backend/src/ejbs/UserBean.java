@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import java.util.List;
 
 @Stateless(name = "UserEJB")
 public class UserBean {
@@ -52,6 +53,22 @@ public class UserBean {
             return em.find(User.class, username);
         } catch (Exception e) {
             throw new EJBException("ERROR_FINDING_USER", e);
+        }
+    }
+
+    public List<User> findBySearch(String toSearch) {
+        try {
+            return (List<User>) em.createNamedQuery("getUsersByNameSearch").setParameter("name", "%" + toSearch + "%").getResultList();
+        }catch (Exception e) {
+            throw new EJBException("ERROR_RETRIEVING_USERS_BY_NAME_SEARCH", e);
+        }
+    }
+
+    public List<User> all() {
+        try {
+            return (List<User>) em.createNamedQuery("getAllUsers").getResultList();
+        } catch (Exception e) {
+            throw new EJBException("ERROR_RETRIEVING_USERS", e);
         }
     }
 }

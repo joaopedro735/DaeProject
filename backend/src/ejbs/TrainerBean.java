@@ -57,14 +57,17 @@ public class TrainerBean {
         }
     }
 
-    public Trainer update(String username, String password, String name, String email) throws MyEntityNotFoundException {
+    public Trainer update(String username, String password, String name, String email, String birthday) throws MyEntityNotFoundException {
         try {
             Trainer trainer = em.find(Trainer.class, username);
 
             if (trainer == null) {
                 throw new MyEntityNotFoundException("Trainer with username '" + username + "' not found.");
             }
+            DateTimeFormatter birthdayFormat= DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate birthdayDate = LocalDate.parse(birthday, birthdayFormat);
             em.lock(trainer, LockModeType.OPTIMISTIC);
+            trainer.setBirthday(birthdayDate);
             trainer.setPassword(password);
             trainer.setName(name);
             trainer.setEmail(email);

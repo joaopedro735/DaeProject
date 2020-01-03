@@ -2,14 +2,15 @@ package dtos;
 
 import java.io.Serializable;
 
-public abstract class UserDTO implements Serializable {
-    protected String username;
+public class UserDTO implements Serializable {
 
-    protected String password;
+    private String username;
 
-    protected String name;
+    private String password;
 
-    protected String email;
+    private String name;
+
+    private String email;
 
     private String birthday;
 

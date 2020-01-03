@@ -119,7 +119,7 @@ public class AthleteController {
             if (user == null) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
-            athleteBean.update(username, athleteDTO.getPassword(), athleteDTO.getName(), athleteDTO.getEmail());
+            athleteBean.update(username, athleteDTO.getPassword(), athleteDTO.getName(), athleteDTO.getEmail(), athleteDTO.getBirthday());
 
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {

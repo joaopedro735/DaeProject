@@ -1,5 +1,6 @@
 package ws;
 
+import dtos.AdministratorDTO;
 import dtos.PartnerDTO;
 import dtos.ProductDTO;
 import dtos.TrainerDTO;
@@ -63,6 +64,18 @@ public class ProductController {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(msg)
                 .build();
+    }
+
+    @GET
+    @Path("/name/{tosearch}")
+    public Response getAdministratorBySearch(@PathParam("tosearch") String toSearch){
+        Principal principal = securityContext.getUserPrincipal();
+        if(securityContext.isUserInRole("Administrator")){
+            GenericEntity<List<ProductDTO>> entity = new GenericEntity<List<ProductDTO>>(toDTOs(productBean.findBySearch(toSearch))) {
+            };
+            return Response.status(Response.Status.OK).entity(entity).build();
+        }
+        return Response.status(Response.Status.FORBIDDEN).build();
     }
 
 

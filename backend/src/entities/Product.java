@@ -13,6 +13,10 @@ import java.io.Serializable;
         @NamedQuery(
                 name = "getAllProducts",
                 query = "SELECT p FROM Product p ORDER BY p.id" //JPQL
+        ),
+        @NamedQuery(
+                name = "getProductsByNameSearch",
+                query = "SELECT a FROM Product a where upper(a.description) LIKE upper(:name) ORDER BY a.description"
         )
 })
 public class Product implements Serializable {

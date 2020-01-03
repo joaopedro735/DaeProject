@@ -1,9 +1,6 @@
 package ejbs;
 
-import entities.Product;
-import entities.Sport;
-import entities.SportRegistration;
-import entities.Type;
+import entities.*;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
 import exceptions.MyEntityNotFoundException;
@@ -16,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import java.util.Collection;
 import java.util.List;
 
 @Stateless(name = "ProductEJB")
@@ -96,4 +94,11 @@ public class ProductBean {
         }
     }
 
+    public List<Product> findBySearch(String toSearch) {
+        try {
+            return (List<Product>) em.createNamedQuery("getProductsByNameSearch").setParameter("name", "%" + toSearch + "%").getResultList();
+        }catch (Exception e) {
+            throw new EJBException("ERROR_RETRIEVING_PRODUCTS_BY_NAME_SEARCH", e);
+        }
+    }
 }

@@ -1,15 +1,13 @@
 package ws;
 
+import dtos.PaymentDTO;
 import dtos.ProductDTO;
 import dtos.PurchaseDTO;
 import ejbs.ProductBean;
 import ejbs.ProductPurchaseBean;
 import ejbs.PurchaseBean;
 import ejbs.UserBean;
-import entities.Product;
-import entities.ProductPurchase;
-import entities.Purchase;
-import entities.User;
+import entities.*;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
 import exceptions.MyEntityNotFoundException;
@@ -51,14 +49,11 @@ public class PurchaseController {
         );
     }
 
-    public static List<ProductDTO> toDTOs(Collection<Product> products) {
-        return products.stream().map(ws.ProductController::toDTO).collect(Collectors.toList());
-    }
-
     @POST
     @Path("/")
     public Response createNewPurchase(PurchaseDTO purchaseDTO) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
         Principal principal = securityContext.getUserPrincipal();
+
         if(securityContext.isUserInRole("Administrator")){
             Set<ProductPurchase> productPurchases = new HashSet<ProductPurchase>();
             Product product;
@@ -80,4 +75,10 @@ public class PurchaseController {
         }
         return Response.status(Response.Status.FORBIDDEN).build();
     }
+
+   /* @POST
+    @Path("/{id}/payment")
+    public Response createPaymentPurchase(@PathParam("id") int id, PaymentDTO paymentDTO){
+
+    }*/
 }

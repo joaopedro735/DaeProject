@@ -56,14 +56,17 @@ public class AdministratorBean {
         }
     }
 
-    public Administrator update(String username, String password, String name, String email) throws MyEntityNotFoundException {
+    public Administrator update(String username, String password, String name, String email, String birthday) throws MyEntityNotFoundException {
         try {
             Administrator administrator = em.find(Administrator.class, username);
             System.out.println("Administrator get username: " + administrator.getUsername());
             if (administrator == null) {
                 throw new MyEntityNotFoundException("Administrator with username '" + username + "' not found.");
             }
+            DateTimeFormatter birthdayFormat= DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate birthdayDate = LocalDate.parse(birthday,birthdayFormat);
             em.lock(administrator, LockModeType.OPTIMISTIC);
+            administrator.setBirthday(birthdayDate);
             administrator.setPassword(password);
             administrator.setName(name);
             administrator.setEmail(email);
