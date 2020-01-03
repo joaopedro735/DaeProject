@@ -16,9 +16,12 @@ import java.io.Serializable;
                         "ORDER BY p.id"
         ),
         @NamedQuery(
-        name = "Products.getProductByTableNameAndTypeAndRelatedId",
-        query = "SELECT p FROM Product p WHERE UPPER(p.tableName) = UPPER(:tableName) AND p.type.id = :typeId AND p.relatedId = :relatedId"
-        )
+        name = "Products.getLatestProductByTableNameAndTypeAndRelatedId",
+        query = "SELECT p FROM Product p " +
+                "WHERE p.id = (SELECT MAX(p1.id) " +
+                              "FROM Product p1 " +
+                              "WHERE UPPER(p1.tableName) = UPPER(:tableName) AND p1.type.id = :typeId AND p1.relatedId = :relatedId " +
+                              "GROUP BY p1.relatedId, p1.type.id, p1.tableName)")
 })
 @Table(name = "PRODUCTS", uniqueConstraints = @UniqueConstraint(columnNames = {"ORIGINAL_ID", "TYPE_ID", "TABLE_NAME"}))
 public class Product implements Serializable {

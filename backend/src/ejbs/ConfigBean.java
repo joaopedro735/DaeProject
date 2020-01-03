@@ -178,7 +178,7 @@ public class ConfigBean {
             System.out.println(athlete.getSports().toString());*/
             //endregion
 
-            //System.out.println("Product value: " + sportBean.getRegistrationPrice(basquetebol.getCode()));
+            System.out.println("Product value: " + sportBean.getRegistrationPrice(basquetebol.getCode()));
 
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage());

@@ -101,7 +101,7 @@ public class ProductBean {
 
     public Product findByTableNameAndTypeAndRelatedId(String tableName, int typeId, int relatedId) {
         try {
-            return (Product) em.createNamedQuery("Products.getProductByTableNameAndTypeAndRelatedId")
+            return (Product) em.createNamedQuery("Products.getLatestProductByTableNameAndTypeAndRelatedId")
                     .setParameter("tableName", tableName)
                     .setParameter("typeId", typeId)
                     .setParameter("relatedId", relatedId).getSingleResult();
