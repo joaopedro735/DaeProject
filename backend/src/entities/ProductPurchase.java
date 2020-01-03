@@ -1,6 +1,7 @@
 package entities;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 
 @NamedQueries({
@@ -62,6 +63,10 @@ public class ProductPurchase {
 
     public void setUnity(String unity) {
         this.unity = unity;
+    }
+
+    public BigDecimal total() {
+        return this.product.getValue().multiply(BigDecimal.valueOf(quantity));
     }
 }
 

@@ -1,16 +1,8 @@
 package ws;
 
-import dtos.AdministratorDTO;
-import dtos.PartnerDTO;
 import dtos.ProductDTO;
-import dtos.TrainerDTO;
-import ejbs.PartnerBean;
 import ejbs.ProductBean;
-import ejbs.TrainerBean;
-import entities.Partner;
 import entities.Product;
-import entities.Trainer;
-import entities.User;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
 import exceptions.MyEntityNotFoundException;

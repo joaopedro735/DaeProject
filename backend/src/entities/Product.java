@@ -4,8 +4,8 @@ import com.sun.istack.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Entity
 @NamedQueries({
@@ -27,7 +27,7 @@ import java.io.Serializable;
                 query = "SELECT a FROM Product a where upper(a.description) LIKE upper(:name) ORDER BY a.description"
         )
 })
-@Table(name = "PRODUCTS", uniqueConstraints = @UniqueConstraint(columnNames = {"ORIGINAL_ID", "TYPE_ID", "TABLE_NAME"}))
+@Table(name = "PRODUCTS", uniqueConstraints = @UniqueConstraint(columnNames = {"ORIGINAL_ID", "TYPE_ID", "TABLE_NAME", "RELATED_ID"}))
 public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,8 +41,7 @@ public class Product implements Serializable {
     @NotNull
     protected String description;
 
-    @NotNull
-    protected float value;
+    protected @NotNull BigDecimal value;
 
     @Nullable
     @Column(name = "ORIGINAL_ID")
@@ -61,7 +60,7 @@ public class Product implements Serializable {
     public Product() {
     }
 
-    public Product(Type type, String description, float value, String tableName) {
+    public Product(Type type, String description, BigDecimal value, String tableName) {
         this.originalId = null;
         this.type = type;
         this.description = description;
@@ -69,7 +68,7 @@ public class Product implements Serializable {
         this.tableName = tableName;
     }
 
-    public Product(Integer originalId, Type type, String description, float value, String tableName) {
+    public Product(Integer originalId, Type type, String description, BigDecimal value, String tableName) {
         this.originalId = originalId;
         this.type = type;
         this.description = description;
@@ -77,7 +76,7 @@ public class Product implements Serializable {
         this.tableName = tableName;
     }
 
-    public Product(Integer originalId, Type type, String description, float value, String tableName, Integer relatedId) {
+    public Product(Integer originalId, Type type, String description, @NotNull BigDecimal value, String tableName, Integer relatedId) {
         this.originalId = originalId;
         this.type = type;
         this.description = description;
@@ -138,11 +137,11 @@ public class Product implements Serializable {
         this.description = description;
     }
 
-    public float getValue() {
+    public BigDecimal getValue() {
         return value;
     }
 
-    public void setValue(float value) {
+    public void setValue(@NotNull BigDecimal value) {
         this.value = value;
     }
 

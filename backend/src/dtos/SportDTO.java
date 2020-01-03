@@ -1,5 +1,7 @@
 package dtos;
 
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Collection;
 
 public class SportDTO {
@@ -19,9 +21,9 @@ public class SportDTO {
 
     private Collection<GraduationDTO> graduations;
 
-    private float registrationPrice;
+    private @NotNull BigDecimal registrationPrice;
 
-    private float membershipPrice;
+    private @NotNull BigDecimal membershipPrice;
 
     public SportDTO() {
     }
@@ -95,19 +97,19 @@ public class SportDTO {
         this.graduations = graduations;
     }
 
-    public float getRegistrationPrice() {
+    public @NotNull BigDecimal getRegistrationPrice() {
         return registrationPrice;
     }
 
-    public void setRegistrationPrice(float registrationPrice) {
+    public void setRegistrationPrice(@NotNull BigDecimal registrationPrice) {
         this.registrationPrice = registrationPrice;
     }
 
-    public float getMembershipPrice() {
+    public @NotNull BigDecimal getMembershipPrice() {
         return membershipPrice;
     }
 
-    public void setMembershipPrice(float membershipPrice) {
+    public void setMembershipPrice(@NotNull BigDecimal membershipPrice) {
         this.membershipPrice = membershipPrice;
     }
 }

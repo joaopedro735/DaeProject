@@ -9,6 +9,7 @@ import javax.ejb.Startup;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.math.BigDecimal;
 import java.text.DateFormatSymbols;
 import java.time.DayOfWeek;
 import java.time.Duration;
@@ -89,8 +90,8 @@ public class ConfigBean {
             //endregion
 
             //region Sports
-            Sport judo = sportBean.create("Judo", 5000, 20);
-            Sport basquetebol = sportBean.create("Basquetebol", 8000.20f, 22.99f);
+            Sport judo = sportBean.create("Judo", BigDecimal.valueOf(5000), BigDecimal.valueOf(20));
+            Sport basquetebol = sportBean.create("Basquetebol", BigDecimal.valueOf(5489.99d), BigDecimal.valueOf(22.99d));
             //endregion
 
             //region to create SportSubscriptionPriceList
@@ -138,7 +139,7 @@ public class ConfigBean {
             athleteJudoRegistration.setGraduation(gradJudocBranco);
             SportRegistration athleteBasketSignup = sportBean.enrollAthlete("athlete", basquetebol.getCode(), timeTablesBasquet);
             SportRegistration athlete2BasketSignup = sportBean.enrollAthlete("athlete2", basquetebol.getCode(), timeTablesBasquet);
-            sportBean.enrollPartner("partner", judo.getCode());
+            sportBean.enrollPartner("partner", basquetebol.getCode());
             trainerBean.enroll("trainer", judo.getCode());
             trainerBean.enroll("trainer", basquetebol.getCode());
             //endregion
@@ -178,7 +179,7 @@ public class ConfigBean {
             System.out.println(athlete.getSports().toString());*/
             //endregion
 
-            System.out.println("Product value: " + sportBean.getRegistrationPrice(basquetebol.getCode()));
+            //System.out.println("Product value: " + sportBean.getRegistrationPrice(basquetebol.getCode()));
 
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage());

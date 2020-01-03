@@ -13,7 +13,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
-import java.util.Collection;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Stateless(name = "ProductEJB")
@@ -27,11 +28,11 @@ public class ProductBean {
     public ProductBean() {
     }
 
-    public Product create(int typeCode, String description, float value) throws MyEntityNotFoundException, MyConstraintViolationException, MyEntityAlreadyExistsException {
+    public Product create(int typeCode, String description, @NotNull BigDecimal value) throws MyEntityNotFoundException, MyConstraintViolationException, MyEntityAlreadyExistsException {
         return this.create(typeCode, description, value, null, Product.class.getName(), null);
     }
 
-    public Product create(int typeCode, String description, float value, Integer originalId, String className, Integer relatedId) throws MyEntityAlreadyExistsException, MyConstraintViolationException, MyEntityNotFoundException {
+    public Product create(int typeCode, String description, @NotNull BigDecimal value, Integer originalId, String className, Integer relatedId) throws MyEntityAlreadyExistsException, MyConstraintViolationException, MyEntityNotFoundException {
         //TODO See if the product already exists
         Type type = typeBean.find(typeCode);
         Product product;
@@ -63,7 +64,7 @@ public class ProductBean {
         }
     }
 
-    public Product update(int id, int typeCode, String description, float value) throws MyEntityNotFoundException {
+    public Product update(int id, int typeCode, String description, @NotNull BigDecimal value) throws MyEntityNotFoundException {
         try {
             Product product = em.find(Product.class, id);
             Type type = typeBean.find(typeCode);

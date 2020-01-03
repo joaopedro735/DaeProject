@@ -1,7 +1,5 @@
 package ws;
 
-import dtos.PaymentDTO;
-import dtos.ProductDTO;
 import dtos.PurchaseDTO;
 import ejbs.ProductBean;
 import ejbs.ProductPurchaseBean;
@@ -15,10 +13,8 @@ import exceptions.MyEntityNotFoundException;
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.lang.reflect.Array;
 import java.security.Principal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Path("/purchases")
 @Produces({MediaType.APPLICATION_JSON})
@@ -45,7 +41,7 @@ public class PurchaseController {
                 purchase.getId(),
                 purchase.getPurchaseDate(),
                 purchase.getUser().getUsername(),
-                purchase.getTotalEuros()
+                purchase.getTotalEuros().doubleValue()
         );
     }
 
@@ -55,11 +51,10 @@ public class PurchaseController {
         Principal principal = securityContext.getUserPrincipal();
 
         if(securityContext.isUserInRole("Administrator")){
-            Set<ProductPurchase> productPurchases = new HashSet<ProductPurchase>();
+            Set<ProductPurchase> productPurchases = new HashSet<>();
             Product product;
             ProductPurchase productPurchase;
             Purchase purchase;
-            float totalEuros = 0;
 
             for (int i = 0; i < purchaseDTO.getProductPurchases().length; i++) {
                 product = productBean.find(purchaseDTO.getProductPurchases()[i].getProduct().getId());
@@ -68,9 +63,9 @@ public class PurchaseController {
                 }
                 productPurchase = productPurchaseBean.create(product, purchaseDTO.getProductPurchases()[i].getUnity(), purchaseDTO.getProductPurchases()[i].getQuantity());
                 productPurchases.add(productPurchase);
-                totalEuros += product.getValue() * purchaseDTO.getProductPurchases()[i].getQuantity();
+                //totalEuros += product.getValue() * purchaseDTO.getProductPurchases()[i].getQuantity();
             }
-           purchase = purchaseBean.create(productPurchases, purchaseDTO.getUsername(), totalEuros);
+           purchase = purchaseBean.create(productPurchases, purchaseDTO.getUsername());
         return Response.status(Response.Status.OK).entity(toDTO(purchase)).build();
         }
         return Response.status(Response.Status.FORBIDDEN).build();

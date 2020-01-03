@@ -1,18 +1,16 @@
 package dtos;
 
-import entities.Type;
-
-import java.util.Collection;
+import java.math.BigDecimal;
 
 public class ProductDTO {
     private int id;
     protected int typeCode;
     protected String typeName;
     protected String description;
-    protected float value;
+    protected @javax.validation.constraints.NotNull BigDecimal value;
     private TypeDTO typeDTO;
 
-    public ProductDTO(int id, String description, int type, float value, String typeName) {
+    public ProductDTO(int id, String description, int type, @javax.validation.constraints.NotNull BigDecimal value, String typeName) {
         this.typeCode = type;
         this.description = description;
         this.value = value;
@@ -64,11 +62,11 @@ public class ProductDTO {
         this.description = description;
     }
 
-    public float getValue() {
+    public @javax.validation.constraints.NotNull BigDecimal getValue() {
         return value;
     }
 
-    public void setValue(float value) {
+    public void setValue(BigDecimal value) {
         this.value = value;
     }
 }

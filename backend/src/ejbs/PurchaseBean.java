@@ -1,6 +1,9 @@
 package ejbs;
 
-import entities.*;
+import entities.Payment;
+import entities.ProductPurchase;
+import entities.Purchase;
+import entities.User;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityNotFoundException;
 import exceptions.Utils;
@@ -12,16 +15,17 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Stateless(name = "PurchaseBeanEJB")
 public class PurchaseBean {
-    @PersistenceContext
-    private EntityManager em;
-
     @EJB
     UserBean userBean;
+    @PersistenceContext
+    private EntityManager em;
 
     public PurchaseBean() {
     }
@@ -34,14 +38,27 @@ public class PurchaseBean {
         }
     }
 
+    public Purchase create(Set<ProductPurchase> productPurchases, String username) throws MyEntityNotFoundException, MyConstraintViolationException {
+        return this.create(productPurchases, username, 0);
+    }
+
     public Purchase create(Set<ProductPurchase> productPurchases, String username, float totalEuros) throws MyConstraintViolationException, MyEntityNotFoundException {
         try {
             User user = userBean.find(username);
-            if(user == null){
-                throw new MyEntityNotFoundException("Username + " + username +" not found!");
+            if (user == null) {
+                throw new MyEntityNotFoundException("Username + " + username + " not found!");
             }
+            BigDecimal totalEmEuros = productPurchases.stream()
+                    .map(ProductPurchase::total)
+                    .filter(Objects::nonNull)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            Purchase purchase = new Purchase(productPurchases, totalEuros, user);
+            System.out.println("valoremeuros:" + totalEmEuros);
+            Purchase purchase = new Purchase();
+            purchase.setUser(user);
+            purchase.addProductPurchases(productPurchases);
+            purchase.setTotalEuros(totalEmEuros);
+            //Purchase purchase = new Purchase(productPurchases, totalEmEuros, user);
             em.persist(purchase);
             return purchase;
         } catch (ConstraintViolationException e) {
@@ -49,10 +66,10 @@ public class PurchaseBean {
         }
     }
 
-    public Purchase update(int id, Set<Payment> payments, Set<ProductPurchase> productPurchases, User user, float totalEuros) throws MyConstraintViolationException, MyEntityNotFoundException {
-        try{
-            Purchase purchase= em.find(Purchase.class, id);
-            if(purchase == null){
+    public Purchase update(int id, Set<Payment> payments, Set<ProductPurchase> productPurchases, User user, BigDecimal totalEuros) throws MyConstraintViolationException, MyEntityNotFoundException {
+        try {
+            Purchase purchase = em.find(Purchase.class, id);
+            if (purchase == null) {
                 throw new MyEntityNotFoundException("Purchase entity with id " + id + " not found");
             }
 
@@ -64,21 +81,21 @@ public class PurchaseBean {
             em.merge(purchase);
 
             return purchase;
-        }catch (ConstraintViolationException e){
+        } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
         }
     }
 
-    public void remove (int id) throws MyEntityNotFoundException, MyConstraintViolationException {
-        try{
+    public void remove(int id) throws MyEntityNotFoundException, MyConstraintViolationException {
+        try {
             Purchase purchase = em.find(Purchase.class, id);
-            if(purchase == null){
+            if (purchase == null) {
                 throw new MyEntityNotFoundException("Purchase entity with id " + id + " not found");
             }
             //TODO SEE IF IT HAS RELATIONS AND THEN IF NOT REMOVE IT
             em.remove(purchase);
 
-        }catch (ConstraintViolationException e){
+        } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
         }
     }

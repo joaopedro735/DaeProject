@@ -1,12 +1,6 @@
 package dtos;
 
-import entities.Payment;
-import entities.ProductPurchase;
-import entities.User;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Set;
 
 public class PurchaseDTO {
     private int id;
@@ -14,12 +8,12 @@ public class PurchaseDTO {
     private LocalDate purchaseDate;
     private PaymentDTO paymentDTO;
     private String username;
-    private float totalEuros;
+    private Double totalEuros;
 
     public PurchaseDTO() {
     }
 
-    public PurchaseDTO(int id, LocalDate purchaseDate, String username, float totalEuros) {
+    public PurchaseDTO(int id, LocalDate purchaseDate, String username, Double totalEuros) {
         this.id = id;
         this.purchaseDate = purchaseDate;
         this.username = username;
@@ -51,11 +45,11 @@ public class PurchaseDTO {
         this.username = username;
     }
 
-    public float getTotalEuros() {
+    public Double getTotalEuros() {
         return totalEuros;
     }
 
-    public void setTotalEuros(float totalEuros) {
+    public void setTotalEuros(Double totalEuros) {
         this.totalEuros = totalEuros;
     }
 
@@ -66,4 +60,5 @@ public class PurchaseDTO {
     public void setProductPurchases(ProductPurchaseDTO[] productPurchases) {
         this.productPurchases = productPurchases;
     }
+
 }

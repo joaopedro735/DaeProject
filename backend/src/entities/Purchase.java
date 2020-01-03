@@ -1,7 +1,7 @@
 package entities;
 
-import javax.ejb.Local;
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -23,8 +23,7 @@ public class Purchase {
     @OneToMany
     private Set<Payment> paymentList;
 
-    @OneToMany
-    @JoinTable
+    @OneToMany(cascade = CascadeType.PERSIST)
     private Set<ProductPurchase> productPurchases;
 
     private LocalDate purchaseDate;
@@ -32,17 +31,20 @@ public class Purchase {
     @OneToOne
     private User user;
 
-    private float totalEuros;
+    @Column(precision = 19, scale = 2)
+    private BigDecimal totalEuros;
 
     public Purchase() {
+        this.purchaseDate = LocalDate.now();
+        this.paymentList = new LinkedHashSet<>();
+        this.productPurchases = new LinkedHashSet<>();
     }
 
-    public Purchase(Set<ProductPurchase> productPurchases, float totalEuros, User user){
-        this.paymentList = new LinkedHashSet<>();
+    public Purchase(Set<ProductPurchase> productPurchases, BigDecimal totalEuros, User user){
+        this();
         this.user = user;
         this.productPurchases = productPurchases;
         this.totalEuros = totalEuros;
-        this.purchaseDate = LocalDate.now();
     }
 
     public int getId() {
@@ -61,11 +63,11 @@ public class Purchase {
         this.purchaseDate = purchaseDate;
     }
 
-    public float getTotalEuros() {
+    public BigDecimal getTotalEuros() {
         return totalEuros;
     }
 
-    public void setTotalEuros(float totalEuros) {
+    public void setTotalEuros(BigDecimal totalEuros) {
         this.totalEuros = totalEuros;
     }
 
@@ -93,19 +95,11 @@ public class Purchase {
         this.user = user;
     }
 
-    public ArrayList getPaymentListIDs() {
-        ArrayList list = null;
-        for (Payment payment: paymentList) {
-            list.add(payment.getId());
-        };
-        return list;
+    public void addProductPurchase(ProductPurchase productPurchase) {
+        productPurchases.add(productPurchase);
     }
 
-    public ArrayList getProductPurchasesListIDs() {
-        ArrayList list = null;
-        for (ProductPurchase productPurchase: productPurchases) {
-            list.add(productPurchase.getId());
-        };
-        return list;
+    public void addProductPurchases(Set<ProductPurchase> productPurchases) {
+        this.productPurchases.addAll(productPurchases);
     }
 }

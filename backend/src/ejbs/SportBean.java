@@ -14,8 +14,9 @@ import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
-import java.util.Collection;
-import java.util.List;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Stateless(name = "SportEJB")
 public class SportBean {
@@ -46,10 +47,13 @@ public class SportBean {
     @EJB
     private TypeBean typeBean;
 
+    @EJB
+    private PurchaseBean purchaseBean;
+
     public SportBean() {
     }
 
-    public Sport create(String name, float registrationPrice, float membershipPrice) throws MyEntityAlreadyExistsException, MyConstraintViolationException, MyEntityNotFoundException {
+    public Sport create(String name, @NotNull BigDecimal registrationPrice, @NotNull BigDecimal membershipPrice) throws MyEntityAlreadyExistsException, MyConstraintViolationException, MyEntityNotFoundException {
         try {
             Type typeRegistration = typeBean.findByName("Registration");
             Type typeMembership = typeBean.findByName("Membership");
@@ -164,6 +168,10 @@ public class SportBean {
 
             sport.addPartner(partner);
             partner.addSport(sport);
+            Product product = getMembershipProduct(sportsCode);
+            ProductPurchase productPurchase = new ProductPurchase(product, "month", 10);
+            Set<ProductPurchase> productPurchaseSet = Collections.singleton(productPurchase);
+            purchaseBean.create(productPurchaseSet, username);
         } catch (Exception e) {
             throw new EJBException("ERROR_ENROLL_PARTNER", e);
         }
@@ -239,8 +247,8 @@ public class SportBean {
     }
 
     //TODO: change
-    @Deprecated
-    public float getRegistrationPrice(int sportCode) throws MyEntityNotFoundException {
+
+    public Product getRegistrationProduct(int sportCode) throws MyEntityNotFoundException {
         try {
             Sport sport = find(sportCode);
             if (sport == null) {
@@ -251,19 +259,16 @@ public class SportBean {
                 throw new MyEntityNotFoundException("Type Registration not found.");
             }
             Product product = productBean.findByTableNameAndTypeAndRelatedId(Sport.class.getName(), typeRegistration.getId(), sport.getCode());
-            return product.getValue();
+            return product;
         } catch (MyEntityNotFoundException e) {
             throw e;
         } catch (Exception e) {
             throw new EJBException("ERROR_FINDING_SPORT_REGISTRATION_PRICE --->" + e.getMessage(), e);
         }
-
-        //Type typeMembership = typeBean.findByName("Membership");
     }
 
-    //TODO: remove
-    @Deprecated
-    public float getMembershipPrice(int sportCode) throws MyEntityNotFoundException {
+
+    public Product getMembershipProduct(int sportCode) throws MyEntityNotFoundException {
         try {
             Sport sport = find(sportCode);
             if (sport == null) {
@@ -274,13 +279,12 @@ public class SportBean {
                 throw new MyEntityNotFoundException("Type Membership not found.");
             }
             Product product = productBean.findByTableNameAndTypeAndRelatedId(Sport.class.getName(), typeMembership.getId(), sport.getCode());
-            return product.getValue();
+            return product;
         } catch (MyEntityNotFoundException e) {
             throw e;
         } catch (Exception e) {
             throw new EJBException("ERROR_FINDING_SPORT_MEMBERSHIP_PRICE --->" + e.getMessage(), e);
         }
-
     }
 
 }

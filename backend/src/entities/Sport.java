@@ -25,7 +25,7 @@ public class Sport implements Serializable {
     private int code;
 
     @NotNull
-    @NotBlank
+    @NotBlank(message = "Name must not be blank")
     private String name;
 
     @OneToMany(mappedBy = "sport",fetch = FetchType.LAZY)
