@@ -39,10 +39,6 @@ public class PurchaseBean {
     }
 
     public Purchase create(Set<ProductPurchase> productPurchases, String username) throws MyEntityNotFoundException, MyConstraintViolationException {
-        return this.create(productPurchases, username, 0);
-    }
-
-    public Purchase create(Set<ProductPurchase> productPurchases, String username, float totalEuros) throws MyConstraintViolationException, MyEntityNotFoundException {
         try {
             User user = userBean.find(username);
             if (user == null) {
@@ -54,11 +50,12 @@ public class PurchaseBean {
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
 
             System.out.println("valoremeuros:" + totalEmEuros);
-            Purchase purchase = new Purchase();
-            purchase.setUser(user);
+//            Purchase purchase = new Purchase();
+//            purchase.setUser(user);
+//            purchase.addProductPurchases(productPurchases);
+//            purchase.setTotalEuros(totalEmEuros);
+            Purchase purchase = new Purchase(totalEmEuros, user);
             purchase.addProductPurchases(productPurchases);
-            purchase.setTotalEuros(totalEmEuros);
-            //Purchase purchase = new Purchase(productPurchases, totalEmEuros, user);
             em.persist(purchase);
             return purchase;
         } catch (ConstraintViolationException e) {

@@ -40,10 +40,9 @@ public class Purchase {
         this.productPurchases = new LinkedHashSet<>();
     }
 
-    public Purchase(Set<ProductPurchase> productPurchases, BigDecimal totalEuros, User user){
+    public Purchase(BigDecimal totalEuros, User user){
         this();
         this.user = user;
-        this.productPurchases = productPurchases;
         this.totalEuros = totalEuros;
     }
 

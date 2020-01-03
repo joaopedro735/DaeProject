@@ -100,6 +100,14 @@ public class ProductBean {
         }
     }
 
+    public List<Product> find(List<Integer> ids) {
+        try {
+            return (List<Product>) em.createNamedQuery("Products.getByIds").setParameter("ids", ids).getResultList();
+        } catch (Exception e) {
+            throw new EJBException("ERROR_FINDING_PRODUCTS", e);
+        }
+    }
+
     public Product findByTableNameAndTypeAndRelatedId(String tableName, int typeId, int relatedId) {
         try {
             return (Product) em.createNamedQuery("Products.getLatestProductByTableNameAndTypeAndRelatedId")

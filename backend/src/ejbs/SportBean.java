@@ -50,6 +50,9 @@ public class SportBean {
     @EJB
     private PurchaseBean purchaseBean;
 
+    @EJB
+    private ProductPurchaseBean productPurchaseBean;
+
     public SportBean() {
     }
 
@@ -161,15 +164,20 @@ public class SportBean {
         }
     }
 
-    public void enrollPartner(String username, int sportsCode) {
+    public void enrollPartner(String username, int sportCode) {
         try {
             Partner partner = partnerBean.find(username);
-            Sport sport = find(sportsCode);
-
+            Sport sport = find(sportCode);
+            if (sport == null) {
+                throw new MyEntityNotFoundException("Sport with code '" + sportCode + "' not found.");
+            }
             sport.addPartner(partner);
             partner.addSport(sport);
-            Product product = getMembershipProduct(sportsCode);
-            ProductPurchase productPurchase = new ProductPurchase(product, "month", 10);
+            Product product = getMembershipProduct(sportCode);
+            if (product == null) {
+                throw new MyEntityNotFoundException("Product Membership for Sport with code: '" + sportCode + " not found");
+            }
+            ProductPurchase productPurchase = productPurchaseBean.create(product, "month", 1);
             Set<ProductPurchase> productPurchaseSet = Collections.singleton(productPurchase);
             purchaseBean.create(productPurchaseSet, username);
         } catch (Exception e) {

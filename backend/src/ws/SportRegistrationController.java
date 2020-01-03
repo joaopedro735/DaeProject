@@ -27,7 +27,6 @@ public class SportRegistrationController {
             dto.setRank(rankDTO);
         }
         if (sportRegistration.getGraduation() != null) {
-            //todo: change to GraduationControler.toDTO
             GraduationDTO graduationDTO = GraduationController.toDTO(sportRegistration.getGraduation());
             dto.setGraduation(graduationDTO);
         }

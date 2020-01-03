@@ -25,6 +25,10 @@ import java.math.BigDecimal;
         @NamedQuery(
                 name = "getProductsByNameSearch",
                 query = "SELECT a FROM Product a where upper(a.description) LIKE upper(:name) ORDER BY a.description"
+        ),
+        @NamedQuery(
+                name = "Products.getByIds",
+                query = "SELECT p FROM Product p WHERE p.id IN (:ids) ORDER BY p.description"
         )
 })
 @Table(name = "PRODUCTS", uniqueConstraints = @UniqueConstraint(columnNames = {"ORIGINAL_ID", "TYPE_ID", "TABLE_NAME", "RELATED_ID"}))

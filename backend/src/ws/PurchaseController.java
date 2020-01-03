@@ -1,20 +1,30 @@
 package ws;
 
+import dtos.ProductPurchaseDTO;
 import dtos.PurchaseDTO;
 import ejbs.ProductBean;
 import ejbs.ProductPurchaseBean;
 import ejbs.PurchaseBean;
 import ejbs.UserBean;
-import entities.*;
+import entities.Product;
+import entities.ProductPurchase;
+import entities.Purchase;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
 import exceptions.MyEntityNotFoundException;
 
 import javax.ejb.EJB;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Path("/purchases")
 @Produces({MediaType.APPLICATION_JSON})
@@ -50,23 +60,18 @@ public class PurchaseController {
     public Response createNewPurchase(PurchaseDTO purchaseDTO) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
         Principal principal = securityContext.getUserPrincipal();
 
-        if(securityContext.isUserInRole("Administrator")){
+        if (securityContext.isUserInRole("Administrator")) {
             Set<ProductPurchase> productPurchases = new HashSet<>();
-            Product product;
-            ProductPurchase productPurchase;
-            Purchase purchase;
-
-            for (int i = 0; i < purchaseDTO.getProductPurchases().length; i++) {
-                product = productBean.find(purchaseDTO.getProductPurchases()[i].getProduct().getId());
-                if (product == null){
-                    throw new MyEntityNotFoundException("Product with id " + purchaseDTO.getProductPurchases()[i].getProduct().getId() + " not found");
+            for (ProductPurchaseDTO productPurchaseDTO : purchaseDTO.getProductPurchases()) {
+                Product product = productBean.find(productPurchaseDTO.getProduct().getId());
+                if (product == null) {
+                    throw new MyEntityNotFoundException("Product with id " + productPurchaseDTO.getProduct().getId() + " not found");
                 }
-                productPurchase = productPurchaseBean.create(product, purchaseDTO.getProductPurchases()[i].getUnity(), purchaseDTO.getProductPurchases()[i].getQuantity());
+                ProductPurchase productPurchase = productPurchaseBean.create(product, productPurchaseDTO.getUnity(), productPurchaseDTO.getQuantity());
                 productPurchases.add(productPurchase);
-                //totalEuros += product.getValue() * purchaseDTO.getProductPurchases()[i].getQuantity();
             }
-           purchase = purchaseBean.create(productPurchases, purchaseDTO.getUsername());
-        return Response.status(Response.Status.OK).entity(toDTO(purchase)).build();
+            Purchase purchase = purchaseBean.create(productPurchases, purchaseDTO.getUsername());
+            return Response.status(Response.Status.OK).entity(toDTO(purchase)).build();
         }
         return Response.status(Response.Status.FORBIDDEN).build();
     }
