@@ -8,17 +8,26 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "PRODUCTS")
 @NamedQueries({
         @NamedQuery(
                 name = "getAllProducts",
-                query = "SELECT p FROM Product p ORDER BY p.id" //JPQL
+                query = "SELECT p FROM Product p " +
+                        "WHERE p.id NOT IN (SELECT p1.originalId FROM Product p1 WHERE p1.originalId IS NOT NULL) " +
+                        "ORDER BY p.id"
         ),
+        @NamedQuery(
+        name = "Products.getLatestProductByTableNameAndTypeAndRelatedId",
+        query = "SELECT p FROM Product p " +
+                "WHERE p.id = (SELECT MAX(p1.id) " +
+                              "FROM Product p1 " +
+                              "WHERE UPPER(p1.tableName) = UPPER(:tableName) AND p1.type.id = :typeId AND p1.relatedId = :relatedId " +
+                              "GROUP BY p1.relatedId, p1.type.id, p1.tableName)"),
         @NamedQuery(
                 name = "getProductsByNameSearch",
                 query = "SELECT a FROM Product a where upper(a.description) LIKE upper(:name) ORDER BY a.description"
         )
 })
+@Table(name = "PRODUCTS", uniqueConstraints = @UniqueConstraint(columnNames = {"ORIGINAL_ID", "TYPE_ID", "TABLE_NAME"}))
 public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,6 +35,7 @@ public class Product implements Serializable {
 
     @ManyToOne
     @NotNull
+    @JoinColumn(name = "TYPE_ID")
     protected Type type;
 
     @NotNull
@@ -35,13 +45,18 @@ public class Product implements Serializable {
     protected float value;
 
     @Nullable
+    @Column(name = "ORIGINAL_ID")
     protected Integer originalId;
 
     @Version
     private int version;
 
     @NotNull
+    @Column(name = "TABLE_NAME")
     protected String tableName;
+
+    @Column(name = "RELATED_ID")
+    protected Integer relatedId;
 
     public Product() {
     }
@@ -54,12 +69,21 @@ public class Product implements Serializable {
         this.tableName = tableName;
     }
 
-    public Product(int originalId, Type type, String description, float value, String tableName) {
+    public Product(Integer originalId, Type type, String description, float value, String tableName) {
         this.originalId = originalId;
         this.type = type;
         this.description = description;
         this.value = value;
         this.tableName = tableName;
+    }
+
+    public Product(Integer originalId, Type type, String description, float value, String tableName, Integer relatedId) {
+        this.originalId = originalId;
+        this.type = type;
+        this.description = description;
+        this.value = value;
+        this.tableName = tableName;
+        this.relatedId = relatedId;
     }
 
     public int getOriginalId() {
@@ -120,5 +144,13 @@ public class Product implements Serializable {
 
     public void setValue(float value) {
         this.value = value;
+    }
+
+    public int getRelatedId() {
+        return relatedId;
+    }
+
+    public void setRelatedId(int relatedId) {
+        this.relatedId = relatedId;
     }
 }

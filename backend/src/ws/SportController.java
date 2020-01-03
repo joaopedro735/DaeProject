@@ -71,11 +71,17 @@ public class SportController {
     @POST
     @Path("/")
     public Response createNewSport(SportDTO sportDTO) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
-        Sport newSport = sportBean.create(sportDTO.getName());
+        String msg;
+        try {
+            Sport newSport = sportBean.create(sportDTO.getName(), sportDTO.getRegistrationPrice(), sportDTO.getMembershipPrice());
 
-        return Response.status(Response.Status.CREATED)
-                .entity(toDTO(newSport, null))
-                .build();
+            return Response.status(Response.Status.CREATED)
+                    .entity(toDTO(newSport, null))
+                    .build();
+        } catch (MyEntityAlreadyExistsException | MyConstraintViolationException e) {
+            msg = "ERROR_CREATING_SPORT ->" + e.getMessage();
+        }
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(msg).build();
 
     }
 
@@ -98,6 +104,8 @@ public class SportController {
                         dto.setTrainers(TrainerController.toDTOs(sport.getTrainers()));
                         dto.setPartners(PartnerController.toDTOs(sport.getPartners()));
                         dto.setAthletes(AthleteController.toDTOs(sport.getAhtletes(), null));
+                        dto.setRanks(RankController.toDTOs(sport.getRanks()));
+                        dto.setGraduations(GraduationController.toDTOs(sport.getGraduations()));
                         dto.setRanks(RankController.toDTOs(sport.getRanks()));
                         return dto;
                     })).build();

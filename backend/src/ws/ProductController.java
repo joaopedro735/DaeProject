@@ -59,7 +59,7 @@ public class ProductController {
                     .entity(entity)
                     .build();
         } catch (Exception e) {
-            msg = "ERROR_GET_TRAINERS --->" + e.getMessage();
+            msg = "ERROR_GET_PRODUCTS --->" + e.getMessage();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(msg)
@@ -101,7 +101,7 @@ public class ProductController {
             Product product = productBean.create(
                     productDTO.getTypeCode(),
                     productDTO.getDescription(),
-                    productDTO.getValue(), null, null
+                    productDTO.getValue()
             );
             return Response.status(Response.Status.CREATED)
                     .entity(toDTO(product))

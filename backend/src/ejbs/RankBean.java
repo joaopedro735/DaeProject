@@ -31,15 +31,19 @@ public class RankBean {
             if (sport == null) {
                 throw new MyEntityNotFoundException("Sport with code '" + sportCode + "' not found");
             }
-            //todo: verify if rank already exists in
             Rank rank = new Rank();
             rank.setName(name);
             rank.setSport(sport);
+            if (sport.rankExists(rank)) {
+                throw new MyEntityAlreadyExistsException("Rank with name '" + name + "' already exists in sport '" + sport.getName() + "'");
+            }
             sport.addRank(rank);
             em.persist(rank);
             return rank;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+        } catch (Exception e) {
+            throw e;
         }
     }
 

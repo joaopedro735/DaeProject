@@ -1,7 +1,6 @@
 package ejbs;
 
 import entities.Graduation;
-import entities.Rank;
 import entities.Sport;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
@@ -32,15 +31,19 @@ public class GraduationBean {
             if (sport == null) {
                 throw new MyEntityNotFoundException("Sport with code '" + sportCode + "' not found");
             }
-            //todo: verify if graduation already exists in
             Graduation graduation = new Graduation();
             graduation.setName(name);
             graduation.setSport(sport);
+            if (sport.graduationExists(graduation)) {
+                throw new MyEntityAlreadyExistsException("Graduation with name '" + name + "' already exists in sport '" + sport.getName() + "'");
+            }
             sport.addGraduation(graduation);
             em.persist(graduation);
             return graduation;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+        } catch (Exception e) {
+            throw e;
         }
     }
 

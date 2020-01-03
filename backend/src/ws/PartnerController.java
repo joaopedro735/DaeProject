@@ -3,8 +3,10 @@ package ws;
 import dtos.PartnerDTO;
 import dtos.TrainerDTO;
 import ejbs.PartnerBean;
+import ejbs.SportBean;
 import ejbs.TrainerBean;
 import entities.Partner;
+import entities.Sport;
 import entities.Trainer;
 import entities.User;
 import exceptions.MyConstraintViolationException;
@@ -26,6 +28,9 @@ import java.util.stream.Collectors;
 public class PartnerController {
     @EJB
     private PartnerBean partnerBean;
+
+    @EJB
+    private SportBean sportBean;
 
     @Context
     private SecurityContext securityContext;
@@ -133,6 +138,30 @@ public class PartnerController {
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
             msg = "ERROR_DELETING_PARTNER --->" + e.getMessage();
+        }
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity(msg)
+                .build();
+    }
+
+    @GET
+    @Path("/availableToEnroll/{sportCode}")
+    public Response availableToEnrollToSport(@PathParam("sportCode") Integer sportCode, @QueryParam("name") String nameToSearch) {
+        String msg;
+        System.out.println(nameToSearch);
+        try {
+            Sport sport = sportBean.find(sportCode);
+            if (sport == null) {
+                throw new MyEntityNotFoundException("Sport with code '" + sportCode + "' not found");
+            }
+            List<Partner> allAvailable = partnerBean.findBySearch(nameToSearch).stream().filter(p -> !p.getSports().contains(sport)).collect(Collectors.toList());
+            GenericEntity<List<PartnerDTO>> entity = new GenericEntity<List<PartnerDTO>>(toDTOs(allAvailable)) {
+            };
+            return Response.status(Response.Status.OK)
+                    .entity(entity)
+                    .build();
+        } catch (Exception e) {
+            msg = "ERROR_GET_TRAINERS_AVAILABLE_TO_SUBSCRIBE --->" + e.getMessage();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(msg)

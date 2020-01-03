@@ -1,12 +1,11 @@
 package entities;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -26,6 +25,7 @@ public class Sport implements Serializable {
     private int code;
 
     @NotNull
+    @NotBlank
     private String name;
 
     @OneToMany(mappedBy = "sport",fetch = FetchType.LAZY)
@@ -43,14 +43,6 @@ public class Sport implements Serializable {
             joinColumns = @JoinColumn(name = "SPORT_CODE", referencedColumnName = "CODE"),
             inverseJoinColumns = @JoinColumn(name = "PARTNER_USERNAME", referencedColumnName = "USERNAME"))
     private Set<Partner> partners;
-
-    //TODO: remove
-    @ManyToMany
-    @JoinTable(
-            name = "SPORTS_ATHLETES",
-            joinColumns = @JoinColumn(name = "SPORT_CODE", referencedColumnName = "CODE"),
-            inverseJoinColumns = @JoinColumn(name = "ATHLETE_USERNAME", referencedColumnName = "USERNAME"))
-    private Set<Athlete> athletes;
 
     @ManyToMany
     @JoinTable(
@@ -70,7 +62,6 @@ public class Sport implements Serializable {
         this.graduations = new LinkedHashSet<>();
         this.partners = new LinkedHashSet<>();
         this.trainers = new LinkedHashSet<>();
-        this.athletes = new LinkedHashSet<>();
         this.practicedBy = new LinkedHashSet<>();
         this.timeTables = new LinkedHashSet<>();
     }
@@ -107,8 +98,6 @@ public class Sport implements Serializable {
 
     public void removeAthlete(Athlete athlete) {
         this.partners.remove(athlete);
-        //TODO: remove
-        this.athletes.remove(athlete);
         //TODO: should we do this way?
         this.practicedBy.removeIf(pB -> pB.getSport().getCode() == this.code);
         athlete.getMySportRegistrations().removeIf(msp -> {
@@ -175,6 +164,14 @@ public class Sport implements Serializable {
         return graduations;
     }
 
+    public boolean rankExists(Rank rank) {
+        return this.ranks.contains(rank);
+    }
+
+    public boolean graduationExists(Graduation graduation) {
+        return this.graduations.contains(graduation);
+    }
+
     @Transient
     public boolean timeTablesExists(Collection<TimeTable> timeTables) {
         return this.timeTables.containsAll(timeTables);
@@ -188,5 +185,19 @@ public class Sport implements Serializable {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Sport)) return false;
+        Sport sport = (Sport) o;
+        return code == sport.code &&
+                Objects.equals(name, sport.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, name);
     }
 }

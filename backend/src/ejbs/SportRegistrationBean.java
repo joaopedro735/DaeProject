@@ -60,12 +60,11 @@ public class SportRegistrationBean {
             em.persist(sportRegistration);
 
 
-            float value = sportSubscriptionPriceListBean.findValue(sportCode);
+            //float value = sportSubscriptionPriceListBean.findValue(sportCode);
             //TODO subsitutir id 6 para alterar dinâmicamente
-            productBean.create(6, "Registration of Athlete: " + athleteUsername + "in sport: " + sportRegistration.getSport().getName(),
-                   value, sportRegistration.getId(), SportRegistration.class.getName());
+            //productBean.create(6, "Registration of Athlete: " + athleteUsername + "in sport: " + sportRegistration.getSport().getName(),
+            //       value, sportRegistration.getId(), SportRegistration.class.getName());
             //TODO Criar Purchase!
-
 
             return sportRegistration;
         } catch (ConstraintViolationException e) {

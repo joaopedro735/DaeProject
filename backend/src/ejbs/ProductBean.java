@@ -10,7 +10,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.util.Collection;
@@ -27,45 +27,50 @@ public class ProductBean {
     public ProductBean() {
     }
 
-    public Product create(int typeCode, String description, float value, Integer originalId, String className) throws MyEntityAlreadyExistsException, MyConstraintViolationException, MyEntityNotFoundException {
-       //TODO See if the product already exists
+    public Product create(int typeCode, String description, float value) throws MyEntityNotFoundException, MyConstraintViolationException, MyEntityAlreadyExistsException {
+        return this.create(typeCode, description, value, null, Product.class.getName(), null);
+    }
+
+    public Product create(int typeCode, String description, float value, Integer originalId, String className, Integer relatedId) throws MyEntityAlreadyExistsException, MyConstraintViolationException, MyEntityNotFoundException {
+        //TODO See if the product already exists
         Type type = typeBean.find(typeCode);
-        String tableName;
         Product product;
-        if ( type == null) {
-            throw new MyEntityNotFoundException("Type '" + type + "' doesn't exists");
+        if (type == null) {
+            throw new MyEntityNotFoundException("Type '" + typeCode + "' doesn't exists");
         }
 
         try {
-            product = new Product(type, description, value, Product.class.getName());
+            product = new Product(originalId, type, description, value, className, relatedId);
             em.persist(product);
             return product;
 
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+        } catch (Exception e) {
+            throw e;
         }
     }
 
-    public void remove(int id){
+    public void remove(int id) {
         try {
             Product product = em.find(Product.class, id);
             if (product == null) {
                 throw new MyEntityNotFoundException("Product with id'" + id + "' not found.");
             }
             em.remove(product);
-        } catch(Exception e){
+        } catch (Exception e) {
             throw new EJBException("ERROR_REMOVING_PRODUCT", e);
         }
     }
 
-    public Product update(int id,int typeCode, String description, float value) throws MyEntityNotFoundException {
+    public Product update(int id, int typeCode, String description, float value) throws MyEntityNotFoundException {
         try {
             Product product = em.find(Product.class, id);
             Type type = typeBean.find(typeCode);
             if (product == null) {
                 throw new MyEntityNotFoundException("Product with id '" + id + "' not found.");
             }
-            if (type == null){
+            if (type == null) {
                 throw new MyEntityNotFoundException("Type with id '" + id + "' not found. ");
             }
             Product productNewVersion = new Product(product.getId(), type, description, value, product.getTableName());
@@ -94,6 +99,18 @@ public class ProductBean {
         }
     }
 
+    public Product findByTableNameAndTypeAndRelatedId(String tableName, int typeId, int relatedId) {
+        try {
+            return (Product) em.createNamedQuery("Products.getLatestProductByTableNameAndTypeAndRelatedId")
+                    .setParameter("tableName", tableName)
+                    .setParameter("typeId", typeId)
+                    .setParameter("relatedId", relatedId).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (Exception e) {
+            throw new EJBException("ERROR_RETRIEVING_PRODUCT", e);
+        }
+    }
     public List<Product> findBySearch(String toSearch) {
         try {
             return (List<Product>) em.createNamedQuery("getProductsByNameSearch").setParameter("name", "%" + toSearch + "%").getResultList();
