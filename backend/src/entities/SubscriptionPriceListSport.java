@@ -2,10 +2,10 @@ package entities;
 
 import javax.persistence.*;
 
-@Table(name="SportSubscriptionPriceList")
+@Table(name="SPORT_SUBSCRIPTION_PRICE_LIST")
 @Entity
+//TODO: REMOVE CLASS
 public class SubscriptionPriceListSport {
-
     @Id
     @OneToOne
     private Sport sport;

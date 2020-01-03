@@ -89,8 +89,8 @@ public class ConfigBean {
             //endregion
 
             //region Sports
-            Sport judo = sportBean.create("Judo");
-            Sport basquetebol = sportBean.create("Basquetebol");
+            Sport judo = sportBean.create("Judo", 5000, 20);
+            Sport basquetebol = sportBean.create("Basquetebol", 8000.20f, 22.99f);
             //endregion
 
             //region to create SportSubscriptionPriceList
@@ -102,7 +102,8 @@ public class ConfigBean {
             Type sportItem = typeBean.create("Sport Item");
             Type insurance = typeBean.create("Insurance");
             Type graduation = typeBean.create("Graduation");
-            Type subscription = typeBean.create("Subscription");
+            //Type membership = typeBean.create("Membership");
+            //Type registration = typeBean.create("Registration");
             Type share = typeBean.create("Share");
             Type typeClass = typeBean.create("Class");
             Type internship = typeBean.create("Internship");
@@ -143,23 +144,23 @@ public class ConfigBean {
             //endregion
 
             //region Purchases
-            Product product = productBean.create(6, "Televisão", 100, null, Product.class.getName());
-            Product product2 = productBean.create(6, "Carro", 100, null, Product.class.getName());
+            //Product product = productBean.create(6, "Televisão", 100, null, Product.class.getName());
+            //Product product2 = productBean.create(6, "Carro", 100, null, Product.class.getName());
             //endregion
 
             //region Payments
-            ProductPurchase productPurchase = productPurchaseBean.create(product, "un", 2);
-            ProductPurchase productPurchase2 = productPurchaseBean.create(product2, "un", 2);
+            //ProductPurchase productPurchase = productPurchaseBean.create(product, "un", 2);
+            //ProductPurchase productPurchase2 = productPurchaseBean.create(product2, "un", 2);
             //endregion
 
             //region Product Purchases
-            Set<ProductPurchase> productPurchases = new LinkedHashSet<>();
-            productPurchases.add(productPurchase);
-            productPurchases.add(productPurchase2);
+            //Set<ProductPurchase> productPurchases = new LinkedHashSet<>();
+            //productPurchases.add(productPurchase);
+            //productPurchases.add(productPurchase2);
             //endregion
 
             //region Purchase
-            purchaseBean.create(productPurchases, "athlete", 150);
+            //purchaseBean.create(productPurchases, "athlete", 150);
             //endregion
 
             //region ETC...
@@ -176,6 +177,8 @@ public class ConfigBean {
             System.out.println(athlete.getAthleteSports().toString());
             System.out.println(athlete.getSports().toString());*/
             //endregion
+
+            //System.out.println("Product value: " + sportBean.getRegistrationPrice(basquetebol.getCode()));
 
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage());

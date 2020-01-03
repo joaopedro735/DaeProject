@@ -1,5 +1,6 @@
 package ejbs;
 
+import entities.Sport;
 import entities.Type;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
@@ -10,6 +11,7 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
@@ -25,9 +27,9 @@ public class TypeBean {
 
     //TODO See if the find work for the name ;)
     public Type create(String name) throws MyEntityAlreadyExistsException, MyConstraintViolationException {
-       /* if (find(name) != null) {
+        if (findByName(name) != null) {
             throw new MyEntityAlreadyExistsException("Type named '" + name + "' already exists");
-        }*/
+        }
         try {
             Type type = new Type(name);
             em.persist(type);
@@ -85,6 +87,16 @@ public class TypeBean {
             return em.find(Type.class, id);
         } catch (Exception e) {
             throw new EJBException("ERROR_FINDING_TYPE", e);
+        }
+    }
+
+    public Type findByName(String name) {
+        try {
+            return (Type) em.createNamedQuery("Type.getTypeByName").setParameter("name", name).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (Exception e) {
+            throw new EJBException("ERROR_RETRIEVING_TYPE", e);
         }
     }
 }

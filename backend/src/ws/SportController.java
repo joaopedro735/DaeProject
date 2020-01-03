@@ -73,7 +73,7 @@ public class SportController {
     public Response createNewSport(SportDTO sportDTO) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
         String msg;
         try {
-            Sport newSport = sportBean.create(sportDTO.getName());
+            Sport newSport = sportBean.create(sportDTO.getName(), sportDTO.getRegistrationPrice(), sportDTO.getMembershipPrice());
 
             return Response.status(Response.Status.CREATED)
                     .entity(toDTO(newSport, null))

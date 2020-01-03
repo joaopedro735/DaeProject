@@ -15,10 +15,13 @@ public class SportDTO {
 
     private Collection<TimeTableDTO> timeTables;
 
-    //todo: send rank and graduation
     private Collection<RankDTO> ranks;
 
     private Collection<GraduationDTO> graduations;
+
+    private float registrationPrice;
+
+    private float membershipPrice;
 
     public SportDTO() {
     }
@@ -90,5 +93,21 @@ public class SportDTO {
 
     public void setGraduations(Collection<GraduationDTO> graduations) {
         this.graduations = graduations;
+    }
+
+    public float getRegistrationPrice() {
+        return registrationPrice;
+    }
+
+    public void setRegistrationPrice(float registrationPrice) {
+        this.registrationPrice = registrationPrice;
+    }
+
+    public float getMembershipPrice() {
+        return membershipPrice;
+    }
+
+    public void setMembershipPrice(float membershipPrice) {
+        this.membershipPrice = membershipPrice;
     }
 }

@@ -8,7 +8,11 @@ import java.util.Set;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllTypes",
-                query = "SELECT a FROM Type a ORDER BY a.name" //JPQL
+                query = "SELECT a FROM Type a ORDER BY a.name"
+        ),
+        @NamedQuery(
+                name = "Type.getTypeByName",
+                query = "SELECT t FROM Type t WHERE UPPER(t.name) = UPPER(:name)"
         )
 })
 
