@@ -1,5 +1,7 @@
 package ws;
 
+import dtos.ProductPurchaseDTO;
+import dtos.PurchaseDTO;
 import dtos.*;
 import ejbs.ProductBean;
 import ejbs.ProductPurchaseBean;
@@ -14,7 +16,6 @@ import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.security.Principal;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
@@ -54,9 +55,10 @@ public class PurchaseController {
         return dto;
     }
 
-    public static ProductPurchaseDTO ProdsPurchasestoDTO(ProductPurchase productPurchase) {
+    public static ProductPurchaseDTO prodsPurchasesToDTO(ProductPurchase productPurchase) {
         return new ProductPurchaseDTO(
                 productPurchase.getId(),
+                productPurchase.getProduct().getId(),
                 productPurchase.getProduct().getType().getId(),
                 productPurchase.getProduct().getType().getName(),
                 productPurchase.getProduct().getDescription(),
@@ -80,8 +82,8 @@ public class PurchaseController {
         return purchases.stream().map(s -> PurchaseController.toDTO(s, fn)).collect(Collectors.toList());
     }
 
-    public static List<ProductPurchaseDTO> ProdsPurchasestoDTOs(Collection<ProductPurchase> productPurchases) {
-        return productPurchases.stream().map(PurchaseController::ProdsPurchasestoDTO).collect(Collectors.toList());
+    public static ProductPurchaseDTO[] prodsPurchasestoDTOs(Collection<ProductPurchase> productPurchases) {
+        return productPurchases.stream().map(PurchaseController::prodsPurchasesToDTO).toArray(ProductPurchaseDTO[]::new);
     }
 
     @GET
@@ -106,11 +108,10 @@ public class PurchaseController {
     @Path("/{id}")
     public Response getPurchaseDetails(@PathParam("id") int id) {
         Principal principal = securityContext.getUserPrincipal();
-        System.out.println(principal.getName());
-        if (securityContext.isUserInRole("Administrator") || principal.getName().equals(id)) {
+        if (principal != null && (securityContext.isUserInRole("Administrator") || principal.getName().equals(id))) {
             Purchase purchase = purchaseBean.find(id);
             return Response.status(Response.Status.OK).entity(toDTO(purchase, dto -> {
-                dto.setProductPurchases((ProductPurchaseDTO[]) PurchaseController.ProdsPurchasestoDTOs(purchase.getProductPurchases()).toArray());
+                dto.setProductPurchases(PurchaseController.prodsPurchasestoDTOs(purchase.getProductPurchases()));
                 return dto;
             })).build();
         }

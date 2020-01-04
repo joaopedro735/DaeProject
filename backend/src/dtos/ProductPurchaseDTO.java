@@ -15,11 +15,12 @@ public class ProductPurchaseDTO {
     public ProductPurchaseDTO() {
     }
 
-    public ProductPurchaseDTO(int id, int productTypeCode, String productTypeName, String productDescription, String unity, int quantity) {
+    public ProductPurchaseDTO(int id, int productId, int productTypeCode, String productTypeName, String productDescription, String unity, int quantity) {
         this.id = id;
         this.product = new ProductDTO();
         this.unity = unity;
         this.quantity = quantity;
+        product.setId(productId);
         product.setTypeCode(productTypeCode);
         product.setTypeName(productTypeName);
         product.setDescription(productDescription);
