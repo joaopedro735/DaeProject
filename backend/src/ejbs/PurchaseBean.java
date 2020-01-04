@@ -1,9 +1,6 @@
 package ejbs;
 
-import entities.Payment;
-import entities.ProductPurchase;
-import entities.Purchase;
-import entities.User;
+import entities.*;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityNotFoundException;
 import exceptions.Utils;
@@ -30,9 +27,9 @@ public class PurchaseBean {
     public PurchaseBean() {
     }
 
-    public List<Payment> all() {
+    public List<Purchase> all() {
         try {
-            return (List<Payment>) em.createNamedQuery("getAllPurchases").getResultList();
+            return (List<Purchase>) em.createNamedQuery("getAllPurchases").getResultList();
         } catch (Exception e) {
             throw new EJBException("ERROR_RETRIEVING_PURCHASES", e);
         }
@@ -94,6 +91,14 @@ public class PurchaseBean {
 
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+        }
+    }
+
+    public Purchase find(int id) {
+        try {
+            return em.find(Purchase.class, id);
+        } catch (Exception e) {
+            throw new EJBException("ERROR_FINDING_PURCHASE", e);
         }
     }
 }
