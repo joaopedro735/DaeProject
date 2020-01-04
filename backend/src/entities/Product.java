@@ -24,7 +24,10 @@ import java.math.BigDecimal;
                               "GROUP BY p1.relatedId, p1.type.id, p1.tableName)"),
         @NamedQuery(
                 name = "getProductsByNameSearch",
-                query = "SELECT a FROM Product a where upper(a.description) LIKE upper(:name) ORDER BY a.description"
+                query = "SELECT p FROM Product p " +
+                        "WHERE upper(p.description) LIKE upper(:name) " +
+                        "AND p.id NOT IN (SELECT p1.originalId FROM Product p1 WHERE p1.originalId IS NOT NULL) " +
+                        "ORDER BY p.description"
         ),
         @NamedQuery(
                 name = "Products.getByIds",
