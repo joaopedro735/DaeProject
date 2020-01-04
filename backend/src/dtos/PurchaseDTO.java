@@ -1,21 +1,41 @@
 package dtos;
 
+import java.util.Collection;
+
 public class PurchaseDTO {
     private int id;
     private ProductPurchaseDTO[] productPurchases;
     private String purchaseDate;
-    private PaymentDTO paymentDTO;
+    private Collection<PaymentDTO> payments;
     private String username;
+    private String name;
     private Double totalEuros;
 
     public PurchaseDTO() {
     }
 
-    public PurchaseDTO(int id, String purchaseDate, String username, Double totalEuros) {
+    public PurchaseDTO(int id, String purchaseDate, String username, Double totalEuros, String name) {
         this.id = id;
         this.purchaseDate = purchaseDate;
         this.username = username;
         this.totalEuros = totalEuros;
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Collection<PaymentDTO> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(Collection<PaymentDTO> payments) {
+        this.payments = payments;
     }
 
     public int getId() {

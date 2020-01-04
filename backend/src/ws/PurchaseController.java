@@ -10,9 +10,11 @@ import ejbs.UserBean;
 import entities.*;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
+import exceptions.MyEntityIllegalArgumentException;
 import exceptions.MyEntityNotFoundException;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.security.Principal;
@@ -46,7 +48,8 @@ public class PurchaseController {
                 purchase.getId(),
                 purchase.getPurchaseDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss")),
                 purchase.getUser().getUsername(),
-                purchase.getTotalEuros().doubleValue()
+                purchase.getTotalEuros().doubleValue(),
+                purchase.getUser().getName()
         );
 
         if (fn != null) {
@@ -82,6 +85,10 @@ public class PurchaseController {
         return purchases.stream().map(s -> PurchaseController.toDTO(s, fn)).collect(Collectors.toList());
     }
 
+    public static List<PaymentDTO> paymentToDTOs(Collection<Payment> purchases) {
+        return purchases.stream().map(PurchaseController::paymentToDTO).collect(Collectors.toList());
+    }
+
     public static ProductPurchaseDTO[] prodsPurchasestoDTOs(Collection<ProductPurchase> productPurchases) {
         return productPurchases.stream().map(PurchaseController::prodsPurchasesToDTO).toArray(ProductPurchaseDTO[]::new);
     }
@@ -112,6 +119,7 @@ public class PurchaseController {
             Purchase purchase = purchaseBean.find(id);
             return Response.status(Response.Status.OK).entity(toDTO(purchase, dto -> {
                 dto.setProductPurchases(PurchaseController.prodsPurchasestoDTOs(purchase.getProductPurchases()));
+                dto.setPayments(PurchaseController.paymentToDTOs(purchase.getPaymentList()));
                 return dto;
             })).build();
         }
@@ -141,7 +149,7 @@ public class PurchaseController {
 
     @POST
     @Path("/{id}/payment")
-    public Response createPaymentPurchase(@PathParam("id") int id, PaymentDTO paymentDTO) throws MyEntityNotFoundException {
+    public Response createPaymentPurchase(@PathParam("id") int id, PaymentDTO paymentDTO) throws MyEntityNotFoundException, MyEntityIllegalArgumentException {
         Principal principal = securityContext.getUserPrincipal();
         if (securityContext.isUserInRole("Administrator")) {
             Purchase purchase = purchaseBean.find(id);

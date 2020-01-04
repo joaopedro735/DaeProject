@@ -2,6 +2,7 @@ package ejbs;
 
 import entities.*;
 import exceptions.MyConstraintViolationException;
+import exceptions.MyEntityIllegalArgumentException;
 import exceptions.MyEntityNotFoundException;
 import exceptions.Utils;
 
@@ -106,32 +107,50 @@ public class PurchaseBean {
         }
     }
 
-    public Payment addPayment(int id, String limiteDateString, String paymentMethod, Double value) {
+    public Payment addPayment(int id, String limiteDateString, String paymentMethod, Double paymentValue) throws MyEntityNotFoundException, MyEntityIllegalArgumentException {
         try {
             Purchase purchase = em.find(Purchase.class, id);
             State state;
-            if(purchase == null){
+            double valuePaid = 0;
+            if (purchase == null) {
                 throw new MyEntityNotFoundException("Purchase entity with id " + id + " not found");
             }
-            if (value < purchase.getTotalEuros().doubleValue()){
-                state = State.PARCIAL;
-            }else{
-                if (value == purchase.getTotalEuros().doubleValue()){
-                    state = State.PAGO;
-                }
-                else {
-                    state = State.NAOPAGO;
+            double purchaseValue = purchase.getTotalEuros().doubleValue();
+            //Already paid paymentValue
+            if (purchase.getPaymentList().size() > 0) {
+                for (Payment payment : purchase.getPaymentList()) {
+                    valuePaid += payment.getValue();
                 }
             }
-            Payment payment = paymentBean.create(state, limiteDateString, paymentMethod, value);
+            double valueLeftToPay = purchaseValue - valuePaid;
+
+
+            if (valuePaid == purchaseValue) {
+                throw new MyEntityIllegalArgumentException("Purchase already paid");
+            }
+
+            if (valueLeftToPay < paymentValue)
+                throw new MyEntityIllegalArgumentException("Value of Payment higher than what it is left to pay!");
+
+            if (valueLeftToPay == paymentValue) {
+                state = State.PAGO;
+            } else {
+                state = State.PARCIAL;
+            }
+            System.out.println(valueLeftToPay);
+            System.out.println(paymentValue);
+
+            Payment payment = paymentBean.create(state, limiteDateString, paymentMethod, paymentValue);
 
             em.lock(purchase, LockModeType.OPTIMISTIC);
             purchase.addPaymentToPaymentList(payment);
             em.merge(purchase);
 
             return payment;
+        } catch (MyEntityIllegalArgumentException e){
+            throw e;
         } catch (Exception e) {
-            throw new EJBException("ERROR_CREATING_PAYMENT", e);
+            throw new EJBException("ERROR_CREATING_PAYMENT --> " + e.getMessage() , e);
         }
     }
 }
