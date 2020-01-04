@@ -2,25 +2,37 @@ package dtos;
 
 import entities.State;
 
-import java.time.LocalDate;
-
 public class PaymentDTO {
     private int id;
 
-    private LocalDate datePayment;
+    private String datePayment;
 
-    private LocalDate limitDayPayment;
+    private String limitDayPayment;
 
-    private State state;
+    private String state;
 
     private String paymentMethod;
 
-    public PaymentDTO(int id, LocalDate datePayment, LocalDate limitDayPayment, State state, String paymentMethod) {
+    private Double value;
+
+    public PaymentDTO() {
+    }
+
+    public PaymentDTO(int id, String datePayment, String limitDayPayment, String state, String paymentMethod, Double value) {
         this.id = id;
         this.datePayment = datePayment;
         this.limitDayPayment = limitDayPayment;
         this.state = state;
         this.paymentMethod = paymentMethod;
+        this.value = value;
+    }
+
+    public Double getValue() {
+        return value;
+    }
+
+    public void setValue(Double value) {
+        this.value = value;
     }
 
     public int getId() {
@@ -31,27 +43,27 @@ public class PaymentDTO {
         this.id = id;
     }
 
-    public LocalDate getDatePayment() {
+    public String getDatePayment() {
         return datePayment;
     }
 
-    public void setDatePayment(LocalDate datePayment) {
+    public void setDatePayment(String datePayment) {
         this.datePayment = datePayment;
     }
 
-    public LocalDate getLimitDayPayment() {
+    public String getLimitDayPayment() {
         return limitDayPayment;
     }
 
-    public void setLimitDayPayment(LocalDate limitDayPayment) {
+    public void setLimitDayPayment(String limitDayPayment) {
         this.limitDayPayment = limitDayPayment;
     }
 
-    public State getState() {
+    public String getState() {
         return state;
     }
 
-    public void setState(State state) {
+    public void setState(String state) {
         this.state = state;
     }
 

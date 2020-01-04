@@ -35,6 +35,9 @@ public class Purchase {
     @Column(name = "TOTAL_EUROS",precision = 19, scale = 2)
     private BigDecimal totalEuros;
 
+    @Version
+    private int version;
+
     public Purchase() {
         this.purchaseDate = LocalDateTime.now();
         this.paymentList = new LinkedHashSet<>();
@@ -57,6 +60,18 @@ public class Purchase {
 
     public LocalDateTime getPurchaseDate() {
         return purchaseDate;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public void addPaymentToPaymentList(Payment p){
+        this.paymentList.add(p);
     }
 
     public void setPurchaseDate(LocalDateTime purchaseDate) {
