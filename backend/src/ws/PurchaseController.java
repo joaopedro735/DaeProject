@@ -1,17 +1,11 @@
 package ws;
 
-import dtos.AdministratorDTO;
-import dtos.ProductPurchaseDTO;
-import dtos.PurchaseDTO;
-import dtos.SportDTO;
+import dtos.*;
 import ejbs.ProductBean;
 import ejbs.ProductPurchaseBean;
 import ejbs.PurchaseBean;
 import ejbs.UserBean;
-import entities.Administrator;
-import entities.Product;
-import entities.ProductPurchase;
-import entities.Purchase;
+import entities.*;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
 import exceptions.MyEntityNotFoundException;
@@ -20,6 +14,8 @@ import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.security.Principal;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -47,7 +43,7 @@ public class PurchaseController {
     public static PurchaseDTO toDTO(Purchase purchase, Function<PurchaseDTO, PurchaseDTO> fn) {
         PurchaseDTO dto = new PurchaseDTO(
                 purchase.getId(),
-                purchase.getPurchaseDate(),
+                purchase.getPurchaseDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss")),
                 purchase.getUser().getUsername(),
                 purchase.getTotalEuros().doubleValue()
         );
@@ -66,6 +62,17 @@ public class PurchaseController {
                 productPurchase.getProduct().getDescription(),
                 productPurchase.getUnity(),
                 productPurchase.getQuantity()
+        );
+    }
+
+    public static PaymentDTO paymentToDTO(Payment payment) {
+        return new PaymentDTO(
+                payment.getId(),
+                payment.getDatePayment().toString(),
+                payment.getLimitDayPayment().toString(),
+                payment.getState().toString(),
+                payment.getPaymentMethod(),
+                payment.getValue()
         );
     }
 
@@ -131,9 +138,20 @@ public class PurchaseController {
         return Response.status(Response.Status.FORBIDDEN).build();
     }
 
-   /* @POST
+    @POST
     @Path("/{id}/payment")
-    public Response createPaymentPurchase(@PathParam("id") int id, PaymentDTO paymentDTO){
+    public Response createPaymentPurchase(@PathParam("id") int id, PaymentDTO paymentDTO) throws MyEntityNotFoundException {
+        Principal principal = securityContext.getUserPrincipal();
+        if (securityContext.isUserInRole("Administrator")) {
+            Purchase purchase = purchaseBean.find(id);
+            if (purchase == null){
+                throw new MyEntityNotFoundException("Purchase with that id " + id + "not found");
+            }
 
-    }*/
+            Payment payment = purchaseBean.addPayment(id, paymentDTO.getLimitDayPayment(), paymentDTO.getPaymentMethod(), paymentDTO.getValue());
+
+            return Response.status(Response.Status.OK).entity(paymentToDTO(payment)).build();
+        }
+        return Response.status(Response.Status.FORBIDDEN).build();
+    }
 }

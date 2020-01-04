@@ -26,16 +26,25 @@ public class Payment /*tem uma Fatura.class */ {
 
     private String paymentMethod;
 
-    private int valor;
+    private Double value;
 
-    public Payment(LocalDate limitDayPayment, State state, String paymentMethod, int valor) {
+    public Payment(LocalDate limitDayPayment, State state, String paymentMethod, Double value) {
         this.datePayment = LocalDate.now();
         this.limitDayPayment = limitDayPayment;
         this.state = state;
         this.paymentMethod = paymentMethod;
+        this.value = value;
     }
 
     public Payment() {
+    }
+
+    public Double getValue() {
+        return value;
+    }
+
+    public void setValue(Double value) {
+        this.value = value;
     }
 
     public int getId() {

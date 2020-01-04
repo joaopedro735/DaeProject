@@ -7,12 +7,14 @@ import exceptions.Utils;
 
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -21,6 +23,8 @@ import java.util.Set;
 public class PurchaseBean {
     @EJB
     UserBean userBean;
+    @EJB
+    PaymentBean paymentBean;
     @PersistenceContext
     private EntityManager em;
 
@@ -99,6 +103,35 @@ public class PurchaseBean {
             return em.find(Purchase.class, id);
         } catch (Exception e) {
             throw new EJBException("ERROR_FINDING_PURCHASE", e);
+        }
+    }
+
+    public Payment addPayment(int id, String limiteDateString, String paymentMethod, Double value) {
+        try {
+            Purchase purchase = em.find(Purchase.class, id);
+            State state;
+            if(purchase == null){
+                throw new MyEntityNotFoundException("Purchase entity with id " + id + " not found");
+            }
+            if (value < purchase.getTotalEuros().doubleValue()){
+                state = State.PARCIAL;
+            }else{
+                if (value == purchase.getTotalEuros().doubleValue()){
+                    state = State.PAGO;
+                }
+                else {
+                    state = State.NAOPAGO;
+                }
+            }
+            Payment payment = paymentBean.create(state, limiteDateString, paymentMethod, value);
+
+            em.lock(purchase, LockModeType.OPTIMISTIC);
+            purchase.addPaymentToPaymentList(payment);
+            em.merge(purchase);
+
+            return payment;
+        } catch (Exception e) {
+            throw new EJBException("ERROR_CREATING_PAYMENT", e);
         }
     }
 }
