@@ -102,7 +102,7 @@ public class TrainerController {
 
     @PUT
     @Path("/{username}")
-    public Response updateAdministrator(@PathParam("username") String username, TrainerDTO trainerDTO){
+    public Response updateTrainer(@PathParam("username") String username, TrainerDTO trainerDTO){
         String msg;
         User user;
         System.out.println(username);
@@ -115,7 +115,7 @@ public class TrainerController {
 
             return Response.status(Response.Status.OK).build();
         } catch (Exception e){
-            msg = "ERROR_UPDATING_ADMINISTRATOR ---> " + e.getMessage();
+            msg = "ERROR_UPDATING_TRAINER ---> " + e.getMessage();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(msg)
@@ -124,13 +124,13 @@ public class TrainerController {
 
     @DELETE
     @Path("/{username}")
-    public Response deleteAdministrator(@PathParam("username") String username) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+    public Response deleteTrainer(@PathParam("username") String username) throws MyEntityAlreadyExistsException, MyEntityNotFoundException, MyConstraintViolationException {
         String msg;
         try {
             trainerBean.remove(username);
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
-            msg = "ERROR_DELETING_ADMINISTRATOR --->" + e.getMessage();
+            msg = "ERROR_DELETING_TRAINER --->" + e.getMessage();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(msg)
