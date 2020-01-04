@@ -23,7 +23,7 @@ public class Purchase {
     @OneToMany
     private Set<Payment> paymentList;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany()
     private Set<ProductPurchase> productPurchases;
 
     @Column(name = "PURCHASE_DATE")

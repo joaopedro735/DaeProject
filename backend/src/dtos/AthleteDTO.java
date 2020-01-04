@@ -1,16 +1,13 @@
 package dtos;
 
 import entities.Purchase;
-import entities.Sport;
-import entities.SportRegistration;
 
 import java.util.Collection;
-import java.util.Collections;
 
 public class AthleteDTO extends UserDTO {
     private Collection<SportRegistrationDTO> sportRegistrations;
 
-    private Collection<SportDTO> membership;
+    private Collection<SportDTO> sportMemberships;
 
     private Collection<Purchase> purchases;
 
@@ -36,5 +33,13 @@ public class AthleteDTO extends UserDTO {
 
     public void setPurchases(Collection<Purchase> purchases) {
         this.purchases = purchases;
+    }
+
+    public Collection<SportDTO> getSportMemberships() {
+        return sportMemberships;
+    }
+
+    public void setSportMemberships(Collection<SportDTO> sportMemberships) {
+        this.sportMemberships = sportMemberships;
     }
 }

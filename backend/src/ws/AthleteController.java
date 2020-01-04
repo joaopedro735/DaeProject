@@ -1,11 +1,9 @@
 package ws;
 
 import dtos.AthleteDTO;
-import dtos.PartnerDTO;
 import ejbs.AthleteBean;
 import ejbs.SportBean;
 import entities.Athlete;
-import entities.Partner;
 import entities.Sport;
 import entities.User;
 import exceptions.MyConstraintViolationException;
@@ -81,6 +79,7 @@ public class AthleteController {
             Athlete athlete = athleteBean.find(username);
             return Response.status(Response.Status.OK).entity(toDTO(athlete, dto -> {
                 dto.setSportRegistrations(SportRegistrationController.toSportRegistrationDTOs(athlete.getMySportRegistrations(), null));
+                dto.setSportMemberships(SportController.toDTOs(athlete.getSports(), null));
                 return dto;
             })).build();
         }

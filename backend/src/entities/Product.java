@@ -45,7 +45,9 @@ public class Product implements Serializable {
     @NotNull
     protected String description;
 
-    protected @NotNull BigDecimal value;
+    @NotNull
+    @Column(name = "VALUE",precision = 19, scale = 2)
+    protected  BigDecimal value;
 
     @Nullable
     @Column(name = "ORIGINAL_ID")

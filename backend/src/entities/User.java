@@ -29,9 +29,6 @@ public abstract class User implements Serializable {
     @Id
     protected String username;
 
-    @Version
-    private int version;
-
     @NotNull
     protected String password;
 
@@ -43,6 +40,9 @@ public abstract class User implements Serializable {
     protected String email;
 
     protected LocalDate birthday;
+
+    @Version
+    protected int version;
 
     public User() {
     }
