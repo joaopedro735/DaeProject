@@ -171,6 +171,9 @@ public class SportBean {
             if (sport == null) {
                 throw new MyEntityNotFoundException("Sport with code '" + sportCode + "' not found.");
             }
+            if (sport.partnerExists(partner)) {
+                throw new MyEntityAlreadyExistsException("User '" + username + "' is already a member on the selected sport");
+            }
             sport.addPartner(partner);
             partner.addSport(sport);
             Product product = getMembershipProduct(sportCode);

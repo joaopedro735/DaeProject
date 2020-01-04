@@ -172,12 +172,14 @@ public class Sport implements Serializable {
         return this.graduations.contains(graduation);
     }
 
-    @Transient
+    public boolean partnerExists(Partner partner) {
+        return this.partners.contains(partner);
+    }
+
     public boolean timeTablesExists(Collection<TimeTable> timeTables) {
         return this.timeTables.containsAll(timeTables);
     }
 
-    @Transient
     public boolean timeTableExists(TimeTable timeTable) {
         return this.timeTables.contains(timeTable);
     }

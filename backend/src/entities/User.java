@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Objects;
 
 @Entity
 @Table(name = "USERS")
@@ -105,5 +106,18 @@ public abstract class User implements Serializable {
     @Override
     public String toString() {
         return username;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return Objects.equals(username, user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
     }
 }

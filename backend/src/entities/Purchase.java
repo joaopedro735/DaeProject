@@ -2,7 +2,7 @@ package entities;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @NamedQueries({
@@ -26,16 +26,17 @@ public class Purchase {
     @OneToMany(cascade = CascadeType.PERSIST)
     private Set<ProductPurchase> productPurchases;
 
-    private LocalDate purchaseDate;
+    @Column(name = "PURCHASE_DATE")
+    private LocalDateTime purchaseDate;
 
     @OneToOne
     private User user;
 
-    @Column(precision = 19, scale = 2)
+    @Column(name = "TOTAL_EUROS",precision = 19, scale = 2)
     private BigDecimal totalEuros;
 
     public Purchase() {
-        this.purchaseDate = LocalDate.now();
+        this.purchaseDate = LocalDateTime.now();
         this.paymentList = new LinkedHashSet<>();
         this.productPurchases = new LinkedHashSet<>();
     }
@@ -54,11 +55,11 @@ public class Purchase {
         this.id = id;
     }
 
-    public LocalDate getPurchaseDate() {
+    public LocalDateTime getPurchaseDate() {
         return purchaseDate;
     }
 
-    public void setPurchaseDate(LocalDate purchaseDate) {
+    public void setPurchaseDate(LocalDateTime purchaseDate) {
         this.purchaseDate = purchaseDate;
     }
 

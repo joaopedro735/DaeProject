@@ -1,11 +1,11 @@
 package dtos;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class PurchaseDTO {
     private int id;
     private ProductPurchaseDTO[] productPurchases;
-    private LocalDate purchaseDate;
+    private LocalDateTime purchaseDate;
     private PaymentDTO paymentDTO;
     private String username;
     private Double totalEuros;
@@ -13,7 +13,7 @@ public class PurchaseDTO {
     public PurchaseDTO() {
     }
 
-    public PurchaseDTO(int id, LocalDate purchaseDate, String username, Double totalEuros) {
+    public PurchaseDTO(int id, LocalDateTime purchaseDate, String username, Double totalEuros) {
         this.id = id;
         this.purchaseDate = purchaseDate;
         this.username = username;
@@ -29,11 +29,11 @@ public class PurchaseDTO {
     }
 
 
-    public LocalDate getPurchaseDate() {
+    public LocalDateTime getPurchaseDate() {
         return purchaseDate;
     }
 
-    public void setPurchaseDate(LocalDate purchaseDate) {
+    public void setPurchaseDate(LocalDateTime purchaseDate) {
         this.purchaseDate = purchaseDate;
     }
 

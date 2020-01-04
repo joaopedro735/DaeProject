@@ -134,6 +134,17 @@ public class SportController {
     }
 
     @PUT
+    @Path("/{code}/partners/{username}/enroll")
+    public Response enrollPartner(@PathParam("code") Integer code, @PathParam("username") String username) throws MyEntityAlreadyExistsException {
+        try {
+            sportBean.enrollPartner(username, code);
+            return Response.status(Response.Status.OK).entity("Partner enrolled with success").build();
+        } catch (Exception e) {
+            throw new EJBException("ERROR_ENROLL_PARTNER ----> "+ e.getCause().getMessage(), e);
+        }
+    }
+
+    @PUT
     @Path("/{code}/athletes/{username}/unroll")
     public Response unrollAthlete(@PathParam("code") Integer code, @PathParam("username") String username) {
         try {
