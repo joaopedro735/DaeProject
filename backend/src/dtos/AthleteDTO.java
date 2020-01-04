@@ -5,9 +5,12 @@ import entities.Sport;
 import entities.SportRegistration;
 
 import java.util.Collection;
+import java.util.Collections;
 
 public class AthleteDTO extends UserDTO {
     private Collection<SportRegistrationDTO> sportRegistrations;
+
+    private Collection<SportDTO> membership;
 
     private Collection<Purchase> purchases;
 

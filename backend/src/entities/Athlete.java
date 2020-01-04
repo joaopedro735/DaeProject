@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
         ),
         @NamedQuery(
                 name = "getAthletesByNameSearch",
-                query = "SELECT p FROM Partner p where upper(p.name) LIKE upper(:name) ORDER BY p.name"
+                query = "SELECT a FROM Athlete a where upper(a.name) LIKE upper(:name) ORDER BY a.name"
         )
 })
 public class Athlete extends Partner {
-    //@ManyToMany(mappedBy = "practicedBy", targetEntity = Sport.class,  fetch = FetchType.EAGER)
+    //@ManyToMany(mappedBy = "practicedBy",  fetch = FetchType.EAGER)
     @OneToMany(mappedBy = "athlete")
     private Set<SportRegistration> mySportRegistrations;
 

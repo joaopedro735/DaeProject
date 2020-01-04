@@ -1,8 +1,12 @@
 package ws;
 
 import dtos.AthleteDTO;
+import dtos.PartnerDTO;
 import ejbs.AthleteBean;
+import ejbs.SportBean;
 import entities.Athlete;
+import entities.Partner;
+import entities.Sport;
 import entities.User;
 import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
@@ -25,6 +29,9 @@ import java.util.stream.Collectors;
 public class AthleteController {
     @EJB
     private AthleteBean athleteBean;
+
+    @EJB
+    private SportBean sportBean;
 
     @Context
     private SecurityContext securityContext;
@@ -123,7 +130,7 @@ public class AthleteController {
 
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
-            msg = "ERROR_UPDATING_ADMINISTRATOR ---> " + e.getMessage();
+            msg = "ERROR_UPDATING_ATHLETE ---> " + e.getMessage();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(msg)
@@ -138,7 +145,31 @@ public class AthleteController {
             athleteBean.remove(username);
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
-            msg = "ERROR_DELETING_PARTNER --->" + e.getMessage();
+            msg = "ERROR_DELETING_ATHLETE --->" + e.getMessage();
+        }
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity(msg)
+                .build();
+    }
+
+    @GET
+    @Path("/availableToEnroll/{sportCode}")
+    public Response availableToEnrollToSport(@PathParam("sportCode") Integer sportCode, @QueryParam("name") String nameToSearch) {
+        String msg;
+        System.out.println(nameToSearch);
+        try {
+            Sport sport = sportBean.find(sportCode);
+            if (sport == null) {
+                throw new MyEntityNotFoundException("Sport with code '" + sportCode + "' not found");
+            }
+            List<Athlete> allAvailable = athleteBean.findBySearch(nameToSearch).stream().filter(p -> !p.getPracticedSports().contains(sport)).collect(Collectors.toList());
+            GenericEntity<List<AthleteDTO>> entity = new GenericEntity<List<AthleteDTO>>(toDTOs(allAvailable, null)) {
+            };
+            return Response.status(Response.Status.OK)
+                    .entity(entity)
+                    .build();
+        } catch (Exception e) {
+            msg = "ERROR_GET_ATHLETE_AVAILABLE_TO_SUBSCRIBE --->" + e.getMessage();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(msg)

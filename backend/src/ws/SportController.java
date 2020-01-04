@@ -1,6 +1,7 @@
 package ws;
 
-import dtos.*;
+import dtos.SportDTO;
+import dtos.TimeTableDTO;
 import ejbs.SportBean;
 import ejbs.SportRegistrationBean;
 import ejbs.TimeTableBean;
@@ -15,7 +16,9 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -100,7 +103,7 @@ public class SportController {
             Sport sport = sportBean.find(code);
             return Response.status(Response.Status.OK)
                     .entity(toDTO(sport, dto -> {
-                        dto.setTimeTables(TimeTableController.toDTOs(sport.getTimeTables(),null));
+                        dto.setTimeTables(TimeTableController.toDTOs(sport.getTimeTables(), null));
                         dto.setTrainers(TrainerController.toDTOs(sport.getTrainers()));
                         dto.setPartners(PartnerController.toDTOs(sport.getPartners()));
                         dto.setAthletes(AthleteController.toDTOs(sport.getAhtletes(), null));
@@ -129,7 +132,7 @@ public class SportController {
         } catch (MyEntityAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT).entity("Athlete already enrolled in sport").build();
         } catch (Exception e) {
-            throw new EJBException("ERROR_ENROLL_ATHLETE ----> "+ e.getCause().getMessage(), e);
+            throw new EJBException("ERROR_ENROLL_ATHLETE ----> " + e.getCause().getMessage(), e);
         }
     }
 
@@ -140,19 +143,32 @@ public class SportController {
             sportBean.enrollPartner(username, code);
             return Response.status(Response.Status.OK).entity("Partner enrolled with success").build();
         } catch (Exception e) {
-            throw new EJBException("ERROR_ENROLL_PARTNER ----> "+ e.getCause().getMessage(), e);
+            throw new EJBException("ERROR_ENROLL_PARTNER ----> " + e.getCause().getMessage(), e);
         }
     }
 
     @PUT
     @Path("/{code}/athletes/{username}/unroll")
     public Response unrollAthlete(@PathParam("code") Integer code, @PathParam("username") String username) {
+        String msg;
         try {
             sportBean.unrollAthlete(username, code);
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
-            throw new EJBException("ERROR_ENROLL_ATHLETE", e);
+            msg = "ERROR_ENROLL_ATHLETE ->" + e.getMessage();
         }
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(msg).build();
+    }
+
+    @GET
+    @Path("/{code}/timetables")
+    public Response getTimetables(@PathParam("code") Integer code) throws MyEntityNotFoundException {
+        String msg;
+        Sport sport = sportBean.find(code);
+        if (sport == null) {
+            throw new MyEntityNotFoundException("Sport with code '" + code + "' not found");
+        }
+        return Response.status(Response.Status.OK).entity(TimeTableController.toDTOs(sport.getTimeTables(), null)).build();
     }
 
     @POST
