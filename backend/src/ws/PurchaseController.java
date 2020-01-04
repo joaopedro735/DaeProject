@@ -20,6 +20,8 @@ import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.security.Principal;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -47,7 +49,7 @@ public class PurchaseController {
     public static PurchaseDTO toDTO(Purchase purchase, Function<PurchaseDTO, PurchaseDTO> fn) {
         PurchaseDTO dto = new PurchaseDTO(
                 purchase.getId(),
-                purchase.getPurchaseDate(),
+                purchase.getPurchaseDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss")),
                 purchase.getUser().getUsername(),
                 purchase.getTotalEuros().doubleValue()
         );
