@@ -11,6 +11,7 @@ import exceptions.MyConstraintViolationException;
 import exceptions.MyEntityAlreadyExistsException;
 import exceptions.MyEntityNotFoundException;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 @Path("/types")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@RolesAllowed("Administrator")
 public class TypeController {
     @EJB
     private TypeBean typeBean;

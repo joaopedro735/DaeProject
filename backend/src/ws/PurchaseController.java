@@ -13,6 +13,7 @@ import exceptions.MyEntityAlreadyExistsException;
 import exceptions.MyEntityIllegalArgumentException;
 import exceptions.MyEntityNotFoundException;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ws.rs.*;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 @Path("/purchases")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-
+@RolesAllowed("Administrator")
 public class PurchaseController {
     @EJB
     private ProductBean productBean;
